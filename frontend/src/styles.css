@@ -234,6 +234,14 @@ main {
 .sidebar section:first-child h3 {
   margin-top: 0;
 }
+.ego-speed .big-text {
+  font-size: 22px;
+  font-weight: 700;
+}
+.ttc-warn {
+  color: var(--err);
+  font-weight: 600;
+}
 .ego-speed .big {
   font-size: 28px;
   font-weight: 700;

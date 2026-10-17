@@ -15,6 +15,7 @@ from typing import Callable
 import cv2
 import numpy as np
 
+from . import monocular
 from .store import Clip
 
 LANE_WIDTH_M = 3.7  # US freeway default; overridable per clip in meta.json
@@ -487,41 +488,83 @@ def run(clip: Clip, progress: Callable[[float, str], None]) -> dict:
                             "message": "No regular dashed lane line found, so there is no depth scale. Distances "
                                        "and speeds of other road users are not computed."})
 
+    # Lane-based lateral position is only trustworthy when the lines formed a real lane grid with a dash scale.
+    # Without that (parking lots, unmarked roads), stall lines and cracks fit "lanes" and would invent lane changes.
+    if not K:
+        if lane_changes or road_lines:
+            quality.append({"level": "info", "code": "lanes_unverified",
+                            "message": "Line-like markings were found but don't form a verified lane pattern, so no "
+                                       "lane positions or lane changes are reported."})
+        lane_changes, road_lines = [], []
+        d_cam = np.full(n_frames, np.nan)
+        result["lane_changes"] = []
+        result.pop("camera_height_m", None)
+        result.pop("camera_height_iqr_m", None)
+
     # ---- ego speed
+    # Sources, best first: the dashcam's own speed overlay; lane-dash flow (needs a verified lane scale); background
+    # motion, which can't measure speed but reliably shows when the camera is standing still (0 km/h).
+    motion_samples = (clip.stage("motion") or {}).get("samples", [])
+    m_t = np.array([m["t"] for m in motion_samples]) if motion_samples else np.array([])
+
+    def motion_state(t: float) -> str:
+        if not len(m_t):
+            return "unknown"
+        return motion_samples[int(np.argmin(np.abs(m_t - t)))]["state"]
+
+    stationary_t = np.array([m["t"] for m in motion_samples if m["state"] == "stationary"])
     ego_src, ego_t, ego_v, ego_sig = "none", np.array([]), np.array([]), np.array([])
     ocr_samples = [s for s in ocr.get("samples", []) if not s.get("suspicious")]
+    flow_rows: list[tuple[float, float, float]] = []
     if ocr.get("present") and len(ocr_samples) >= 2:
         ego_src = "overlay"
         ego_t = np.array([s["t"] for s in ocr_samples])
         ego_v = np.array([s["speed_mps"] for s in ocr_samples])
         ego_sig = np.maximum(0.3, 0.02 * ego_v)
-    elif K and h:
-        progress(0.8, "estimating ego speed from lane flow")
-        flow = _lane_flow(clip, K, x0s, y0s, lines_at, vfps, period, roi, boxes_at)
-        if len(flow) >= 10:
-            ft = np.array([f[0] for f in flow])
-            fv = np.array([f[1] for f in flow])
-            bins = np.arange(0, t_video[-1] + 0.5, 0.5)
-            rows = []
-            for b0 in bins:
-                sel = (ft >= b0) & (ft < b0 + 0.5)
-                if sel.sum() >= 3:
-                    med = float(np.median(fv[sel]))
-                    mad = float(np.median(np.abs(fv[sel] - med))) * 1.4826
-                    rows.append((b0 + 0.25, med, max(0.4, mad / np.sqrt(sel.sum())) + med * result["K_rel_sigma"]))
-            if len(rows) >= 3:
-                ego_src = "lane_flow"
-                bt = np.array([r[0] for r in rows])
-                bv = np.array([r[1] for r in rows])
-                bs = np.array([r[2] for r in rows])
-                ego_t = np.arange(0, t_video[-1] + 1e-6, 0.25)
-                ego_v, ego_sig, n_out = _smooth_speed(bt, bv, bs, ego_t)
-                ego_sig = ego_sig + ego_v * result["K_rel_sigma"]  # scale uncertainty applies to all of it
-                result["ego_flow"] = {"samples": len(flow), "bins": len(rows), "outlier_bins": n_out}
+    else:
+        if K and h:
+            progress(0.8, "estimating ego speed from lane flow")
+            solid_ds = [l["d"] for l in road_lines if l["kind"] == "solid"]
+            flow = _lane_flow(clip, K, x0s, y0s, lines_at, vfps, period, roi, boxes_at, d_cam, h, solid_ds)
+            # Background motion vetoes contradictions: ~0 m/s while the scene clearly moves (a solid line or static
+            # clutter was matched), or a large speed while the background is perfectly still.
+            kept = [f for f in flow if not ((motion_state(f[0]) == "moving" and f[1] < 1.5)
+                                            or (motion_state(f[0]) == "stationary" and f[1] > 1.5))]
+            result["ego_flow"] = {"samples": len(flow), "vetoed_by_motion": len(flow) - len(kept)}
+            if len(kept) >= 10:
+                ft = np.array([f[0] for f in kept])
+                fv = np.array([f[1] for f in kept])
+                for b0 in np.arange(0, t_video[-1] + 0.5, 0.5):
+                    sel = (ft >= b0) & (ft < b0 + 0.5)
+                    if sel.sum() >= 3:
+                        med = float(np.median(fv[sel]))
+                        mad = float(np.median(np.abs(fv[sel] - med))) * 1.4826
+                        flow_rows.append((b0 + 0.25, med, max(0.4, mad / np.sqrt(sel.sum())) + med * result["K_rel_sigma"]))
+        still_rows = [(float(t), 0.0, 0.2) for t in stationary_t]
+        if len(flow_rows) >= 3:
+            ego_src = "lane_flow"
+            rows = sorted(flow_rows + still_rows)
+            ego_t = np.arange(0, t_video[-1] + 1e-6, 0.25)
+            ego_v, ego_sig, n_out = _smooth_speed(np.array([r[0] for r in rows]), np.array([r[1] for r in rows]),
+                                                  np.array([r[2] for r in rows]), ego_t)
+            ego_sig = ego_sig + ego_v * result["K_rel_sigma"]  # scale uncertainty applies to all of it
+            result["ego_flow"].update({"bins": len(flow_rows), "stationary_samples": len(still_rows), "outlier_bins": n_out})
+        elif len(still_rows) >= 4:
+            # No way to measure speed here, but we know when the camera is standing still. Elsewhere: unknown.
+            ego_src = "background_motion"
+            ego_t = np.array([f["t"] for f in ing["frames"]])
+            still = np.isin(ego_t, stationary_t)
+            ego_v = np.where(still, 0.0, np.nan)
+            ego_sig = np.where(still, 0.2, np.nan)
     if ego_src == "none":
         quality.append({"level": "warn", "code": "no_ego_speed",
                         "message": "No speed overlay and no usable lane-flow signal: the recording vehicle's speed "
                                    "is unknown, so only relative motion is shown."})
+    elif ego_src == "background_motion":
+        quality.append({"level": "info", "code": "ego_stationary_only",
+                        "message": "The recording vehicle's speed can't be measured in this clip (no overlay, no lane "
+                                   "markings). Background motion shows when it was standing still; at other times its "
+                                   "speed is unknown."})
 
     def ego_at(t: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
         if ego_src == "none":
@@ -530,7 +573,9 @@ def run(clip: Clip, progress: Callable[[float, str], None]) -> dict:
 
     # Ego path in the road frame (s by integrating speed on the video timeline).
     ev, es = ego_at(t_video)
-    s_ego_video = np.concatenate([[0.0], np.cumsum((ev[1:] + ev[:-1]) / 2 * np.diff(t_video))]) if ego_src != "none" else np.zeros(n_frames)
+    # Unknown speed contributes no distance (positions are then relative to the camera, which is what we report).
+    evz = np.nan_to_num(ev)
+    s_ego_video = np.concatenate([[0.0], np.cumsum((evz[1:] + evz[:-1]) / 2 * np.diff(t_video))]) if ego_src != "none" else np.zeros(n_frames)
 
     def at(series: np.ndarray, t: float) -> float:
         return float(np.interp(t, t_video, series))
@@ -604,11 +649,35 @@ def run(clip: Clip, progress: Callable[[float, str], None]) -> dict:
                 quality.append({"level": "warn", "code": "distant", "actor": a["id"],
                                 "message": f"{a['id']} never comes closer than {min(near):.0f} m; its speed range is wide."})
 
-    status = "ok" if (K and h and ego_src != "none") else ("partial" if ego_src != "none" or (K and h) else "insufficient")
-    quality.append({"level": "info", "code": "assumptions",
-                    "message": f"Assumes a flat road, lane width {lane_w} m and dash period {period} m"
-                               f"{' (US freeway standard)' if (lane_w, period) == (LANE_WIDTH_M, DASH_PERIOD_M) else ' (set for this clip)'}. "
-                               "Positions are along/across the road, not GPS."})
+    mode = "lanes" if (K and h) else "monocular"
+    if mode == "monocular":
+        progress(0.9, "ranging from known object sizes")
+        plates = (clip.stage("plates") or {}).get("plates", [])
+
+        def ego_speed_at(t: float) -> tuple[float | None, float | None]:
+            if ego_src == "none":
+                return None, None
+            v, sg = ego_at(np.array([t]))
+            return (None if np.isnan(v[0]) else float(v[0])), (None if np.isnan(sg[0]) else float(sg[0]))
+
+        out_actors, mono_cal, mono_q = monocular.range_actors(actors, plates, Wpx, Hpx, meta, ego_speed_at)
+        result.update(mono_cal)
+        quality.extend(mono_q)
+        status = "partial" if out_actors else "insufficient"
+    else:
+        status = "ok" if ego_src != "none" else "partial"
+        quality.append({"level": "info", "code": "assumptions",
+                        "message": f"Assumes a flat road, lane width {lane_w} m and dash period {period} m"
+                                   f"{' (US freeway standard)' if (lane_w, period) == (LANE_WIDTH_M, DASH_PERIOD_M) else ' (set for this clip)'}. "
+                                   "Positions are along/across the road, not GPS."})
+    result["mode"] = mode
+    if mode == "monocular":  # lane-mode failures are no longer the last word: say what we fell back to
+        for q in quality:
+            if q["code"] in ("no_lanes", "no_dashes", "implausible_height"):
+                q["level"] = "info"
+                for tail in (" Distances and speeds of other road users are not computed.",
+                             " Positions and speeds are not computed."):
+                    q["message"] = q["message"].replace(tail, " Using known object sizes instead.")
     # Per analysis frame lane overlay for the UI (how the geometry was derived).
     lanes_ui = [{"t": float(t), "x0": None if np.isnan(at(x0s, t)) else round(at(x0s, t) / Wpx, 4),
                  "y0": None if np.isnan(at(y0s, t)) else round(at(y0s, t) / Hpx, 4),
@@ -628,7 +697,8 @@ def _nearest(series: np.ndarray, t: float, vfps: float) -> float | None:
     return None
 
 
-def _lane_flow(clip, K, x0s, y0s, lines_at, vfps, period, roi, boxes_at, lag: int = 2) -> list[tuple[float, float, float]]:
+def _lane_flow(clip, K, x0s, y0s, lines_at, vfps, period, roi, boxes_at, d_cam, h, solid_ds,
+               lag: int = 2) -> list[tuple[float, float, float]]:
     """Ego speed from the dash pattern's shift toward the camera between frames `lag` apart, measured in metres.
 
     Uses every dashed-looking line in the frame, including the one directly ahead while straddling it in a lane
@@ -639,11 +709,19 @@ def _lane_flow(clip, K, x0s, y0s, lines_at, vfps, period, roi, boxes_at, lag: in
     profiles: dict[int, list[tuple[float, np.ndarray]]] = {}
     out = []
     shifts = np.arange(-0.5, period / 2 - 0.2, 0.05)
+    prev_gray = None
     for i in range(len(y0s)):
         ok, frame = cap.read()
         if not ok:
             break
-        dashed = [a for a, _, frac in lines_at[i] if not np.isnan(frac) and 0.08 < frac < 0.5]
+        gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY).astype(np.int16)
+        repeated = prev_gray is not None and float(np.abs(gray - prev_gray).mean()) < 0.3
+        prev_gray = gray
+        if repeated:
+            continue  # a repeated frame would read as zero shift
+        # Lines the whole clip classifies as solid don't move along themselves and would vote 0 m/s.
+        dashed = [a for a, _, frac in lines_at[i] if not np.isnan(frac) and 0.08 < frac < 0.5
+                  and not any(abs(d_cam[i] + h * a - sd) < 0.6 for sd in solid_ds)]
         if not dashed or np.isnan(y0s[i]):
             continue
         th = _tophat(frame)

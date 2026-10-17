@@ -3,7 +3,7 @@ import threading
 import traceback
 from typing import Callable
 
-from . import detect, geometry, ingest, ocr, scene, track
+from . import detect, geometry, ingest, motion, ocr, plates, scene, track
 from .store import STAGES, Clip
 
 StageFn = Callable[[Clip, Callable[[float, str], None]], dict]
@@ -11,7 +11,9 @@ RUNNERS: dict[str, StageFn] = {
     "ingest": ingest.run,
     "detect": detect.run,
     "track": track.run,
+    "plates": plates.run,
     "ocr": ocr.run,
+    "motion": motion.run,
     "geometry": geometry.run,
     "scene": scene.run,
 }

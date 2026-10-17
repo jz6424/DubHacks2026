@@ -57,11 +57,11 @@ def cached_call(cache_file: Path, fn: Callable[[], Any], to_record: Callable[[An
     raise RuntimeError(f"model call failed after retries: {last}")
 
 
-def detect_frame(frame_path: Path, cache_file: Path) -> dict:
+def detect_frame(frame_path: Path, cache_file: Path, classes: list[str] | None = None) -> dict:
     """Boxes (normalized 0-1000) for road users in one frame. Reasoning off: the spike showed it isn't needed here."""
     return cached_call(
         cache_file,
-        lambda: detect(image(str(frame_path)), classes=DETECT_CLASSES, model=MODEL, reasoning_effort="none",
+        lambda: detect(image(str(frame_path)), classes=classes or DETECT_CLASSES, model=MODEL, reasoning_effort="none",
                        max_tokens=4096),
         lambda r: {"boxes": [_box(b) for b in (r.boxes or [])], "text": r.text},
     )

@@ -11,6 +11,8 @@ def run(clip: Clip, progress: Callable[[float, str], None]) -> dict:
     geo = clip.stage("geometry")
     ocr = clip.stage("ocr") or {"present": False, "samples": []}
     det = clip.stage("detect")
+    plates = (clip.stage("plates") or {}).get("plates", [])
+    motion = clip.stage("motion") or {"samples": [], "intervals": []}
 
     actors = []
     for a in trk["actors"]:
@@ -33,6 +35,10 @@ def run(clip: Clip, progress: Callable[[float, str], None]) -> dict:
         "geometry": {"status": geo["status"], "calibration": geo["calibration"], "lanes": geo["lanes"],
                      "road_lines": geo.get("road_lines", [])},
         "overlay": ocr,
+        # boxes to blur in any view or export (other people's plates are personal data)
+        "plates": [{"t": p["t"], "box": p["box"], "actor": p.get("actor")} for p in plates],
+        "motion": {"samples": [{"t": m["t"], "state": m["state"]} for m in motion["samples"]],
+                   "intervals": motion["intervals"]},
         "quality": geo["quality"] + [{"level": "info", "code": "notes", "message": n} for n in ing.get("notes", [])],
         "stats": {"model_tokens": det.get("usage"), "raw_tracks": trk["raw_tracks"], "auto_merges": trk["auto_merges"],
                   "overrides": trk["overrides"]},

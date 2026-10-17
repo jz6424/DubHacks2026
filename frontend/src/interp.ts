@@ -1,4 +1,4 @@
-import type { Actor, Box, EgoSample, GroundSample } from "./types";
+import type { Actor, Box, EgoSample, GroundSample, MotionState, PlateBox } from "./types";
 
 /** Index of the last sample with t <= time (binary search); -1 if before the first. */
 function floorIndex<T extends { t: number }>(xs: T[], time: number): number {
@@ -65,6 +65,39 @@ export function egoAt(samples: EgoSample[], time: number): EgoSample | null {
   const w = Math.max(0, Math.min(1, (time - a.t) / (b.t - a.t)));
   const num = (p: number | null, q: number | null) => (p === null || q === null ? (p ?? q) : lerp(p, q, w));
   return { t: time, s: lerp(a.s, b.s, w), d: num(a.d, b.d), v: num(a.v, b.v), v_sigma: num(a.v_sigma, b.v_sigma) };
+}
+
+/** Plate boxes to hide at `time`: per vehicle, interpolated between its 4 fps detections (max 0.5 s apart). */
+export function platesAt(plates: PlateBox[], time: number): Box[] {
+  const byActor = new Map<string, PlateBox[]>();
+  const loose: PlateBox[] = [];
+  for (const p of plates) {
+    if (p.actor) byActor.set(p.actor, [...(byActor.get(p.actor) ?? []), p]);
+    else loose.push(p);
+  }
+  const out: Box[] = [];
+  for (const ps of byActor.values()) {
+    const i = floorIndex(ps, time);
+    const a = ps[i];
+    const b = ps[i + 1];
+    if (a && b && b.t - a.t <= 0.5) {
+      const w = (time - a.t) / (b.t - a.t);
+      out.push(a.box.map((v, k) => lerp(v, b.box[k], w)) as Box);
+    } else {
+      const near = [a, b].filter((p): p is PlateBox => !!p && Math.abs(p.t - time) <= 0.2);
+      if (near.length) out.push(near.sort((x, y) => Math.abs(x.t - time) - Math.abs(y.t - time))[0].box);
+    }
+  }
+  for (const p of loose) if (Math.abs(p.t - time) <= 0.15) out.push(p.box);
+  return out;
+}
+
+export function motionStateAt(scene: { motion?: { samples: { t: number; state: MotionState }[] } }, time: number): MotionState {
+  const xs = scene.motion?.samples ?? [];
+  if (!xs.length) return "unknown";
+  const i = Math.max(0, floorIndex(xs, time));
+  const j = Math.min(xs.length - 1, i + 1);
+  return Math.abs(xs[j].t - time) < Math.abs(xs[i].t - time) ? xs[j].state : xs[i].state;
 }
 
 export const kmh = (mps: number | null | undefined) => (mps === null || mps === undefined ? null : mps * 3.6);

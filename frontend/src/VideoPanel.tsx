@@ -1,5 +1,5 @@
 import { useEffect, type RefObject } from "react";
-import { actorColor, boxAt, groundAt, kmh } from "./interp";
+import { actorColor, boxAt, groundAt, kmh, platesAt } from "./interp";
 import type { Actor, Scene } from "./types";
 import { useCanvas } from "./useCanvas";
 
@@ -12,9 +12,10 @@ interface Props {
   selected: string | null;
   onSelect: (id: string | null) => void;
   showLanes: boolean;
+  blurPlates: boolean;
 }
 
-export function VideoPanel({ scene, actors, time, videoUrl, videoRef, selected, onSelect, showLanes }: Props) {
+export function VideoPanel({ scene, actors, time, videoUrl, videoRef, selected, onSelect, showLanes, blurPlates }: Props) {
   const { ref, size, ctx } = useCanvas();
   const { width: W, height: H } = scene.clip;
 
@@ -23,6 +24,31 @@ export function VideoPanel({ scene, actors, time, videoUrl, videoRef, selected, 
     if (!c) return;
     const { w, h } = size;
     c.clearRect(0, 0, w, h);
+
+    // Pixelate licence plates (other people's personal data): copy the region at very low resolution and scale it
+    // back up without smoothing. Works in every browser, unlike canvas blur filters.
+    const video = videoRef.current;
+    if (blurPlates && video && video.videoWidth) {
+      const vw = video.videoWidth;
+      const vh = video.videoHeight;
+      for (const [x0, y0, x1, y1] of platesAt(scene.plates ?? [], time)) {
+        const padX = (x1 - x0) * 0.25;
+        const padY = (y1 - y0) * 0.35;
+        const bx0 = Math.max(0, x0 - padX);
+        const by0 = Math.max(0, y0 - padY);
+        const bx1 = Math.min(1, x1 + padX);
+        const by1 = Math.min(1, y1 + padY);
+        const tiny = document.createElement("canvas");
+        tiny.width = 6;
+        tiny.height = 3;
+        const tc = tiny.getContext("2d");
+        if (!tc) continue;
+        tc.drawImage(video, bx0 * vw, by0 * vh, (bx1 - bx0) * vw, (by1 - by0) * vh, 0, 0, 6, 3);
+        c.imageSmoothingEnabled = false;
+        c.drawImage(tiny, 0, 0, 6, 3, bx0 * w, by0 * h, (bx1 - bx0) * w, (by1 - by0) * h);
+        c.imageSmoothingEnabled = true;
+      }
+    }
 
     if (showLanes) {
       const lane = nearestLane(scene, time);
@@ -75,7 +101,7 @@ export function VideoPanel({ scene, actors, time, videoUrl, videoRef, selected, 
       c.fillStyle = col;
       c.fillText(label, x0 * w + 3, ly);
     }
-  }, [scene, actors, time, size, selected, showLanes, W, H, ctx]);
+  }, [scene, actors, time, size, selected, showLanes, blurPlates, W, H, ctx, videoRef]);
 
   const onClick = (e: React.MouseEvent<HTMLCanvasElement>) => {
     const r = e.currentTarget.getBoundingClientRect();

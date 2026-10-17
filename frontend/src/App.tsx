@@ -26,6 +26,7 @@ export default function App() {
   const [selected, setSelected] = useState<string | null>(null);
   const [showLanes, setShowLanes] = useState(false);
   const [showAll, setShowAll] = useState(false);
+  const [blurPlates, setBlurPlates] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const pendingSeek = useRef<number | null>(null);
@@ -162,6 +163,9 @@ export default function App() {
         <label className="toggle">
           <input type="checkbox" checked={showAll} onChange={(e) => setShowAll(e.target.checked)} /> Show distant traffic
         </label>
+        <label className="toggle">
+          <input type="checkbox" checked={blurPlates} onChange={(e) => setBlurPlates(e.target.checked)} /> Hide licence plates
+        </label>
         <span className="disclaimer">AI-generated draft for review. Not a legal determination or professional reconstruction.</span>
       </header>
 
@@ -181,9 +185,14 @@ export default function App() {
               selected={selected}
               onSelect={setSelected}
               showLanes={showLanes}
+              blurPlates={blurPlates}
             />
             <div className="topdown-wrap">
-              <div className="panel-title">Top-down · travel direction → · road-aligned, follows the recording vehicle</div>
+              <div className="panel-title">
+                {scene.geometry.calibration.mode === "monocular"
+                  ? "Top-down · camera-centred · distances from known object sizes"
+                  : "Top-down · travel direction → · road-aligned, follows the recording vehicle"}
+              </div>
               <TopDown scene={scene} actors={actors} time={time} selected={selected} onSelect={setSelected} />
               {!scene.actors.some((a) => a.ground.length) && (
                 <div className="topdown-empty">

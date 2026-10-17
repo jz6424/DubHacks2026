@@ -1,5 +1,6 @@
 """On-disk layout for one clip: data/clips/<id>/{meta.json, status.json, source.*, video.mp4, frames/, stages/, cache/}."""
 import json
+import math
 import threading
 import time
 from pathlib import Path
@@ -7,8 +8,18 @@ from typing import Any
 
 from ..config import CLIPS
 
-STAGES = ["ingest", "detect", "track", "ocr", "geometry", "scene"]
+STAGES = ["ingest", "detect", "track", "plates", "ocr", "motion", "geometry", "scene"]
 _lock = threading.Lock()
+
+
+def _finite(x: Any) -> Any:
+    if isinstance(x, float):
+        return x if math.isfinite(x) else None
+    if isinstance(x, dict):
+        return {k: _finite(v) for k, v in x.items()}
+    if isinstance(x, (list, tuple)):
+        return [_finite(v) for v in x]
+    return x
 
 
 class Clip:
@@ -42,7 +53,8 @@ class Clip:
     def _write(self, path: Path, data: Any) -> None:
         path.parent.mkdir(parents=True, exist_ok=True)
         tmp = path.with_suffix(".tmp")
-        tmp.write_text(json.dumps(data))
+        # Browsers reject NaN/Infinity in JSON; unknown numbers are null.
+        tmp.write_text(json.dumps(_finite(data), allow_nan=False))
         tmp.replace(path)
 
     def meta(self) -> dict:

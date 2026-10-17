@@ -31,6 +31,19 @@ export interface GroundSample {
   heading_deg: number | null;
   measured: boolean;
   dist_m: number | null;
+  // monocular (size-based) mode only
+  closing_mps?: number;
+  ttc_s?: number | null;
+  ttc_sigma_s?: number | null;
+  cue?: "plate" | "width" | "height" | null;
+}
+
+export type MotionState = "stationary" | "creeping" | "moving" | "unknown";
+
+export interface PlateBox {
+  t: number;
+  box: Box;
+  actor: string | null;
 }
 
 export interface Actor {
@@ -98,7 +111,7 @@ export interface Scene {
   frame_fps: number;
   frames: number[];
   actors: Actor[];
-  ego: { source: "overlay" | "lane_flow" | "none"; samples: EgoSample[] };
+  ego: { source: "overlay" | "lane_flow" | "background_motion" | "none"; samples: EgoSample[] };
   geometry: {
     status: "ok" | "partial" | "insufficient";
     calibration: Record<string, unknown> & {
@@ -111,11 +124,21 @@ export interface Scene {
       lane_frames_pct: number;
       dash_pairs?: number;
       lane_changes?: LaneChange[];
+      mode?: "lanes" | "monocular";
+      hfov_rel_sigma?: number;
+      hfov_from?: string;
+      plate_width_m?: number;
+      size_cues?: { plate: number; width: number; height: number };
     };
     lanes: LaneSample[];
     road_lines: RoadLine[];
   };
   overlay: { present: boolean; samples: { t: number; speed_mps: number; raw: string }[] };
+  plates: PlateBox[];
+  motion: {
+    samples: { t: number; state: MotionState }[];
+    intervals: { state: MotionState; t_start: number; t_end: number }[];
+  };
   quality: QualityNote[];
   stats: { model_tokens: { prompt_tokens: number; completion_tokens: number } | null };
 }
