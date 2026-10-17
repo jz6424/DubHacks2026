@@ -2,6 +2,7 @@
 import hashlib
 import json
 import re
+import shutil
 from dataclasses import dataclass, field
 from pathlib import Path
 
@@ -45,11 +46,22 @@ def _from_video_site(url: str) -> Source:
     import yt_dlp
 
     out = MEDIA_DIR / f"{url_id(url)}.mp4"
+    # YouTube rarely serves progressive (audio+video) files anymore, so merge
+    # separate streams when ffmpeg is available; otherwise take video-only,
+    # which is all the vision model needs.
+    if shutil.which("ffmpeg"):
+        fmt = ("bv*[ext=mp4][vcodec^=avc1][height<=480]+ba[ext=m4a]"
+               "/bv*[ext=mp4][height<=480]+ba[ext=m4a]/b[ext=mp4][height<=480]"
+               "/bv*[height<=480]+ba/b")
+    else:
+        fmt = ("b[ext=mp4][height<=480]/bv*[ext=mp4][vcodec^=avc1][height<=480]"
+               "/bv*[ext=mp4][height<=480]/b[ext=mp4]/bv*[ext=mp4]")
     opts = {
-        # Single progressive file (audio+video) so we don't need ffmpeg to merge.
-        "format": "best[ext=mp4][height<=480][vcodec!=none][acodec!=none]/18/best[ext=mp4]/best",
+        "format": fmt,
+        "merge_output_format": "mp4",
         "outtmpl": str(out),
         "quiet": True,
+        "noprogress": True,
         "no_warnings": True,
         "noplaylist": True,
     }
