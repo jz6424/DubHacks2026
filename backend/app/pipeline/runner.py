@@ -3,7 +3,7 @@ import threading
 import traceback
 from typing import Callable
 
-from . import detect, geometry, ingest, motion, ocr, plates, scene, track
+from . import detect, geometry, ingest, motion, ocr, plates, reid, scene, track
 from .store import STAGES, Clip
 
 StageFn = Callable[[Clip, Callable[[float, str], None]], dict]
@@ -11,6 +11,7 @@ RUNNERS: dict[str, StageFn] = {
     "ingest": ingest.run,
     "detect": detect.run,
     "track": track.run,
+    "reid": reid.run,
     "plates": plates.run,
     "ocr": ocr.run,
     "motion": motion.run,
@@ -21,7 +22,12 @@ _active: set[str] = set()
 _active_lock = threading.Lock()
 
 
-def run_pipeline(clip: Clip, force_from: str | None = None) -> None:
+# Stages whose output depends on which detections belong to which road user. User corrections (merges, tiers,
+# labels) only need these re-run; motion, plates and OCR don't change.
+IDENTITY_STAGES = ["track", "reid", "geometry", "scene"]
+
+
+def run_pipeline(clip: Clip, force_from: str | None = None, rerun: list[str] | None = None) -> None:
     with _active_lock:
         if clip.id in _active:
             return
@@ -29,6 +35,8 @@ def run_pipeline(clip: Clip, force_from: str | None = None) -> None:
     try:
         if force_from:
             clip.clear_stages(force_from)
+        for name in rerun or []:
+            (clip.stages_dir / f"{name}.json").unlink(missing_ok=True)
         clip.update_status(state="running", error=None)
         for name in STAGES:
             if clip.has_stage(name):
@@ -54,8 +62,8 @@ def run_pipeline(clip: Clip, force_from: str | None = None) -> None:
             _active.discard(clip.id)
 
 
-def start_background(clip: Clip, force_from: str | None = None) -> None:
-    threading.Thread(target=run_pipeline, args=(clip, force_from), daemon=True).start()
+def start_background(clip: Clip, force_from: str | None = None, rerun: list[str] | None = None) -> None:
+    threading.Thread(target=run_pipeline, args=(clip, force_from, rerun), daemon=True).start()
 
 
 def is_running(clip: Clip) -> bool:

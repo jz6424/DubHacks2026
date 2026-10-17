@@ -8,7 +8,7 @@ from typing import Any
 
 from ..config import CLIPS
 
-STAGES = ["ingest", "detect", "track", "plates", "ocr", "motion", "geometry", "scene"]
+STAGES = ["ingest", "detect", "track", "plates", "ocr", "motion", "geometry", "reid", "scene"]
 _lock = threading.Lock()
 
 

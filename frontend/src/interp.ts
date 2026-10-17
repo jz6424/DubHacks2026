@@ -17,6 +17,10 @@ const lerp = (a: number, b: number, w: number) => a + (b - a) * w;
 
 /** Half a frame interval of slack so boxes don't flicker at track ends. */
 const EDGE = 0.13;
+/** Samples further apart than this are a gap in the track (e.g. a vehicle lost while it tumbles): don't bridge it. */
+const MAX_BRIDGE = 0.6;
+const inGap = (a: { t: number }, b: { t: number }, time: number) =>
+  b.t - a.t > MAX_BRIDGE && time > a.t + EDGE && time < b.t - EDGE;
 
 export function boxAt(actor: Actor, time: number): { box: Box; interp: boolean } | null {
   const xs = actor.boxes;
@@ -26,6 +30,8 @@ export function boxAt(actor: Actor, time: number): { box: Box; interp: boolean }
   if (i >= xs.length - 1) return { box: xs[xs.length - 1].box, interp: xs[xs.length - 1].interp };
   const a = xs[i];
   const b = xs[i + 1];
+  if (inGap(a, b, time)) return null;
+  if (b.t - a.t > MAX_BRIDGE) return time - a.t < b.t - time ? { box: a.box, interp: a.interp } : { box: b.box, interp: b.interp };
   const w = (time - a.t) / (b.t - a.t);
   return { box: a.box.map((v, k) => lerp(v, b.box[k], w)) as Box, interp: a.interp || b.interp };
 }
@@ -37,6 +43,8 @@ export function groundAt(actor: Actor, time: number): GroundSample | null {
   if (xs.length === 1) return xs[0];
   const a = xs[i];
   const b = xs[i + 1];
+  if (inGap(a, b, time)) return null;
+  if (b.t - a.t > MAX_BRIDGE) return time - a.t < b.t - time ? a : b;
   const w = Math.max(0, Math.min(1, (time - a.t) / (b.t - a.t)));
   const num = (p: number | null, q: number | null) => (p === null || q === null ? null : lerp(p, q, w));
   return {

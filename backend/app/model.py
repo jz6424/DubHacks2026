@@ -7,7 +7,7 @@ import json
 import threading
 import time
 from pathlib import Path
-from typing import Any, Callable
+from typing import Any, Callable, Literal
 
 from perceptron import detect, image, perceive, pydantic_format, text
 from pydantic import BaseModel
@@ -79,6 +79,30 @@ def ask_structured(frame_path: Path, prompt: str, schema: type[BaseModel], cache
             data = schema.model_validate_json(r.text or "").model_dump()
         except Exception:  # noqa: BLE001 - empty/invalid output is recorded, not fatal
             data = None
+        return {"data": data, "text": r.text}
+
+    return cached_call(cache_file, run, record)
+
+
+class _SameVehicle(BaseModel):
+    same_vehicle: Literal["yes", "no", "unsure"]
+    reason: str
+
+
+def same_vehicle(crop_a: Path, t_a: float, crop_b: Path, t_b: float, cache_file: Path) -> dict:
+    """Ask whether two crops show the same physical vehicle (it may be damaged or overturned in between)."""
+    @perceive(model=MODEL, reasoning_effort="low", max_tokens=1024, response_format=pydantic_format(_SameVehicle))
+    def run():
+        return (image(str(crop_a)) + image(str(crop_b)) + text(
+            f"Image 1 shows a vehicle at t={t_a:.1f}s in a dashcam video; image 2 shows a vehicle at t={t_b:.1f}s in the "
+            "same video. Could they be the same physical vehicle? It may have been damaged, overturned or seen from "
+            "another angle in between. Judge by body shape, colour and distinctive features. Answer yes, no, or unsure."))
+
+    def record(r: Any) -> dict:
+        try:
+            data = _SameVehicle.model_validate_json(r.text or "").model_dump()
+        except Exception:  # noqa: BLE001 - invalid output is recorded as unsure
+            data = {"same_vehicle": "unsure", "reason": "no usable answer"}
         return {"data": data, "text": r.text}
 
     return cached_call(cache_file, run, record)

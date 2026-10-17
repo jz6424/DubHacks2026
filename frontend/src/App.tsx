@@ -1,18 +1,20 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { api } from "./api";
+import { Corrections, mergeInto } from "./Corrections";
 import { Sidebar } from "./Sidebar";
 import { Timeline } from "./Timeline";
 import { TopDown } from "./TopDown";
-import type { Actor, ClipSummary, Scene } from "./types";
+import type { Actor, ClipSummary, Overrides, Scene } from "./types";
 import { VideoPanel } from "./VideoPanel";
 
-/** Road users worth showing: those we could place on the road, or that stay in view for a while. */
-function keyActors(scene: Scene, showAll: boolean): Actor[] {
-  if (showAll) return scene.actors;
-  return scene.actors.filter((a) => {
-    const near = a.ground.some((g) => g.dist_m !== null && g.dist_m < 60);
-    return near || a.t_end - a.t_start >= 3;
-  });
+const EMPTY_OVERRIDES: Overrides = { merge: [], tier: {}, labels: {}, rejected_links: [] };
+const TIER_ORDER = { involved: 0, nearby: 1, background: 2, hidden: 3 };
+
+/** Road users to show: involved and nearby by default (background on request); hidden never, unless selected. */
+function visibleActors(scene: Scene, showBackground: boolean, selected: string | null): Actor[] {
+  return scene.actors
+    .filter((a) => a.id === selected || a.tier === "involved" || a.tier === "nearby" || (showBackground && a.tier === "background"))
+    .sort((a, b) => TIER_ORDER[a.tier] - TIER_ORDER[b.tier] || a.t_start - b.t_start);
 }
 
 export default function App() {
@@ -28,6 +30,9 @@ export default function App() {
   const [showAll, setShowAll] = useState(false);
   const [blurPlates, setBlurPlates] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [overrides, setOverrides] = useState<Overrides>(EMPTY_OVERRIDES);
+  const [applying, setApplying] = useState(false);
+  const [linkFrom, setLinkFrom] = useState<string | null>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const pendingSeek = useRef<number | null>(null);
 
@@ -59,7 +64,9 @@ export default function App() {
         if (stop) return;
         setStatus(s);
         if (s.ready && s.status.state !== "running") {
-          setScene(await api.scene(clipId));
+          const [sc, ov] = await Promise.all([api.scene(clipId), api.overrides(clipId)]);
+          setScene(sc);
+          setOverrides({ ...EMPTY_OVERRIDES, ...ov });
           const t0 = hashClip === clipId ? Number(hashT) : NaN;
           if (Number.isFinite(t0)) pendingSeek.current = t0;
         } else {
@@ -144,7 +151,54 @@ export default function App() {
     return () => window.removeEventListener("keydown", onKey);
   }, [seek, togglePlay]);
 
-  const actors = useMemo(() => (scene ? keyActors(scene, showAll) : []), [scene, showAll]);
+  const actors = useMemo(() => (scene ? visibleActors(scene, showAll, selected) : []), [scene, showAll, selected]);
+
+  // Save corrections, wait for the identity stages to recompute, reload the scene in place.
+  const saveOverrides = useCallback(
+    async (ov: Overrides) => {
+      if (!clipId) return;
+      setApplying(true);
+      setOverrides(ov);
+      try {
+        await api.saveOverrides(clipId, ov);
+        for (;;) {
+          await new Promise((r) => setTimeout(r, 700));
+          const s = await api.clip(clipId);
+          if (s.status.state === "error") throw new Error(s.status.error ?? "pipeline error");
+          if (s.status.state !== "running") break;
+        }
+        const sc = await api.scene(clipId);
+        setScene(sc);
+        // if the selected track was absorbed into another, follow it
+        setSelected((cur) => (cur && !sc.actors.some((a) => a.id === cur) ? sc.actors.find((a) => a.merged_from.includes(cur))?.id ?? null : cur));
+      } catch (e) {
+        setError(String(e));
+      } finally {
+        setApplying(false);
+      }
+    },
+    [clipId],
+  );
+
+  // Clicking a road user anywhere: normally selects it; in "same vehicle as…" mode it links the two tracks.
+  const onActorClick = useCallback(
+    (id: string | null) => {
+      if (linkFrom && id && id !== linkFrom && scene) {
+        saveOverrides(mergeInto(overrides, scene.actors, linkFrom, id));
+        setLinkFrom(null);
+        setSelected(linkFrom);
+        return;
+      }
+      setSelected(id);
+    },
+    [linkFrom, scene, overrides, saveOverrides],
+  );
+
+  useEffect(() => {
+    const onEsc = (e: KeyboardEvent) => e.key === "Escape" && setLinkFrom(null);
+    window.addEventListener("keydown", onEsc);
+    return () => window.removeEventListener("keydown", onEsc);
+  }, []);
 
   return (
     <div className="app">
@@ -161,7 +215,7 @@ export default function App() {
           <input type="checkbox" checked={showLanes} onChange={(e) => setShowLanes(e.target.checked)} /> Show lane geometry
         </label>
         <label className="toggle">
-          <input type="checkbox" checked={showAll} onChange={(e) => setShowAll(e.target.checked)} /> Show distant traffic
+          <input type="checkbox" checked={showAll} onChange={(e) => setShowAll(e.target.checked)} /> Show background traffic
         </label>
         <label className="toggle">
           <input type="checkbox" checked={blurPlates} onChange={(e) => setBlurPlates(e.target.checked)} /> Hide licence plates
@@ -170,6 +224,12 @@ export default function App() {
       </header>
 
       {error && <div className="error">{error}</div>}
+      {linkFrom && (
+        <div className="link-banner">
+          Click the other track of the same vehicle as <b>{linkFrom}</b> (in the video, top-down, list or timeline). Esc to
+          cancel.
+        </div>
+      )}
 
       {!scene && status && <PipelineStatus status={status} />}
 
@@ -183,7 +243,7 @@ export default function App() {
               videoUrl={api.videoUrl(clipId)}
               videoRef={videoRef}
               selected={selected}
-              onSelect={setSelected}
+              onSelect={onActorClick}
               showLanes={showLanes}
               blurPlates={blurPlates}
             />
@@ -193,7 +253,7 @@ export default function App() {
                   ? "Top-down · camera-centred · distances from known object sizes"
                   : "Top-down · travel direction → · road-aligned, follows the recording vehicle"}
               </div>
-              <TopDown scene={scene} actors={actors} time={time} selected={selected} onSelect={setSelected} />
+              <TopDown scene={scene} actors={actors} time={time} selected={selected} onSelect={onActorClick} />
               {!scene.actors.some((a) => a.ground.length) && (
                 <div className="topdown-empty">
                   Positions of other road users are not available for this clip.
@@ -213,10 +273,30 @@ export default function App() {
             onSeek={seek}
             onTogglePlay={togglePlay}
             onRate={setRate}
-            onSelect={setSelected}
+            onSelect={onActorClick}
           />
           </div>
-          <Sidebar scene={scene} actors={actors} time={time} selected={selected} onSelect={setSelected} onSeek={seek} />
+          <Sidebar
+            scene={scene}
+            actors={actors}
+            time={time}
+            selected={selected}
+            onSelect={onActorClick}
+            onSeek={seek}
+            top={
+              <Corrections
+                scene={scene}
+                overrides={overrides}
+                selected={selected}
+                linkFrom={linkFrom}
+                applying={applying}
+                onSave={saveOverrides}
+                onLinkFrom={setLinkFrom}
+                onSelect={setSelected}
+                onSeek={seek}
+              />
+            }
+          />
         </main>
       )}
     </div>

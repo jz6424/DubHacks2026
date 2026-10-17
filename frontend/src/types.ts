@@ -38,6 +38,25 @@ export interface GroundSample {
   cue?: "plate" | "width" | "height" | null;
 }
 
+export interface Suggestion {
+  keep: string;
+  absorb: string;
+  verdict: "yes" | "unsure";
+  reason: string;
+  gap_s: number;
+  a_frame: number;
+  a_box: Box;
+  b_frame: number;
+  b_box: Box;
+}
+
+export interface Overrides {
+  merge: [string, string][];
+  tier: Record<string, Tier>;
+  labels: Record<string, string>;
+  rejected_links: [string, string][];
+}
+
 export type MotionState = "stationary" | "creeping" | "moving" | "unknown";
 
 export interface PlateBox {
@@ -46,12 +65,19 @@ export interface PlateBox {
   actor: string | null;
 }
 
+export type Tier = "involved" | "nearby" | "background" | "hidden";
+
 export interface Actor {
   id: string;
   cls: string;
   group: "vehicle" | "two_wheeler" | "person";
   label: string | null;
   manual: boolean;
+  tier: Tier;
+  auto_tier: Tier;
+  tier_reason: string;
+  tier_by_user: boolean;
+  merged_from: string[];
   t_start: number;
   t_end: number;
   boxes: { t: number; box: Box; interp: boolean }[];
@@ -135,6 +161,7 @@ export interface Scene {
   };
   overlay: { present: boolean; samples: { t: number; speed_mps: number; raw: string }[] };
   plates: PlateBox[];
+  suggestions: Suggestion[];
   motion: {
     samples: { t: number; state: MotionState }[];
     intervals: { state: MotionState; t_start: number; t_end: number }[];

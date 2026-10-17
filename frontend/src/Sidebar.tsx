@@ -1,3 +1,4 @@
+import type { ReactNode } from "react";
 import { actorColor, egoAt, groundAt, kmh, motionStateAt } from "./interp";
 import type { Actor, QualityNote, Scene } from "./types";
 
@@ -8,6 +9,7 @@ interface Props {
   selected: string | null;
   onSelect: (id: string | null) => void;
   onSeek: (t: number) => void;
+  top?: ReactNode;
 }
 
 /** Clip-level notes first; per-actor notes only for listed actors, with the "distant" ones collapsed into one line. */
@@ -29,7 +31,7 @@ function qualityNotes(scene: Scene, actors: Actor[]): QualityNote[] {
 
 const fmt = (x: number | null | undefined, digits = 0) => (x === null || x === undefined ? "—" : x.toFixed(digits));
 
-export function Sidebar({ scene, actors, time, selected, onSelect, onSeek }: Props) {
+export function Sidebar({ scene, actors, time, selected, onSelect, onSeek, top }: Props) {
   const ego = egoAt(scene.ego.samples, time);
   const cal = scene.geometry.calibration;
   const egoV = kmh(ego?.v);
@@ -43,6 +45,7 @@ export function Sidebar({ scene, actors, time, selected, onSelect, onSeek }: Pro
 
   return (
     <aside className="sidebar">
+      {top}
       <section>
         <h3>Recording camera</h3>
         {egoV !== null ? (
@@ -111,7 +114,8 @@ export function Sidebar({ scene, actors, time, selected, onSelect, onSeek }: Pro
                 </td>
                 <td>
                   {a.id} <span className="muted small">{a.label ?? a.cls}</span>
-                  {a.manual && <span className="badge" title="IDs merged by hand">manual</span>}
+                  {a.tier === "involved" && <span className="badge involved" title={a.tier_by_user ? "Marked by you" : a.tier_reason}>involved</span>}
+                  {a.manual && <span className="badge" title={`Joined from ${a.merged_from.join(", ")}`}>joined</span>}
                 </td>
                 <td>
                   {g?.v !== null && g?.v !== undefined ? (

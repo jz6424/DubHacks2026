@@ -354,3 +354,144 @@ table.actors tr.sel td {
     max-height: none;
   }
 }
+
+.link-banner {
+  margin: 8px 16px 0;
+  padding: 8px 12px;
+  border-radius: 6px;
+  background: #1b2b3d;
+  border: 1px solid #3d5f86;
+  color: #cfe3fa;
+  font-size: 13px;
+}
+.corrections section {
+  border-bottom: 1px solid var(--line);
+  padding-bottom: 10px;
+  margin-bottom: 4px;
+}
+.applying {
+  padding: 6px 8px;
+  margin-bottom: 8px;
+  border-radius: 4px;
+  background: #2b2412;
+  color: var(--warn);
+  font-size: 12px;
+}
+.inspector h3 {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  text-transform: none;
+  letter-spacing: 0;
+  font-size: 14px;
+  color: var(--text);
+}
+.thumbs,
+.pair {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin: 6px 0;
+}
+.thumb {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  background: none;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 3px;
+  color: var(--muted);
+  font-size: 11px;
+  cursor: pointer;
+}
+.thumb img {
+  max-width: 120px;
+  max-height: 90px;
+  border-radius: 4px;
+  display: block;
+}
+.pair .arrow {
+  color: var(--muted);
+  font-size: 12px;
+  white-space: nowrap;
+}
+.tiers {
+  display: flex;
+  gap: 4px;
+  margin: 6px 0 4px;
+  flex-wrap: wrap;
+}
+.tiers button,
+.actions button,
+.chip button {
+  background: #232831;
+  color: var(--text);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 3px 8px;
+  font-size: 12px;
+  cursor: pointer;
+}
+.tiers button.on {
+  background: #1b2b3d;
+  border-color: #3d5f86;
+  color: #cfe3fa;
+}
+.tiers .auto {
+  font-size: 10px;
+  color: var(--muted);
+}
+.actions {
+  display: flex;
+  gap: 6px;
+  margin-top: 6px;
+}
+.label-edit {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  font-size: 12px;
+  color: var(--muted);
+  margin-top: 6px;
+}
+.label-edit input {
+  flex: 1;
+  background: #1c2027;
+  color: var(--text);
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  padding: 3px 6px;
+}
+.chip {
+  display: inline-flex;
+  gap: 4px;
+  align-items: center;
+  background: #1c2027;
+  border-radius: 4px;
+  padding: 1px 2px 1px 6px;
+  margin: 2px 4px 2px 0;
+}
+.chip button {
+  padding: 0 5px;
+}
+.suggestions {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.suggestions li {
+  padding: 6px 0;
+  border-top: 1px solid var(--line);
+}
+.suggestions li:first-child {
+  border-top: none;
+}
+.badge.involved {
+  background: #3a1d1d;
+  color: #ff9a9a;
+}
+button:disabled {
+  opacity: 0.5;
+  cursor: default;
+}

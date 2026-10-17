@@ -188,29 +188,63 @@ def run(clip: Clip, progress: Callable[[float, str], None]) -> dict:
         out.append({"id": f"{p}{counters[p]}", "cls": cls, "group": t["group"], "samples": samples,
                     "manual": False, "label": None})
 
-    overrides_path = clip.dir / "overrides.json"
-    applied = []
-    if overrides_path.exists():
-        ov = json.loads(overrides_path.read_text())
-        by_id = {a["id"]: a for a in out}
-        for keep, absorb in ov.get("merge", []):
-            if keep in by_id and absorb in by_id:
-                seen = {s["i"] for s in by_id[keep]["samples"]}
-                by_id[keep]["samples"] = sorted(by_id[keep]["samples"] + [s for s in by_id[absorb]["samples"]
-                                                                          if s["i"] not in seen], key=lambda s: s["i"])
-                by_id[keep]["manual"] = True
-                out.remove(by_id.pop(absorb))
-                applied.append(f"merged {absorb} into {keep}")
-        for hid in ov.get("hide", []):
-            if hid in by_id:
-                out.remove(by_id.pop(hid))
-                applied.append(f"hid {hid}")
-        for aid, label in ov.get("labels", {}).items():
-            if aid in by_id:
-                by_id[aid]["label"] = label
-
+    overrides = load_overrides(clip)
+    applied = apply_overrides(out, overrides)
     return {"actors": out, "raw_tracks": raw_count, "auto_merges": len(merges), "overrides": applied,
-            "summary": f"{len(out)} actors ({raw_count} raw tracks, {len(merges)} gap repairs)"}
+            "summary": f"{len(out)} actors ({raw_count} raw tracks, {len(merges)} gap repairs, {len(applied)} user corrections)"}
+
+
+TIERS = ("involved", "nearby", "background", "hidden")
+
+
+def load_overrides(clip: Clip) -> dict:
+    """User corrections: {"merge": [[keep, absorb], ...], "tier": {id: involved|nearby|background|hidden},
+    "labels": {id: text}}. IDs are the automatic ones, which are stable while detections don't change."""
+    path = clip.dir / "overrides.json"
+    ov = json.loads(path.read_text()) if path.exists() else {}
+    ov.setdefault("merge", [])
+    ov.setdefault("tier", {})
+    ov.setdefault("labels", {})
+    ov.setdefault("rejected_links", [])
+    for hid in ov.pop("hide", []):  # older format
+        ov["tier"][hid] = "hidden"
+    return ov
+
+
+def apply_overrides(actors: list[dict], ov: dict) -> list[str]:
+    """Apply merges (chains resolve through aliases), tiers and labels in place. Returns what was applied."""
+    by_id = {a["id"]: a for a in actors}
+    alias: dict[str, str] = {}
+
+    def resolve(x: str) -> str:
+        while x in alias:
+            x = alias[x]
+        return x
+
+    applied = []
+    for keep, absorb in ov["merge"]:
+        k, a = resolve(keep), resolve(absorb)
+        if k == a or k not in by_id or a not in by_id:
+            continue
+        mine = {s["i"] for s in by_id[k]["samples"]}
+        # Keep the gap between the two pieces as a gap: no interpolated boxes across it.
+        extra = [s for s in by_id[a]["samples"] if s["i"] not in mine]
+        by_id[k]["samples"] = sorted(by_id[k]["samples"] + extra, key=lambda s: s["i"])
+        by_id[k]["merged_from"] = by_id[k].get("merged_from", []) + [a] + by_id[a].get("merged_from", [])
+        by_id[k]["manual"] = True
+        actors.remove(by_id.pop(a))
+        alias[a] = k
+        applied.append(f"{a} is the same vehicle as {k}")
+    for aid, tier in ov["tier"].items():
+        a = by_id.get(resolve(aid))
+        if a and tier in TIERS:
+            a["user_tier"] = tier
+            applied.append(f"{a['id']} marked {tier}")
+    for aid, label in ov["labels"].items():
+        a = by_id.get(resolve(aid))
+        if a and label:
+            a["label"] = str(label)[:60]
+    return applied
 
 
 def _norm(box: np.ndarray, W: int, H: int) -> list[float]:

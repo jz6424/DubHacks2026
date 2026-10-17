@@ -156,6 +156,12 @@ def _fill(x: np.ndarray, max_gap: int) -> np.ndarray:
     return x
 
 
+def remap_plates(plates: list[dict], actors: list[dict]) -> list[dict]:
+    """Plates were attached to automatic track IDs; follow any user merges to the surviving ID."""
+    alias = {m: a["id"] for a in actors for m in a.get("merged_from", [])}
+    return [{**p, "actor": alias.get(p.get("actor"), p.get("actor"))} for p in plates]
+
+
 def _log_mode(x: np.ndarray, half_width: float = 0.15) -> float:
     """Centre (in log space) of the densest +/-half_width window."""
     logs = np.log(x)
@@ -620,11 +626,13 @@ def run(clip: Clip, progress: Callable[[float, str], None]) -> dict:
             if (~np.isnan(zs)).sum() < 3:
                 continue
             v0 = float(np.nanmedian(ev_g)) if ego_src != "none" else 0.0
-            S, PS = _rts(ts, zs, zr, 4.0, v0, 15.0)
-            D, PD = _rts(ts, xs, xr, 1.5, 0.0, 3.0)
+            S, PS = monocular.segmented(ts, zs, zr, lambda t, z, r: _rts(t, z, r, 4.0, v0, 15.0))
+            D, PD = monocular.segmented(ts, xs, xr, lambda t, z, r: _rts(t, z, r, 1.5, 0.0, 3.0))
             evs, ess = ego_at(ts)
             rows = []
             for k, t in enumerate(ts):
+                if np.isnan(S[k, 0]) or np.isnan(D[k, 0]):
+                    continue  # piece of the track too short to place
                 vs, vd = S[k, 1], D[k, 1]
                 v = float(np.hypot(vs, vd))
                 rel = vs - (evs[k] if ego_src == "overlay" else 0.0)
@@ -652,7 +660,7 @@ def run(clip: Clip, progress: Callable[[float, str], None]) -> dict:
     mode = "lanes" if (K and h) else "monocular"
     if mode == "monocular":
         progress(0.9, "ranging from known object sizes")
-        plates = (clip.stage("plates") or {}).get("plates", [])
+        plates = remap_plates((clip.stage("plates") or {}).get("plates", []), actors)
 
         def ego_speed_at(t: float) -> tuple[float | None, float | None]:
             if ego_src == "none":

@@ -62,6 +62,19 @@ def _rts_1d_pos_vel(ts: np.ndarray, z: np.ndarray, r: np.ndarray, sigma_a: float
     return xs, Ps
 
 
+def segmented(ts, z, r, smoother, max_gap: float = 1.0):
+    """Run `smoother(ts, z, r)` separately on each piece of a track split at time gaps > max_gap (e.g. a vehicle lost
+    while it tumbles and found again as a wreck). Pieces with fewer than 2 measurements come back as NaN."""
+    import numpy as _np
+    n = len(ts)
+    xs, Ps = _np.full((n, 2), _np.nan), _np.full((n, 2, 2), _np.nan)
+    cuts = [0] + [k for k in range(1, n) if ts[k] - ts[k - 1] > max_gap] + [n]
+    for a, b in zip(cuts, cuts[1:]):
+        if (~_np.isnan(z[a:b])).sum() >= 2:
+            xs[a:b], Ps[a:b] = smoother(ts[a:b], z[a:b], r[a:b])
+    return xs, Ps
+
+
 def range_actors(actors: list[dict], plates: list[dict], Wpx: int, Hpx: int, meta: dict,
                  ego_speed_at: Callable[[float], tuple[float, float]]) -> tuple[dict, dict, list[dict]]:
     hfov = float(meta.get("hfov_deg", DEFAULT_HFOV_DEG))
@@ -120,10 +133,12 @@ def range_actors(actors: list[dict], plates: list[dict], Wpx: int, Hpx: int, met
         ts, zs, zr, xs, xr = map(np.array, (ts, zs, zr, xs, xr))
         if (~np.isnan(zs)).sum() < 3:
             continue
-        S, PS = _rts_1d_pos_vel(ts, zs, zr, 3.0)  # low-speed manoeuvring: modest accelerations
-        D, PD = _rts_1d_pos_vel(ts, xs, xr, 1.5)
+        S, PS = segmented(ts, zs, zr, lambda t, z, r: _rts_1d_pos_vel(t, z, r, 3.0))  # low-speed manoeuvring
+        D, PD = segmented(ts, xs, xr, lambda t, z, r: _rts_1d_pos_vel(t, z, r, 1.5))
         rows = []
         for k, t in enumerate(ts):
+            if np.isnan(S[k, 0]) or np.isnan(D[k, 0]):
+                continue  # piece of the track too short to place
             Z, vz = float(S[k, 0]), float(S[k, 1])
             X, vx = float(D[k, 0]), float(D[k, 1])
             ego_v, ego_s = ego_speed_at(float(t))

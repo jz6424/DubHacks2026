@@ -6,10 +6,12 @@ import uuid
 
 from fastapi import FastAPI, File, Form, HTTPException, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, Response
+from pydantic import BaseModel, Field
 
-from .pipeline.runner import is_running, start_background
+from .pipeline.runner import IDENTITY_STAGES, is_running, start_background
 from .pipeline.store import STAGES, Clip
+from .pipeline.track import TIERS, load_overrides
 
 app = FastAPI(title="Crash Replay")
 app.add_middleware(CORSMiddleware, allow_origins=["http://localhost:5173"], allow_methods=["*"], allow_headers=["*"])
@@ -94,3 +96,66 @@ async def upload(file: UploadFile = File(...), title: str = Form("")) -> dict:
                      "license": "uploaded by user", "created": time.time()})
     start_background(clip)
     return _summary(clip)
+
+
+class Overrides(BaseModel):
+    merge: list[list[str]] = Field(default_factory=list)  # [keep, absorb]: same physical vehicle
+    tier: dict[str, str] = Field(default_factory=dict)  # id -> involved | nearby | background | hidden
+    labels: dict[str, str] = Field(default_factory=dict)
+    rejected_links: list[list[str]] = Field(default_factory=list)  # suggestions the user dismissed
+
+
+@app.get("/api/clips/{clip_id}/overrides")
+def get_overrides(clip_id: str) -> dict:
+    ov = load_overrides(_get(clip_id))
+    ov.setdefault("rejected_links", [])
+    return ov
+
+
+@app.put("/api/clips/{clip_id}/overrides")
+def put_overrides(clip_id: str, ov: Overrides) -> dict:
+    """Save the user's corrections and recompute only what depends on identity (tracks, positions, suggestions)."""
+    clip = _get(clip_id)
+    if is_running(clip):
+        raise HTTPException(409, "clip is being processed; try again when it finishes")
+    ident = re.compile(r"[A-Z]\d{1,4}")
+    for pair in ov.merge + ov.rejected_links:
+        if len(pair) != 2 or not all(ident.fullmatch(x) for x in pair):
+            raise HTTPException(400, f"bad id pair {pair}")
+    bad = {k: v for k, v in ov.tier.items() if v not in TIERS or not ident.fullmatch(k)}
+    if bad:
+        raise HTTPException(400, f"bad tiers {bad}")
+    clip._write(clip.dir / "overrides.json", ov.model_dump())
+    start_background(clip, rerun=IDENTITY_STAGES)
+    return _summary(clip)
+
+
+@app.get("/api/clips/{clip_id}/crop/{index}")
+def get_crop(clip_id: str, index: int, box: str, w: int = 160) -> Response:
+    """A padded crop of one analysis frame around a box, with any licence plates in it pixelated."""
+    import cv2
+
+    clip = _get(clip_id)
+    path = clip.frames_dir / f"f_{index + 1:04d}.jpg"
+    try:
+        x0, y0, x1, y1 = (float(v) for v in box.split(","))
+    except ValueError:
+        raise HTTPException(400, "box must be x0,y0,x1,y1 in 0..1")
+    if not path.exists() or not (0 <= x0 < x1 <= 1 and 0 <= y0 < y1 <= 1):
+        raise HTTPException(404, "no such frame or box")
+    img = cv2.imread(str(path))
+    H, W = img.shape[:2]
+    for p in (clip.stage("plates") or {}).get("plates", []):
+        if p["i"] == index:
+            a, b, c, d = p["box"]
+            px0, py0, px1, py1 = int(a * W), int(b * H), int(c * W) + 1, int(d * H) + 1
+            region = img[py0:py1, px0:px1]
+            if region.size:
+                small = cv2.resize(region, (6, 3), interpolation=cv2.INTER_AREA)
+                img[py0:py1, px0:px1] = cv2.resize(small, (region.shape[1], region.shape[0]), interpolation=cv2.INTER_NEAREST)
+    pw, ph = (x1 - x0) * 0.12, (y1 - y0) * 0.12
+    crop = img[max(0, int((y0 - ph) * H)):int((y1 + ph) * H) + 1, max(0, int((x0 - pw) * W)):int((x1 + pw) * W) + 1]
+    w = max(48, min(w, 480))
+    crop = cv2.resize(crop, (w, max(1, int(crop.shape[0] * w / max(crop.shape[1], 1)))), interpolation=cv2.INTER_AREA)
+    ok, buf = cv2.imencode(".jpg", crop, [cv2.IMWRITE_JPEG_QUALITY, 85])
+    return Response(buf.tobytes(), media_type="image/jpeg", headers={"Cache-Control": "max-age=3600"})
