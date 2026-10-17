@@ -1,0 +1,558 @@
+"""Ground-plane geometry from lane markings, ego speed, and per-actor road positions/speeds with uncertainty.
+
+Camera model: pinhole, flat road, no roll. With vanishing point (x0, y0), a ground line at lateral offset X images as
+x = x0 + a*(y - y0) with a = X/h (h = camera height). A ground point at image row y and column x is at
+    depth   Z = K / (y - y0)            (K = f*h)
+    lateral X = h * (x - x0) / (y - y0)
+h comes from the known lane width (W = h*(aR - aL)); K comes from the known dash period along a dashed line.
+Ego speed comes from the dashcam overlay if present, else from how fast the dash pattern moves toward the camera.
+
+Positions are in a road-aligned frame: s = distance along the road (m), d = lateral offset from the ego lane centre
+(m, + right). This is not GPS/world coordinates.
+"""
+from typing import Callable
+
+import cv2
+import numpy as np
+
+from .store import Clip
+
+LANE_WIDTH_M = 3.7  # US freeway default; overridable per clip in meta.json
+DASH_PERIOD_M = 12.19  # US: 10 ft dash + 30 ft gap
+DASH_LENGTH_M = 3.05
+MIN_LANE_SLOPE = 0.55  # |a| = |X|/h: a lane boundary is at least ~0.75 m from the camera
+Z_MAX = 120.0
+
+
+# ----------------------------------------------------------------------------- lane detection (per video frame)
+
+def _tophat(frame: np.ndarray) -> np.ndarray:
+    v = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)[..., 2]
+    k = cv2.getStructuringElement(cv2.MORPH_RECT, (max(15, frame.shape[1] // 60), 3))
+    return cv2.morphologyEx(v, cv2.MORPH_TOPHAT, k)
+
+
+def _line_mask(frame: np.ndarray, boxes_px: list[tuple[int, int, int, int]], roi: tuple[int, int]) -> np.ndarray:
+    th = _tophat(frame)
+    y_lo, y_hi = roi
+    band = th[y_lo:y_hi]
+    thr = max(15.0, float(np.percentile(band, 99.0)) * 0.5)
+    mask = (th > thr).astype(np.uint8)
+    mask[:y_lo] = 0
+    mask[y_hi:] = 0
+    for x0, y0, x1, y1 in boxes_px:  # vehicles are not lane markings
+        mask[max(0, y0 - 4):y1 + 4, max(0, x0 - 4):x1 + 4] = 0
+    return mask
+
+
+def _find_lanes(mask: np.ndarray, prev_vp: tuple[float, float] | None) -> dict | None:
+    H, W = mask.shape
+    segs = cv2.HoughLinesP(mask * 255, 1, np.pi / 180, threshold=15, minLineLength=max(12, H // 50), maxLineGap=8)
+    if segs is None:
+        return None
+    lines = []  # (a, b, length, xm, ym) with x = a*y + b
+    for x1, y1, x2, y2 in segs.reshape(-1, 4):  # OpenCV 4 returns (N,1,4), 5 returns (N,4)
+        if y2 < y1:
+            x1, y1, x2, y2 = x2, y2, x1, y1
+        dy = y2 - y1
+        if dy < 8:
+            continue
+        a = (x2 - x1) / dy
+        if abs(a) > 4:
+            continue
+        lines.append((a, x1 - a * y1, float(np.hypot(x2 - x1, dy)), (x1 + x2) / 2, (y1 + y2) / 2))
+    if len(lines) < 2:
+        return None
+    lines.sort(key=lambda l: -l[2])
+    lines = lines[:80]
+    A = np.array([l[0] for l in lines])
+    B = np.array([l[1] for l in lines])
+    L = np.array([l[2] for l in lines])
+    tol = 6 + 0.008 * W
+
+    # Vanishing point: candidate intersections of opposite-slope pairs (plus last frame's VP), scored by support.
+    cands = [prev_vp] if prev_vp else []
+    for i in range(min(len(lines), 25)):
+        for j in range(i + 1, min(len(lines), 25)):
+            if A[i] * A[j] >= 0 or abs(A[i] - A[j]) < 0.2:
+                continue
+            y = (B[j] - B[i]) / (A[i] - A[j])
+            if 0.15 * H < y < 0.75 * H:
+                cands.append((A[i] * y + B[i], y))
+    if not cands:
+        return None
+    best, best_score = None, 0.0
+    for x, y in cands:
+        score = float(L[np.abs(A * y + B - x) < tol].sum())
+        if prev_vp and np.hypot(x - prev_vp[0], y - prev_vp[1]) > 0.06 * W:
+            score *= 0.4  # the VP moves slowly; big jumps are usually clutter (vehicles, poles, trees)
+        if score > best_score:
+            best, best_score = (x, y), score
+    if best is None:
+        return None
+    x0, y0 = best
+    inl = np.abs(A * y0 + B - x0) < tol
+    # Slope relative to the VP through each segment's midpoint: a' = X/h, sign gives side of the camera.
+    rel = []
+    for (a, b, ln, xm, ym), ok in zip(lines, inl):
+        if ok and ym - y0 > 5:
+            rel.append(((xm - x0) / (ym - y0), ln))
+    rel.sort()
+    clusters: list[list[tuple[float, float]]] = []
+    for r in rel:
+        if clusters and r[0] - clusters[-1][-1][0] < 0.12:
+            clusters[-1].append(r)
+        else:
+            clusters.append([r])
+    min_support = 0.04 * H
+    cl = [(float(np.average([c[0] for c in g], weights=[c[1] for c in g])), sum(c[1] for c in g)) for g in clusters]
+    left = [c for c in cl if c[0] <= -MIN_LANE_SLOPE and c[1] >= min_support]
+    right = [c for c in cl if c[0] >= MIN_LANE_SLOPE and c[1] >= min_support]
+    return {"x0": x0, "y0": y0,
+            "aL": max(left)[0] if left else np.nan,  # boundary nearest the camera on each side
+            "aR": min(right)[0] if right else np.nan,
+            "support": best_score}
+
+
+def _nanmedian_filter(x: np.ndarray, k: int) -> np.ndarray:
+    out = np.full_like(x, np.nan)
+    r = k // 2
+    for i in range(len(x)):
+        w = x[max(0, i - r):i + r + 1]
+        w = w[~np.isnan(w)]
+        if len(w) >= max(2, r // 2):
+            out[i] = np.median(w)
+    return out
+
+
+def _fill(x: np.ndarray, max_gap: int) -> np.ndarray:
+    """Linear-interpolate NaN gaps up to max_gap samples; extend edges by nearest up to max_gap."""
+    x = x.copy()
+    idx = np.arange(len(x))
+    ok = ~np.isnan(x)
+    if ok.sum() < 2:
+        return x
+    filled = np.interp(idx, idx[ok], x[ok])
+    nearest_dist = np.abs(idx[:, None] - idx[ok][None, :]).min(axis=1)
+    x[nearest_dist <= max_gap] = filled[nearest_dist <= max_gap]
+    return x
+
+
+# ----------------------------------------------------------------------------- dash pattern helpers
+
+def _sample_line(th: np.ndarray, thr: float, x0: float, y0: float, a: float, ys: np.ndarray) -> np.ndarray:
+    H, W = th.shape
+    out = np.zeros(len(ys), bool)
+    for n, y in enumerate(ys):
+        yi = int(round(y))
+        if not (0 <= yi < H):
+            continue
+        xc = int(round(x0 + a * (y - y0)))
+        lo, hi = max(0, xc - 3), min(W, xc + 4)
+        if lo < hi:
+            out[n] = th[yi, lo:hi].max() > thr
+    return out
+
+
+def _dash_runs(on: np.ndarray, ys: np.ndarray, merge_gap: int = 2) -> list[tuple[float, float]]:
+    """Complete painted runs along a line as (y_far, y_near); runs split by tiny gaps are merged."""
+    runs, start, last_on = [], None, -10
+    for n, v in enumerate(list(on) + [False]):
+        if v:
+            if start is None:
+                start = n
+            elif n - last_on > merge_gap + 1:  # gap too big: close previous run and start a new one
+                runs.append((start, last_on))
+                start = n
+            last_on = n
+    if start is not None:
+        runs.append((start, last_on))
+    return [(float(ys[a]), float(ys[b])) for a, b in runs if b - a >= 2 and b < len(on) - 3]
+
+
+def _dash_pairs_K(runs: list[tuple[float, float]], y0: float, period: float, duty: float) -> list[float]:
+    """K estimates from consecutive dashes whose painted fraction of the cycle matches the marking standard.
+
+    In u = 1/(y - y0) (proportional to depth), a dash spans u_far - u_near and a cycle spans u_far1 - u_far2; their
+    ratio must be ~duty (3.05/12.19 = 0.25 in the US). Solid lines broken by occlusion or dashes split by noise fail it.
+    """
+    out = []
+    for (f1, n1), (f2, _) in zip(runs, runs[1:]):
+        u_f1, u_n1, u_f2 = 1 / (f1 - y0), 1 / (n1 - y0), 1 / (f2 - y0)
+        cycle, dash = u_f1 - u_f2, u_f1 - u_n1
+        if cycle > 0 and 0.5 * duty < dash / cycle < 1.8 * duty:
+            out.append(period / cycle)
+    return out
+
+
+# ----------------------------------------------------------------------------- smoothing
+
+def _rts(ts: np.ndarray, z: np.ndarray, r: np.ndarray, sigma_a: float, v0: float, v0_sigma: float):
+    """Constant-velocity Kalman filter + RTS smoother. z/r may contain NaN (no measurement)."""
+    n = len(ts)
+    first = int(np.argmax(~np.isnan(z)))
+    x = np.array([z[first], v0])
+    P = np.diag([r[first] ** 2, v0_sigma ** 2])
+    xs, Ps, xps, Pps, Fs = np.zeros((n, 2)), np.zeros((n, 2, 2)), np.zeros((n, 2)), np.zeros((n, 2, 2)), []
+    for k in range(n):
+        dt = ts[k] - ts[k - 1] if k else 0.0
+        F = np.array([[1, dt], [0, 1]])
+        Q = sigma_a ** 2 * np.array([[dt ** 4 / 4, dt ** 3 / 2], [dt ** 3 / 2, dt ** 2]])
+        if k:
+            x, P = F @ x, F @ P @ F.T + Q
+        Fs.append(F)
+        xps[k], Pps[k] = x, P
+        if not np.isnan(z[k]):
+            S = P[0, 0] + r[k] ** 2
+            Kg = P[:, 0] / S
+            x = x + Kg * (z[k] - x[0])
+            P = P - np.outer(Kg, P[0, :])
+        xs[k], Ps[k] = x, P
+    for k in range(n - 2, -1, -1):
+        F = Fs[k + 1]
+        C = Ps[k] @ F.T @ np.linalg.inv(Pps[k + 1])
+        xs[k] = xs[k] + C @ (xs[k + 1] - xps[k + 1])
+        Ps[k] = Ps[k] + C @ (Ps[k + 1] - Pps[k + 1]) @ C.T
+    return xs, Ps
+
+
+# ----------------------------------------------------------------------------- stage
+
+def run(clip: Clip, progress: Callable[[float, str], None]) -> dict:
+    meta = clip.meta()
+    lane_w = float(meta.get("lane_width_m", LANE_WIDTH_M))
+    period = float(meta.get("dash_period_m", DASH_PERIOD_M))
+    duty = float(meta.get("dash_length_m", DASH_LENGTH_M)) / period
+    ing = clip.stage("ingest")
+    Wpx, Hpx, vfps = ing["video"]["width"], ing["video"]["height"], ing["video"]["fps"]
+    actors = clip.stage("track")["actors"]
+    ocr = clip.stage("ocr") or {"present": False, "samples": []}
+    roi = (int(0.40 * Hpx), int(0.96 * Hpx))
+    quality: list[dict] = []
+
+    def boxes_at(t: float) -> list[tuple[int, int, int, int]]:
+        out = []
+        for a in actors:
+            s = min(a["samples"], key=lambda s: abs(s["t"] - t))
+            if abs(s["t"] - t) <= 0.15:
+                b = s["box"]
+                out.append((int(b[0] * Wpx), int(b[1] * Hpx), int(b[2] * Wpx), int(b[3] * Hpx)))
+        return out
+
+    # ---- pass 1: lanes per video frame
+    cap = cv2.VideoCapture(str(clip.video))
+    n_frames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT)) or int(ing["video"]["duration"] * vfps)
+    raw = {k: np.full(n_frames, np.nan) for k in ("x0", "y0", "aL", "aR")}
+    prev_vp = None
+    for i in range(n_frames):
+        ok, frame = cap.read()
+        if not ok:
+            n_frames = i
+            break
+        # Search only below the horizon once we know where it is: above it there is only clutter.
+        roi_i = (int(prev_vp[1]) + 10, roi[1]) if prev_vp else roi
+        res = _find_lanes(_line_mask(frame, boxes_at(i / vfps), roi_i), prev_vp)
+        if res:
+            for k in raw:
+                raw[k][i] = res[k]
+            prev_vp = (res["x0"], res["y0"])
+        if i % 24 == 0:
+            progress(0.5 * i / max(n_frames, 1), "finding lane lines")
+    cap.release()
+    raw = {k: v[:n_frames] for k, v in raw.items()}
+    t_video = np.arange(n_frames) / vfps
+
+    both = ~np.isnan(raw["aL"]) & ~np.isnan(raw["aR"])
+    lane_pct = float(both.mean()) if n_frames else 0.0
+    result: dict = {"lane_width_m": lane_w, "dash_period_m": period, "lane_frames_pct": round(100 * lane_pct, 1)}
+
+    h = None
+    if both.sum() >= max(12, 0.15 * n_frames):
+        span = raw["aR"][both] - raw["aL"][both]
+        h = lane_w / float(np.median(span))
+        h_iqr = [lane_w / float(np.percentile(span, 75)), lane_w / float(np.percentile(span, 25))]
+        result["camera_height_m"] = round(h, 3)
+        result["camera_height_iqr_m"] = [round(x, 3) for x in h_iqr]
+        if not (0.8 <= h <= 3.0):
+            quality.append({"level": "error", "code": "implausible_height",
+                            "message": f"Lane geometry implies a camera height of {h:.2f} m, which is implausible; "
+                                       "lane detection is probably wrong. Positions and speeds are not computed."})
+            h = None
+    else:
+        quality.append({"level": "error", "code": "no_lanes",
+                        "message": f"Both ego-lane boundaries were found in only {100 * lane_pct:.0f}% of frames "
+                                   "(markings hidden, worn, or absent). Distances and speeds of other road users "
+                                   "are not computed."})
+
+    y0s = _fill(_nanmedian_filter(raw["y0"], 9), int(vfps))
+    x0s = _fill(_nanmedian_filter(raw["x0"], 9), int(vfps))
+    # Camera offset from the ego-lane centre; unwrap jumps of ~1 lane width (lane changes), then smooth.
+    d_raw = np.where(both, -(raw["aL"] + raw["aR"]) / 2 * (h or 1.0), np.nan)
+    lane_changes = []
+    if h:
+        offset, last = 0.0, None
+        for i in range(n_frames):
+            if np.isnan(d_raw[i]):
+                continue
+            if last is not None and abs(d_raw[i] + offset - last) > 0.6 * lane_w:
+                step = lane_w * np.round((d_raw[i] + offset - last) / lane_w)
+                offset -= step
+                # Moving one lane right swaps the nearest boundaries, so the raw offset jumps by -W.
+                lane_changes.append({"t": round(float(t_video[i]), 2), "direction": "right" if step < 0 else "left"})
+            d_raw[i] += offset
+            last = d_raw[i]
+    # In the road frame d grows to the right while the camera moving right makes boundaries move left: d_cam = -mean.
+    d_cam = _fill(_nanmedian_filter(d_raw, 9), int(vfps)) if h else np.full(n_frames, np.nan)
+    result["lane_changes"] = lane_changes
+
+    # ---- pass 2: dash far-ends (for K) and dash-pattern profiles in Z (for ego speed)
+    K = None
+    flow: list[tuple[float, float]] = []
+    if h:
+        progress(0.55, "measuring dash spacing")
+        cap = cv2.VideoCapture(str(clip.video))
+        Ks = {"L": [], "R": []}
+        for i in range(n_frames):
+            ok, frame = cap.read()
+            if not ok:
+                break
+            if not both[i] or np.isnan(y0s[i]):
+                continue
+            th = _tophat(frame)
+            thr = max(15.0, float(np.percentile(th[roi[0]:roi[1]], 99.0)) * 0.5)
+            for b in boxes_at(i / vfps):
+                th[max(0, b[1] - 4):b[3] + 4, max(0, b[0] - 4):b[2] + 4] = 0
+            ys = np.arange(int(y0s[i]) + 8, roi[1])
+            for side in ("L", "R"):
+                on = _sample_line(th, thr, x0s[i], y0s[i], raw["a" + side][i], ys)
+                Ks[side] += _dash_pairs_K(_dash_runs(on, ys), y0s[i], period, duty)
+            if i % 24 == 0:
+                progress(0.55 + 0.25 * i / max(n_frames, 1), "measuring dash spacing")
+        cap.release()
+
+        def spread(v: list[float]) -> float:
+            return float(np.subtract(*np.percentile(v, [75, 25])) / np.median(v)) if len(v) >= 10 else 9.0
+
+        pooled = np.array(Ks["L"] + Ks["R"])
+        side = "L" if len(Ks["L"]) >= len(Ks["R"]) else "R"
+        mode_K, mode_frac, in_mode = None, 0.0, np.array([])
+        if len(pooled) >= 10:
+            logs = np.log(pooled)
+            # densest +/-15% window in log space: the true scale forms a mode, mismatched pairs scatter
+            centers = np.linspace(np.percentile(logs, 5), np.percentile(logs, 95), 200)
+            counts = [(np.abs(logs - c) < 0.15).sum() for c in centers]
+            c = centers[int(np.argmax(counts))]
+            in_mode = pooled[np.abs(logs - c) < 0.15]
+            mode_frac = len(in_mode) / len(pooled)
+            mode_K = float(np.median(in_mode))
+        result["dash_debug"] = {"pairs_left": len(Ks["L"]), "pairs_right": len(Ks["R"]),
+                                "mode_fraction": round(mode_frac, 3), "median_all": round(float(np.median(pooled)), 1) if len(pooled) else None}
+        if mode_K and len(in_mode) >= 10 and mode_frac >= 0.3:
+            K = mode_K
+            mad = float(np.median(np.abs(in_mode - K))) * 1.4826
+            k_rel = max(0.03, mad / K / np.sqrt(len(in_mode) / 10))  # pairs within a frame are correlated
+            f_px = K / h
+            hfov = float(np.degrees(2 * np.arctan(Wpx / 2 / f_px)))
+            result.update({"K": round(K, 1), "K_rel_sigma": round(k_rel, 3), "focal_px": round(f_px, 1),
+                           "hfov_deg": round(hfov, 1), "dash_pairs": int(len(in_mode))})
+            if not (25 <= hfov <= 160):
+                quality.append({"level": "error", "code": "implausible_fov",
+                                "message": f"Dash spacing implies a {hfov:.0f}° field of view, which is implausible."})
+                K = None
+        else:
+            quality.append({"level": "error", "code": "no_dashes",
+                            "message": "No regular dashed lane line found, so there is no depth scale. Distances "
+                                       "and speeds of other road users are not computed."})
+
+    # ---- ego speed
+    ego_src, ego_t, ego_v, ego_sig = "none", np.array([]), np.array([]), np.array([])
+    ocr_samples = [s for s in ocr.get("samples", []) if not s.get("suspicious")]
+    if ocr.get("present") and len(ocr_samples) >= 2:
+        ego_src = "overlay"
+        ego_t = np.array([s["t"] for s in ocr_samples])
+        ego_v = np.array([s["speed_mps"] for s in ocr_samples])
+        ego_sig = np.maximum(0.3, 0.02 * ego_v)
+    elif K and h:
+        progress(0.8, "estimating ego speed from lane flow")
+        flow = _lane_flow(clip, K, x0s, y0s, raw, both, vfps, period, roi, boxes_at)
+        if len(flow) >= 10:
+            ft = np.array([f[0] for f in flow])
+            fv = np.array([f[1] for f in flow])
+            bins = np.arange(0, t_video[-1] + 0.5, 0.5)
+            rows = []
+            for b0 in bins:
+                sel = (ft >= b0) & (ft < b0 + 0.5)
+                if sel.sum() >= 3:
+                    med = float(np.median(fv[sel]))
+                    mad = float(np.median(np.abs(fv[sel] - med))) * 1.4826
+                    rows.append((b0 + 0.25, med, max(0.4, mad / np.sqrt(sel.sum())) + med * result["K_rel_sigma"]))
+            if len(rows) >= 3:
+                ego_src = "lane_flow"
+                ego_t = np.array([r[0] for r in rows])
+                ego_v = np.array([r[1] for r in rows])
+                ego_sig = np.array([r[2] for r in rows])
+    if ego_src == "none":
+        quality.append({"level": "warn", "code": "no_ego_speed",
+                        "message": "No speed overlay and no usable lane-flow signal: the recording vehicle's speed "
+                                   "is unknown, so only relative motion is shown."})
+
+    def ego_at(t: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
+        if ego_src == "none":
+            return np.full_like(t, np.nan), np.full_like(t, np.nan)
+        return np.interp(t, ego_t, ego_v), np.interp(t, ego_t, ego_sig)
+
+    # Ego path in the road frame (s by integrating speed on the video timeline).
+    ev, es = ego_at(t_video)
+    s_ego_video = np.concatenate([[0.0], np.cumsum((ev[1:] + ev[:-1]) / 2 * np.diff(t_video))]) if ego_src != "none" else np.zeros(n_frames)
+
+    def at(series: np.ndarray, t: float) -> float:
+        return float(np.interp(t, t_video, series))
+
+    t_grid = np.array([f["t"] for f in ing["frames"]])
+    ev_g, es_g = ego_at(t_grid)
+    ego_samples = [{"t": float(t), "s": round(at(s_ego_video, t), 2), "d": None if np.isnan(at(d_cam, t)) else round(at(d_cam, t), 2),
+                    "v": None if np.isnan(v) else round(float(v), 2), "v_sigma": None if np.isnan(sg) else round(float(sg), 2)}
+                   for t, v, sg in zip(t_grid, ev_g, es_g)]
+
+    # ---- actors
+    out_actors: dict[str, list[dict]] = {}
+    if K and h:
+        progress(0.9, "projecting actors")
+        k_rel = result["K_rel_sigma"]
+        for a in actors:
+            ts, zs, zr, xs, xr = [], [], [], [], []
+            large = a["cls"] in ("truck", "bus")
+            for s in a["samples"]:
+                t = s["t"]
+                b = s["box"]
+                y0, x0 = at(y0s, t), at(x0s, t)
+                yb, xb = b[3] * Hpx, (b[0] + b[2]) / 2 * Wpx
+                bh, bw = (b[3] - b[1]) * Hpx, (b[2] - b[0]) * Wpx
+                ts.append(t)
+                usable = (not s["interp"] and b[3] < 0.97 and yb - y0 > 6 and not np.isnan(y0))
+                if not usable:
+                    zs.append(np.nan); zr.append(np.nan); xs.append(np.nan); xr.append(np.nan)
+                    continue
+                Z = K / (yb - y0)
+                if Z > Z_MAX:
+                    zs.append(np.nan); zr.append(np.nan); xs.append(np.nan); xr.append(np.nan)
+                    continue
+                X = h * (xb - x0) / (yb - y0)
+                sy = 2 + 0.02 * bh
+                sx = (2 + 0.1 * bw) * (4 if (b[0] < 0.005 or b[2] > 0.995) else 1)
+                sZ = Z * Z * sy / K + (2.0 if large else 0.0)
+                sX = float(np.hypot(sx * Z * h / K, abs(X) / Z * sZ))
+                zs.append(at(s_ego_video, t) + Z); zr.append(sZ)
+                xs.append(at(d_cam, t) + X if not np.isnan(at(d_cam, t)) else X); xr.append(sX)
+            ts, zs, zr, xs, xr = map(np.array, (ts, zs, zr, xs, xr))
+            if (~np.isnan(zs)).sum() < 3:
+                continue
+            v0 = float(np.nanmedian(ev_g)) if ego_src != "none" else 0.0
+            S, PS = _rts(ts, zs, zr, 4.0, v0, 15.0)
+            D, PD = _rts(ts, xs, xr, 1.5, 0.0, 3.0)
+            evs, ess = ego_at(ts)
+            rows = []
+            for k, t in enumerate(ts):
+                vs, vd = S[k, 1], D[k, 1]
+                v = float(np.hypot(vs, vd))
+                rel = vs - (evs[k] if ego_src == "overlay" else 0.0)
+                sig = float(np.sqrt(PS[k, 1, 1] + (0 if np.isnan(ess[k]) else ess[k] ** 2) + (k_rel * rel) ** 2))
+                measured = not np.isnan(zs[k])
+                rows.append({"t": round(float(t), 3), "s": round(float(S[k, 0]), 2), "d": round(float(D[k, 0]), 2),
+                             "s_sigma": round(float(np.sqrt(PS[k, 0, 0])), 2), "d_sigma": round(float(np.sqrt(PD[k, 0, 0])), 2),
+                             "v": round(v, 2) if ego_src != "none" else None,
+                             "v_lo": round(max(0.0, v - 1.96 * sig), 2) if ego_src != "none" else None,
+                             "v_hi": round(v + 1.96 * sig, 2) if ego_src != "none" else None,
+                             "v_rel": round(float(vs - (evs[k] if ego_src != "none" else 0.0)), 2) if ego_src != "none" else round(float(vs), 2),
+                             "heading_deg": round(float(np.degrees(np.arctan2(vd, vs))), 1) if v > 2 else None,
+                             "measured": measured,
+                             "dist_m": round(float(zs[k] - at(s_ego_video, t)), 1) if measured else None})
+            out_actors[a["id"]] = rows
+            if large:
+                quality.append({"level": "info", "code": "large_vehicle", "actor": a["id"],
+                                "message": f"{a['id']} is a {a['cls']}: its box bottom may not be where it touches "
+                                           "the road, so its position has an extra ±2 m allowance."})
+            near = [r["dist_m"] for r in rows if r["dist_m"] is not None]
+            if near and min(near) > 50:
+                quality.append({"level": "warn", "code": "distant", "actor": a["id"],
+                                "message": f"{a['id']} never comes closer than {min(near):.0f} m; its speed range is wide."})
+
+    status = "ok" if (K and h and ego_src != "none") else ("partial" if ego_src != "none" or (K and h) else "insufficient")
+    quality.append({"level": "info", "code": "assumptions",
+                    "message": f"Assumes a flat road, lane width {lane_w} m and dash period {period} m"
+                               f"{' (US freeway standard)' if (lane_w, period) == (LANE_WIDTH_M, DASH_PERIOD_M) else ' (set for this clip)'}. "
+                               "Positions are along/across the road, not GPS."})
+    # Per analysis frame lane overlay for the UI (how the geometry was derived).
+    lanes_ui = [{"t": float(t), "x0": None if np.isnan(at(x0s, t)) else round(at(x0s, t) / Wpx, 4),
+                 "y0": None if np.isnan(at(y0s, t)) else round(at(y0s, t) / Hpx, 4),
+                 "aL": _nearest(raw["aL"], t, vfps), "aR": _nearest(raw["aR"], t, vfps)} for t in t_grid]
+    n_actors = len(out_actors)
+    return {"status": status, "calibration": result, "ego": {"source": ego_src, "samples": ego_samples},
+            "actors": out_actors, "lanes": lanes_ui, "quality": quality,
+            "summary": f"{status}: {n_actors} actors positioned, ego speed from {ego_src}"}
+
+
+def _nearest(series: np.ndarray, t: float, vfps: float) -> float | None:
+    i = int(round(t * vfps))
+    for d in range(0, int(vfps // 4) + 1):
+        for j in (i - d, i + d):
+            if 0 <= j < len(series) and not np.isnan(series[j]):
+                return round(float(series[j]), 4)
+    return None
+
+
+def _lane_flow(clip, K, x0s, y0s, raw, both, vfps, period, roi, boxes_at, lag: int = 2) -> list[tuple[float, float]]:
+    """Ego speed from the dash pattern's shift toward the camera between frames `lag` apart, measured in metres."""
+    zgrid = np.arange(8.0, 40.0, 0.05)
+    cap = cv2.VideoCapture(str(clip.video))
+    profiles: dict[int, np.ndarray] = {}
+    out = []
+    max_shift = period / 2 - 0.2
+    shifts = np.arange(-0.5, max_shift, 0.05)
+    n = len(y0s)
+    for i in range(n):
+        ok, frame = cap.read()
+        if not ok:
+            break
+        if not both[i] or np.isnan(y0s[i]):
+            continue
+        th = _tophat(frame)
+        thr = max(15.0, float(np.percentile(th[roi[0]:roi[1]], 99.0)) * 0.5)
+        for b in boxes_at(i / vfps):
+            th[max(0, b[1] - 4):b[3] + 4, max(0, b[0] - 4):b[2] + 4] = 0
+        ys = y0s[i] + K / zgrid
+        inside = ys < roi[1]
+        profiles[i] = {sd: np.where(inside, _sample_line(th, thr, x0s[i], y0s[i], raw["a" + sd][i], ys).astype(float), np.nan)
+                       for sd in ("L", "R")}
+        j = i - lag
+        if j not in profiles:
+            continue
+        cands = []
+        for sd in ("L", "R"):
+            p_old, p_new = profiles[j][sd], profiles[i][sd]
+            on_frac = np.nanmean(p_new)
+            if not (0.08 < on_frac < 0.6):  # solid lines and empty profiles carry no shift information
+                continue
+            best, best_c = None, -1.0
+            for sft in shifts:
+                # ground features move toward the camera: p_new(z) ~ p_old(z + v*dt)
+                shifted = np.interp(zgrid + sft, zgrid, p_old, left=np.nan, right=np.nan)
+                m = ~np.isnan(shifted) & ~np.isnan(p_new)
+                if m.sum() < 100:
+                    continue
+                a, b = p_new[m] - p_new[m].mean(), shifted[m] - shifted[m].mean()
+                den = np.sqrt((a * a).sum() * (b * b).sum())
+                if den == 0:
+                    continue
+                c = float((a * b).sum() / den)
+                if c > best_c:
+                    best, best_c = sft, c
+            if best is not None and best_c > 0.5:
+                cands.append((best_c, best))
+        if cands:
+            best_c, best = max(cands)
+            out.append(((i - lag / 2) / vfps, best / (lag / vfps)))
+        for old in [k for k in profiles if k < i - lag]:
+            del profiles[old]
+    cap.release()
+    return out
