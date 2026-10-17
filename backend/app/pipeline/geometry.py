@@ -111,7 +111,24 @@ def _find_lanes(mask: np.ndarray, prev_vp: tuple[float, float] | None) -> dict |
     return {"x0": x0, "y0": y0,
             "aL": max(left)[0] if left else np.nan,  # boundary nearest the camera on each side
             "aR": min(right)[0] if right else np.nan,
+            # every painted line, including one straight ahead while straddling it during a lane change
+            "lines": [(a, sup, _painted_fraction(mask, x0, y0, a)) for a, sup in cl if sup >= min_support and abs(a) < 6],
             "support": best_score}
+
+
+def _painted_fraction(mask: np.ndarray, x0: float, y0: float, a: float) -> float:
+    H, W = mask.shape
+    rows = np.nonzero(mask.any(axis=1))[0]
+    if not len(rows):
+        return 0.0
+    ys = np.arange(max(int(y0) + 15, rows.min()), rows.max() + 1)
+    on = total = 0
+    for y in ys:
+        x = int(round(x0 + a * (y - y0)))
+        if 0 <= x < W:
+            total += 1
+            on += bool(mask[y, max(0, x - 3):x + 4].any())
+    return on / total if total >= 20 else float("nan")
 
 
 def _nanmedian_filter(x: np.ndarray, k: int) -> np.ndarray:
@@ -136,6 +153,119 @@ def _fill(x: np.ndarray, max_gap: int) -> np.ndarray:
     nearest_dist = np.abs(idx[:, None] - idx[ok][None, :]).min(axis=1)
     x[nearest_dist <= max_gap] = filled[nearest_dist <= max_gap]
     return x
+
+
+def _log_mode(x: np.ndarray, half_width: float = 0.15) -> float:
+    """Centre (in log space) of the densest +/-half_width window."""
+    logs = np.log(x)
+    centers = np.linspace(np.percentile(logs, 5), np.percentile(logs, 95), 200)
+    counts = [(np.abs(logs - c) < half_width).sum() for c in centers]
+    return float(centers[int(np.argmax(counts))])
+
+
+# ----------------------------------------------------------------------------- lateral position
+
+def _lateral_track(lines_at: list[list[tuple[float, float, float]]], h: float, lane_w: float, vfps: float,
+                   t_video: np.ndarray) -> tuple[np.ndarray, list[dict], list[dict]]:
+    """Camera lateral position d(t) in a road frame whose lane centres sit at multiples of lane_w.
+
+    A line at camera-relative offset X = h*a' sits at road position L = d + X, and lines lie on L = W/2 + kW, so each
+    line gives d modulo W. A weighted circular mean over all lines (including the one straight ahead while straddling
+    it) gives d mod W per frame; at video frame rates lateral motion is a few cm per frame, so unwrapping recovers the
+    continuous position through lane changes. The starting lane is lane 0.
+    """
+    n = len(lines_at)
+    theta = np.full(n, np.nan)
+    for i, ls in enumerate(lines_at):
+        if not ls:
+            continue
+        X = np.array([h * a for a, _, _ in ls])
+        w = np.array([sup / (1 + abs(a)) for a, sup, _ in ls])  # far-side lines are less precise
+        ph = 2 * np.pi * (lane_w / 2 - X) / lane_w
+        for _ in range(2):  # drop lines off the lane grid (shoulder edges, the outer half of a double line)
+            m = np.angle(np.sum(w * np.exp(1j * ph)))
+            resid = np.abs(np.angle(np.exp(1j * (ph - m)))) * lane_w / (2 * np.pi)
+            keep = resid < 0.6
+            if keep.sum() == 0:
+                break
+            ph, w = ph[keep], w[keep]
+        theta[i] = np.angle(np.sum(w * np.exp(1j * ph)))
+    # Unwrap against the last accepted sample, gating on lateral speed: occluded or misdetected lines can shift the
+    # phase abruptly, and accepting that would silently move the car a whole lane. A car moves sideways at most
+    # ~2 m/s even in an aggressive lane change, so faster apparent motion is rejected; if the disagreement persists
+    # for over 1.5 s we re-anchor on the nearest branch.
+    unw = np.full(n, np.nan)
+    last = None
+    rejected_since = None
+    for i in range(n):
+        if np.isnan(theta[i]):
+            continue
+        if last is None:
+            unw[i] = theta[i]
+            last = i
+            continue
+        step = np.angle(np.exp(1j * (theta[i] - theta[last]))) * lane_w / (2 * np.pi)
+        dt = (i - last) / vfps
+        if abs(step) > 0.15 + 3.0 * dt:
+            rejected_since = rejected_since if rejected_since is not None else i
+            if (i - rejected_since) / vfps < 1.5:
+                continue
+        rejected_since = None
+        unw[i] = unw[last] + step * 2 * np.pi / lane_w
+        last = i
+    d = _fill(_nanmedian_filter(unw * lane_w / (2 * np.pi), 9), int(vfps))
+
+    # Lane changes: the lane index (nearest lane centre) changes and stays changed for >= 0.5 s.
+    changes = []
+    idx = np.where(np.isnan(d), np.nan, np.round(d / lane_w))
+    hold = int(0.5 * vfps)
+    cur = next((x for x in idx if not np.isnan(x)), None)
+    for i in range(n):
+        if cur is None or np.isnan(idx[i]) or idx[i] == cur:
+            continue
+        nxt = idx[i:i + hold]
+        if np.all((nxt == idx[i]) | np.isnan(nxt)):
+            boundary = (cur + idx[i]) / 2 * lane_w
+            j = i
+            while j > 0 and not np.isnan(d[j - 1]) and (d[j - 1] - boundary) * (d[i] - boundary) > 0:
+                j -= 1
+            # find the start of the move: when lateral speed first exceeded 0.3 m/s before the crossing
+            q = max(1, int(vfps / 2))
+            sign = 1 if idx[i] > cur else -1
+            k = j
+            while k - q >= 0 and not np.isnan(d[k - q]) and sign * (d[k] - d[k - q]) / (q / vfps) > 0.25 and j - k < 6 * vfps:
+                k -= 1
+            changes.append({"t": round(float(t_video[j]), 2), "t_start": round(float(t_video[k]), 2),
+                            "direction": "right" if idx[i] > cur else "left",
+                            "from_lane": int(cur), "to_lane": int(idx[i])})
+            cur = idx[i]
+
+    # Road lines actually observed, on the lane grid, in road coordinates, typed solid/dashed by painted fraction.
+    seen_k: dict[int, list[float]] = {}
+    valid = 0
+    for i, ls in enumerate(lines_at):
+        if np.isnan(d[i]) or not ls:
+            continue
+        valid += 1
+        frame_k: dict[int, float] = {}
+        for a, _, frac in ls:
+            L = d[i] + h * a - lane_w / 2
+            k = int(np.round(L / lane_w))
+            if abs(L - k * lane_w) < 0.6:
+                frame_k[k] = frac
+        for k, frac in frame_k.items():
+            seen_k.setdefault(k, []).append(frac)
+    road_lines = []
+    for k in sorted(seen_k):
+        fr = [f for f in seen_k[k] if not np.isnan(f)]
+        pct = 100 * len(seen_k[k]) / max(valid, 1)
+        if pct < 15:
+            continue
+        painted = float(np.median(fr)) if fr else float("nan")
+        road_lines.append({"d": round(lane_w / 2 + k * lane_w, 3), "seen_pct": round(pct, 1),
+                           "painted": None if np.isnan(painted) else round(painted, 2),
+                           "kind": "solid" if painted > 0.4 else "dashed"})  # dashed ~0.2, solid >0.5 even with occlusion
+    return d, changes, road_lines
 
 
 # ----------------------------------------------------------------------------- dash pattern helpers
@@ -243,6 +373,7 @@ def run(clip: Clip, progress: Callable[[float, str], None]) -> dict:
     cap = cv2.VideoCapture(str(clip.video))
     n_frames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT)) or int(ing["video"]["duration"] * vfps)
     raw = {k: np.full(n_frames, np.nan) for k in ("x0", "y0", "aL", "aR")}
+    lines_at: list[list[tuple[float, float]]] = [[] for _ in range(n_frames)]
     prev_vp = None
     for i in range(n_frames):
         ok, frame = cap.read()
@@ -255,11 +386,13 @@ def run(clip: Clip, progress: Callable[[float, str], None]) -> dict:
         if res:
             for k in raw:
                 raw[k][i] = res[k]
+            lines_at[i] = res["lines"]
             prev_vp = (res["x0"], res["y0"])
         if i % 24 == 0:
             progress(0.5 * i / max(n_frames, 1), "finding lane lines")
     cap.release()
     raw = {k: v[:n_frames] for k, v in raw.items()}
+    lines_at = lines_at[:n_frames]
     t_video = np.arange(n_frames) / vfps
 
     both = ~np.isnan(raw["aL"]) & ~np.isnan(raw["aR"])
@@ -269,6 +402,7 @@ def run(clip: Clip, progress: Callable[[float, str], None]) -> dict:
     h = None
     if both.sum() >= max(12, 0.15 * n_frames):
         span = raw["aR"][both] - raw["aL"][both]
+        span = span[np.abs(np.log(span) - _log_mode(span)) < 0.25]
         h = lane_w / float(np.median(span))
         h_iqr = [lane_w / float(np.percentile(span, 75)), lane_w / float(np.percentile(span, 25))]
         result["camera_height_m"] = round(h, 3)
@@ -286,23 +420,12 @@ def run(clip: Clip, progress: Callable[[float, str], None]) -> dict:
 
     y0s = _fill(_nanmedian_filter(raw["y0"], 9), int(vfps))
     x0s = _fill(_nanmedian_filter(raw["x0"], 9), int(vfps))
-    # Camera offset from the ego-lane centre; unwrap jumps of ~1 lane width (lane changes), then smooth.
-    d_raw = np.where(both, -(raw["aL"] + raw["aR"]) / 2 * (h or 1.0), np.nan)
-    lane_changes = []
+    lane_changes: list[dict] = []
+    road_lines: list[dict] = []
     if h:
-        offset, last = 0.0, None
-        for i in range(n_frames):
-            if np.isnan(d_raw[i]):
-                continue
-            if last is not None and abs(d_raw[i] + offset - last) > 0.6 * lane_w:
-                step = lane_w * np.round((d_raw[i] + offset - last) / lane_w)
-                offset -= step
-                # Moving one lane right swaps the nearest boundaries, so the raw offset jumps by -W.
-                lane_changes.append({"t": round(float(t_video[i]), 2), "direction": "right" if step < 0 else "left"})
-            d_raw[i] += offset
-            last = d_raw[i]
-    # In the road frame d grows to the right while the camera moving right makes boundaries move left: d_cam = -mean.
-    d_cam = _fill(_nanmedian_filter(d_raw, 9), int(vfps)) if h else np.full(n_frames, np.nan)
+        d_cam, lane_changes, road_lines = _lateral_track(lines_at, h, lane_w, vfps, t_video)
+    else:
+        d_cam = np.full(n_frames, np.nan)
     result["lane_changes"] = lane_changes
 
     # ---- pass 2: dash far-ends (for K) and dash-pattern profiles in Z (for ego speed)
@@ -374,7 +497,7 @@ def run(clip: Clip, progress: Callable[[float, str], None]) -> dict:
         ego_sig = np.maximum(0.3, 0.02 * ego_v)
     elif K and h:
         progress(0.8, "estimating ego speed from lane flow")
-        flow = _lane_flow(clip, K, x0s, y0s, raw, both, vfps, period, roi, boxes_at)
+        flow = _lane_flow(clip, K, x0s, y0s, lines_at, vfps, period, roi, boxes_at)
         if len(flow) >= 10:
             ft = np.array([f[0] for f in flow])
             fv = np.array([f[1] for f in flow])
@@ -388,9 +511,13 @@ def run(clip: Clip, progress: Callable[[float, str], None]) -> dict:
                     rows.append((b0 + 0.25, med, max(0.4, mad / np.sqrt(sel.sum())) + med * result["K_rel_sigma"]))
             if len(rows) >= 3:
                 ego_src = "lane_flow"
-                ego_t = np.array([r[0] for r in rows])
-                ego_v = np.array([r[1] for r in rows])
-                ego_sig = np.array([r[2] for r in rows])
+                bt = np.array([r[0] for r in rows])
+                bv = np.array([r[1] for r in rows])
+                bs = np.array([r[2] for r in rows])
+                ego_t = np.arange(0, t_video[-1] + 1e-6, 0.25)
+                ego_v, ego_sig, n_out = _smooth_speed(bt, bv, bs, ego_t)
+                ego_sig = ego_sig + ego_v * result["K_rel_sigma"]  # scale uncertainty applies to all of it
+                result["ego_flow"] = {"samples": len(flow), "bins": len(rows), "outlier_bins": n_out}
     if ego_src == "none":
         quality.append({"level": "warn", "code": "no_ego_speed",
                         "message": "No speed overlay and no usable lane-flow signal: the recording vehicle's speed "
@@ -488,7 +615,7 @@ def run(clip: Clip, progress: Callable[[float, str], None]) -> dict:
                  "aL": _nearest(raw["aL"], t, vfps), "aR": _nearest(raw["aR"], t, vfps)} for t in t_grid]
     n_actors = len(out_actors)
     return {"status": status, "calibration": result, "ego": {"source": ego_src, "samples": ego_samples},
-            "actors": out_actors, "lanes": lanes_ui, "quality": quality,
+            "actors": out_actors, "lanes": lanes_ui, "road_lines": road_lines, "quality": quality,
             "summary": f"{status}: {n_actors} actors positioned, ego speed from {ego_src}"}
 
 
@@ -501,20 +628,23 @@ def _nearest(series: np.ndarray, t: float, vfps: float) -> float | None:
     return None
 
 
-def _lane_flow(clip, K, x0s, y0s, raw, both, vfps, period, roi, boxes_at, lag: int = 2) -> list[tuple[float, float]]:
-    """Ego speed from the dash pattern's shift toward the camera between frames `lag` apart, measured in metres."""
-    zgrid = np.arange(8.0, 40.0, 0.05)
+def _lane_flow(clip, K, x0s, y0s, lines_at, vfps, period, roi, boxes_at, lag: int = 2) -> list[tuple[float, float, float]]:
+    """Ego speed from the dash pattern's shift toward the camera between frames `lag` apart, measured in metres.
+
+    Uses every dashed-looking line in the frame, including the one directly ahead while straddling it in a lane
+    change. Returns (t, speed m/s, correlation).
+    """
+    zgrid = np.arange(6.0, 40.0, 0.05)
     cap = cv2.VideoCapture(str(clip.video))
-    profiles: dict[int, np.ndarray] = {}
+    profiles: dict[int, list[tuple[float, np.ndarray]]] = {}
     out = []
-    max_shift = period / 2 - 0.2
-    shifts = np.arange(-0.5, max_shift, 0.05)
-    n = len(y0s)
-    for i in range(n):
+    shifts = np.arange(-0.5, period / 2 - 0.2, 0.05)
+    for i in range(len(y0s)):
         ok, frame = cap.read()
         if not ok:
             break
-        if not both[i] or np.isnan(y0s[i]):
+        dashed = [a for a, _, frac in lines_at[i] if not np.isnan(frac) and 0.08 < frac < 0.5]
+        if not dashed or np.isnan(y0s[i]):
             continue
         th = _tophat(frame)
         thr = max(15.0, float(np.percentile(th[roi[0]:roi[1]], 99.0)) * 0.5)
@@ -522,17 +652,22 @@ def _lane_flow(clip, K, x0s, y0s, raw, both, vfps, period, roi, boxes_at, lag: i
             th[max(0, b[1] - 4):b[3] + 4, max(0, b[0] - 4):b[2] + 4] = 0
         ys = y0s[i] + K / zgrid
         inside = ys < roi[1]
-        profiles[i] = {sd: np.where(inside, _sample_line(th, thr, x0s[i], y0s[i], raw["a" + sd][i], ys).astype(float), np.nan)
-                       for sd in ("L", "R")}
+        profiles[i] = [(a, np.where(inside, _sample_line(th, thr, x0s[i], y0s[i], a, ys).astype(float), np.nan))
+                       for a in dashed]
         j = i - lag
+        for old in [k for k in profiles if k < j]:
+            del profiles[old]
         if j not in profiles:
             continue
         cands = []
-        for sd in ("L", "R"):
-            p_old, p_new = profiles[j][sd], profiles[i][sd]
-            on_frac = np.nanmean(p_new)
-            if not (0.08 < on_frac < 0.6):  # solid lines and empty profiles carry no shift information
+        for a_new, p_new in profiles[i]:
+            match = min(profiles[j], key=lambda q: abs(q[0] - a_new))
+            if abs(match[0] - a_new) > 0.15:
                 continue
+            p_old = match[1]
+            on_frac = np.nanmean(p_new)
+            if not (0.08 < on_frac < 0.6) or not _looks_dashed(p_new, zgrid, period):
+                continue  # solid lines (even broken up by masked vehicles) don't move and would vote for 0 m/s
             best, best_c = None, -1.0
             for sft in shifts:
                 # ground features move toward the camera: p_new(z) ~ p_old(z + v*dt)
@@ -540,19 +675,67 @@ def _lane_flow(clip, K, x0s, y0s, raw, both, vfps, period, roi, boxes_at, lag: i
                 m = ~np.isnan(shifted) & ~np.isnan(p_new)
                 if m.sum() < 100:
                     continue
-                a, b = p_new[m] - p_new[m].mean(), shifted[m] - shifted[m].mean()
-                den = np.sqrt((a * a).sum() * (b * b).sum())
+                x, y = p_new[m] - p_new[m].mean(), shifted[m] - shifted[m].mean()
+                den = np.sqrt((x * x).sum() * (y * y).sum())
                 if den == 0:
                     continue
-                c = float((a * b).sum() / den)
+                c = float((x * y).sum() / den)
                 if c > best_c:
                     best, best_c = sft, c
             if best is not None and best_c > 0.5:
                 cands.append((best_c, best))
         if cands:
             best_c, best = max(cands)
-            out.append(((i - lag / 2) / vfps, best / (lag / vfps)))
-        for old in [k for k in profiles if k < i - lag]:
-            del profiles[old]
+            out.append(((i - lag / 2) / vfps, best / (lag / vfps), best_c))
     cap.release()
     return out
+
+
+def _looks_dashed(profile: np.ndarray, zgrid: np.ndarray, period: float) -> bool:
+    """At least two painted runs, all of dash-like length (well under the gap), along a profile sampled in metres."""
+    on = np.nan_to_num(profile) > 0.5
+    runs, start = [], None
+    for k, v in enumerate(list(on) + [False]):
+        if v and start is None:
+            start = k
+        elif not v and start is not None:
+            runs.append(zgrid[k - 1] - zgrid[start])
+            start = None
+    return len(runs) >= 2 and max(runs) < 0.5 * period
+
+
+def _smooth_speed(ts: np.ndarray, v: np.ndarray, sig: np.ndarray, t_out: np.ndarray, sigma_a: float = 4.0):
+    """1-D random-walk Kalman + RTS smoother on speed, with outlier rejection against the smoothed curve.
+
+    sigma_a (m/s^2) allows hard braking while rejecting jumps no car can make. Gaps widen the output sigma.
+    """
+    keep = np.ones(len(ts), bool)
+    for _ in range(3):
+        tk, vk, sk = ts[keep], v[keep], sig[keep]
+        grid = np.union1d(tk, t_out)
+        z = np.full(len(grid), np.nan)
+        r = np.full(len(grid), np.nan)
+        idx = np.searchsorted(grid, tk)
+        z[idx], r[idx] = vk, sk
+        n = len(grid)
+        xs, Ps, xp, Pp = np.zeros(n), np.zeros(n), np.zeros(n), np.zeros(n)
+        x, P = float(np.median(vk)), 20.0 ** 2
+        for k in range(n):
+            if k:
+                dt = grid[k] - grid[k - 1]
+                P = P + (sigma_a * dt) ** 2
+            xp[k], Pp[k] = x, P
+            if not np.isnan(z[k]):
+                g = P / (P + r[k] ** 2)
+                x, P = x + g * (z[k] - x), (1 - g) * P
+            xs[k], Ps[k] = x, P
+        for k in range(n - 2, -1, -1):
+            c = Ps[k] / Pp[k + 1]
+            xs[k] = xs[k] + c * (xs[k + 1] - xp[k + 1])
+            Ps[k] = Ps[k] + c * c * (Ps[k + 1] - Pp[k + 1])
+        fit = np.interp(ts, grid, xs)
+        new_keep = np.abs(v - fit) < 3 * np.sqrt(sig ** 2 + np.interp(ts, grid, Ps))
+        if (new_keep == keep).all():
+            break
+        keep = new_keep
+    return np.interp(t_out, grid, xs), np.sqrt(np.interp(t_out, grid, Ps)), int((~keep).sum())

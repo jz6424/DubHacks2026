@@ -95,7 +95,9 @@ export function VideoPanel({ scene, actors, time, videoUrl, videoRef, selected, 
   };
 
   return (
-    <div className="video-wrap" style={{ aspectRatio: `${W} / ${H}` }}>
+    // Cap the height so video, top-down strip and timeline fit one screen; width follows the aspect ratio exactly so
+    // the overlay canvas stays aligned with the picture.
+    <div className="video-wrap" style={{ aspectRatio: `${W} / ${H}`, width: `min(100%, calc(46vh * ${W / H}))` }}>
       <video ref={videoRef} src={videoUrl} muted playsInline preload="auto" />
       <canvas ref={ref} className="overlay" onClick={onClick} />
     </div>

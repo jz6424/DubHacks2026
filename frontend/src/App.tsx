@@ -171,7 +171,7 @@ export default function App() {
 
       {scene && clipId && (
         <main>
-          <div className="views">
+          <div className="stage">
             <VideoPanel
               scene={scene}
               actors={actors}
@@ -183,7 +183,7 @@ export default function App() {
               showLanes={showLanes}
             />
             <div className="topdown-wrap">
-              <div className="panel-title">Top-down (road-aligned, ego-following)</div>
+              <div className="panel-title">Top-down · travel direction → · road-aligned, follows the recording vehicle</div>
               <TopDown scene={scene} actors={actors} time={time} selected={selected} onSelect={setSelected} />
               {!scene.actors.some((a) => a.ground.length) && (
                 <div className="topdown-empty">
@@ -193,20 +193,21 @@ export default function App() {
                 </div>
               )}
             </div>
-          </div>
           <Timeline
             duration={scene.clip.duration}
             time={time}
             playing={playing}
             rate={rate}
             actors={actors}
+            laneChanges={scene.geometry.calibration.lane_changes ?? []}
             selected={selected}
             onSeek={seek}
             onTogglePlay={togglePlay}
             onRate={setRate}
             onSelect={setSelected}
           />
-          <Sidebar scene={scene} actors={actors} time={time} selected={selected} onSelect={setSelected} />
+          </div>
+          <Sidebar scene={scene} actors={actors} time={time} selected={selected} onSelect={setSelected} onSeek={seek} />
         </main>
       )}
     </div>

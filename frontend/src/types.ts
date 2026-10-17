@@ -60,6 +60,21 @@ export interface QualityNote {
   actor?: string;
 }
 
+export interface LaneChange {
+  t: number; // when the car crossed the lane line
+  t_start: number; // when the sideways move began
+  direction: "left" | "right";
+  from_lane: number;
+  to_lane: number;
+}
+
+export interface RoadLine {
+  d: number; // lateral road position, m
+  seen_pct: number;
+  painted: number | null;
+  kind: "solid" | "dashed";
+}
+
 export interface LaneSample {
   t: number;
   x0: number | null;
@@ -95,8 +110,10 @@ export interface Scene {
       dash_period_m: number;
       lane_frames_pct: number;
       dash_pairs?: number;
+      lane_changes?: LaneChange[];
     };
     lanes: LaneSample[];
+    road_lines: RoadLine[];
   };
   overlay: { present: boolean; samples: { t: number; speed_mps: number; raw: string }[] };
   quality: QualityNote[];

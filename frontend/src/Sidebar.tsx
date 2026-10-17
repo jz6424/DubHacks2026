@@ -7,6 +7,7 @@ interface Props {
   time: number;
   selected: string | null;
   onSelect: (id: string | null) => void;
+  onSeek: (t: number) => void;
 }
 
 /** Clip-level notes first; per-actor notes only for listed actors, with the "distant" ones collapsed into one line. */
@@ -28,7 +29,7 @@ function qualityNotes(scene: Scene, actors: Actor[]): QualityNote[] {
 
 const fmt = (x: number | null | undefined, digits = 0) => (x === null || x === undefined ? "—" : x.toFixed(digits));
 
-export function Sidebar({ scene, actors, time, selected, onSelect }: Props) {
+export function Sidebar({ scene, actors, time, selected, onSelect, onSeek }: Props) {
   const ego = egoAt(scene.ego.samples, time);
   const cal = scene.geometry.calibration;
   const egoV = kmh(ego?.v);
@@ -52,6 +53,20 @@ export function Sidebar({ scene, actors, time, selected, onSelect }: Props) {
           {scene.ego.source === "none" && "Unknown: no speed overlay and no usable lane markings."}
         </div>
       </section>
+
+      {!!scene.geometry.calibration.lane_changes?.length && (
+        <section>
+          <h3>Recording vehicle maneuvers</h3>
+          <ul className="maneuvers small">
+            {scene.geometry.calibration.lane_changes.map((lc) => (
+              <li key={lc.t} className={time >= lc.t_start && time <= lc.t + 1 ? "now" : ""} onClick={() => onSeek(lc.t_start)}>
+                <b>Lane change {lc.direction}</b> {lc.t_start.toFixed(1)}–{lc.t.toFixed(1)} s
+                <span className="muted"> · from lane-line motion</span>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
 
       <section>
         <h3>

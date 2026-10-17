@@ -1,5 +1,5 @@
 import { actorColor } from "./interp";
-import type { Actor } from "./types";
+import type { Actor, LaneChange } from "./types";
 
 interface Props {
   duration: number;
@@ -7,6 +7,7 @@ interface Props {
   playing: boolean;
   rate: number;
   actors: Actor[];
+  laneChanges: LaneChange[];
   selected: string | null;
   onSeek: (t: number) => void;
   onTogglePlay: () => void;
@@ -16,7 +17,7 @@ interface Props {
 
 const STEP = 0.25; // one analysis frame at 4 fps
 
-export function Timeline({ duration, time, playing, rate, actors, selected, onSeek, onTogglePlay, onRate, onSelect }: Props) {
+export function Timeline({ duration, time, playing, rate, actors, laneChanges, selected, onSeek, onTogglePlay, onRate, onSelect }: Props) {
   const pct = (t: number) => `${(100 * t) / Math.max(duration, 0.001)}%`;
   return (
     <div className="timeline">
@@ -42,6 +43,19 @@ export function Timeline({ duration, time, playing, rate, actors, selected, onSe
         </select>
       </div>
       <div className="scrub">
+        <div className="markers">
+          {laneChanges.map((lc) => (
+            <button
+              key={lc.t}
+              className="marker"
+              style={{ left: pct(lc.t_start), width: pct(lc.t - lc.t_start) }}
+              onClick={() => onSeek(lc.t_start)}
+              title={`Lane change ${lc.direction}: starts ${lc.t_start.toFixed(1)} s, crosses the line at ${lc.t.toFixed(1)} s`}
+            >
+              {lc.direction === "right" ? "lane change →" : "← lane change"}
+            </button>
+          ))}
+        </div>
         <input
           type="range"
           min={0}
