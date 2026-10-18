@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { ClubCard } from "./ClubCard";
 import { MoreSheet } from "./MoreSheet";
+import { SearchSheet } from "./SearchSheet";
 import type { Card, Swipe, SwipeAction } from "./types";
 import { store, unconfirmed } from "./util";
 
@@ -14,6 +15,9 @@ interface Props {
   penalties: Penalty[];
   onPenalties: (p: Penalty[]) => void;
   onSeeMatches: () => void;
+  campus: string;
+  /** A club found through search joined this student's list. */
+  onAddCard: (c: Card) => void;
 }
 
 /** A "show fewer of these" rule the student chose after a run of left swipes. */
@@ -57,7 +61,8 @@ const detailOf = (c: Card): "full" | "partial" =>
 
 const categoryKey = (c: Card) => c.category.toLowerCase().split(/[\/&,–-]/)[0].trim();
 
-export function SwipeDeck({ jobId, cards, researching, lastAction, swipes, onSwipes, penalties, onPenalties, onSeeMatches }: Props) {
+export function SwipeDeck({ jobId, cards, researching, lastAction, swipes, onSwipes, penalties, onPenalties, onSeeMatches, campus, onAddCard }: Props) {
+  const [searching, setSearching] = useState(false);
   const [drag, setDrag] = useState<{ x: number; y: number } | null>(null);
   const [flying, setFlying] = useState<{ id: string; action: SwipeAction } | null>(null);
   const [toast, setToast] = useState<string | null>(null);
@@ -177,12 +182,13 @@ export function SwipeDeck({ jobId, cards, researching, lastAction, swipes, onSwi
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       const t = e.target as HTMLElement;
-      if (t.tagName === "INPUT" || t.tagName === "TEXTAREA" || moreFor || askWhy || checkpoint) return;
+      if (t.tagName === "INPUT" || t.tagName === "TEXTAREA" || moreFor || askWhy || checkpoint || searching) return;
       if (e.key === "ArrowRight") decide("right");
       else if (e.key === "ArrowLeft") decide("left");
       else if (e.key === "ArrowUp") decide("super");
       else if (e.key === "?" || e.key === "m") top && setMoreFor(top);
       else if (e.key === "z" || e.key === "Backspace") undo();
+      else if (e.key === "/") setSearching(true);
       else if (e.key === "Enter" || e.key === "ArrowDown") {
         // jump between the photos and the details
         const el = slot.current?.querySelector(".club-card");
@@ -193,7 +199,13 @@ export function SwipeDeck({ jobId, cards, researching, lastAction, swipes, onSwi
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [decide, undo, top, moreFor, askWhy, checkpoint]);
+  }, [decide, undo, top, moreFor, askWhy, checkpoint, searching]);
+
+  // A decision made from search: any club, in any order; deciding again replaces the earlier choice.
+  const decideFor = (club_id: string, action: SwipeAction) => {
+    onSwipes([...swipes.filter((s) => s.club_id !== club_id), { club_id, action }]);
+    say(action === "left" ? "Passed" : action === "super" ? "Super-liked! ⭐ Top of your matches" : "Matched! 💜");
+  };
 
   // --- dragging: sideways moves swipe the card; vertical moves scroll the profile (touch-action: pan-y)
   const onPointerDown = (e: React.PointerEvent) => {
@@ -244,9 +256,14 @@ export function SwipeDeck({ jobId, cards, researching, lastAction, swipes, onSwi
           {swipes.length} swiped · {rights} match{rights === 1 ? "" : "es"}
           {researching && " · still finding clubs…"}
         </span>
-        <button type="button" className="ghost small" onClick={onSeeMatches} disabled={!rights}>
-          See matches →
-        </button>
+        <span className="deck-actions">
+          <button type="button" className="ghost small icon" onClick={() => setSearching(true)} title="Search clubs (/)" aria-label="Search clubs">
+            🔍
+          </button>
+          <button type="button" className="ghost small" onClick={onSeeMatches} disabled={!rights}>
+            See matches →
+          </button>
+        </span>
       </div>
 
       <div className="deck">
@@ -324,7 +341,7 @@ export function SwipeDeck({ jobId, cards, researching, lastAction, swipes, onSwi
           ♥
         </button>
       </div>
-      <p className="keys muted small">← pass · → join · ↑ super · ↓ details · ? more · Z undo</p>
+      <p className="keys muted small">← pass · → join · ↑ super · ↓ details · ? more · / search · Z undo</p>
 
       {toast && (
         <div className="toast" role="status">
@@ -365,6 +382,18 @@ export function SwipeDeck({ jobId, cards, researching, lastAction, swipes, onSwi
             </div>
           </div>
         </div>
+      )}
+
+      {searching && (
+        <SearchSheet
+          jobId={jobId}
+          campus={campus}
+          cards={cards}
+          swipes={swipes}
+          onDecide={decideFor}
+          onAdded={onAddCard}
+          onClose={() => setSearching(false)}
+        />
       )}
 
       {moreFor && <MoreSheet jobId={jobId} card={moreFor} onClose={() => setMoreFor(null)} onDecide={(a) => { setMoreFor(null); decide(a); }} />}

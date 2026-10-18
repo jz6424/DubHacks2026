@@ -1,4 +1,4 @@
-import type { Job, More, Options, Profile, Results, Swipe } from "./types";
+import type { Card, Job, More, Options, Profile, Results, Swipe } from "./types";
 
 /** An API error that keeps the HTTP status, so the UI can treat limits (429) differently from failures. */
 export class ApiError extends Error {
@@ -37,5 +37,12 @@ export const api = {
   job: (id: string) => fetch(`/api/jobs/${id}`).then((r) => json<Job>(r)),
   more: (job: string, club: string) => post(`/api/jobs/${job}/cards/${club}/more`).then((r) => json<More>(r)),
   results: (job: string, swipes: Swipe[]) => post(`/api/jobs/${job}/results`, { swipes }).then((r) => json<Results>(r)),
+  /** Clubs in the shared catalog matching a name or topic; [] if the server doesn't support search yet. */
+  searchCatalog: (q: string, campus: string, signal?: AbortSignal) =>
+    fetch(`/api/catalog/search?q=${encodeURIComponent(q)}&campus=${encodeURIComponent(campus)}&limit=20`, { signal }).then((r) =>
+      r.status === 404 ? { clubs: [] as Card[] } : json<{ clubs: Card[] }>(r),
+    ),
+  /** Put a catalog club into this student's list so it can be swiped and matched. */
+  addFromCatalog: (job: string, club_id: string) => post(`/api/jobs/${job}/cards/from-catalog`, { club_id }).then((r) => json<Card>(r)),
   draft: (job: string, club: string) => post(`/api/jobs/${job}/cards/${club}/draft`).then((r) => json<{ text: string }>(r)),
 };

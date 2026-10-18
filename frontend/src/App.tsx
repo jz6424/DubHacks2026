@@ -288,6 +288,8 @@ export default function App() {
                 penalties={penalties}
                 onPenalties={setPenalties}
                 onSeeMatches={() => setScreen("matches")}
+                campus={job.profile.campus ?? "seattle"}
+                onAddCard={(c) => setJob((j) => (j && !j.cards.some((x) => x.club_id === c.club_id) ? { ...j, cards: [...j.cards, c] } : j))}
               />
             )}
           </>

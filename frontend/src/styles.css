@@ -1282,3 +1282,107 @@ h1 .gold {
     height: 42px;
   }
 }
+
+/* club search */
+.deck-actions {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+.ghost.small.icon {
+  padding: 6px 10px;
+}
+.search-sheet {
+  min-height: 60dvh;
+}
+.search-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 4px 4px 4px 14px;
+}
+.search-bar input {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  font-size: 16px; /* 16px keeps iOS from zooming in */
+  color: var(--text);
+  outline: none;
+  padding: 8px 0;
+}
+.search-sheet h4 {
+  margin: 6px 0 0;
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--gold);
+}
+.results {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 6px;
+}
+.result {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 8px 12px;
+  text-align: left;
+}
+.result .thumb,
+.result .emoji {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex: none;
+  display: grid;
+  place-items: center;
+  font-size: 22px;
+  background: var(--card2);
+}
+.result .name {
+  flex: 1;
+  min-width: 0;
+  font-weight: 650;
+}
+.result .glance {
+  display: block;
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--muted);
+}
+.tag-state {
+  flex: none;
+  font-size: 12px;
+  color: var(--muted);
+}
+.profile-sheet {
+  max-height: 94dvh;
+  padding-top: 12px;
+}
+.profile-frame {
+  height: min(68dvh, 620px);
+  flex: none;
+}
+.profile-sheet .controls {
+  padding-top: 4px;
+}
+.center {
+  text-align: center;
+}
+.search-sheet,
+.profile-sheet {
+  background: var(--bg);
+}
