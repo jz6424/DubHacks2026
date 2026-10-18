@@ -63,13 +63,14 @@ SHARED_HOSTS = UW_CLUB_HOSTS + ("sites.google.com", "linktr.ee")  # one host, ma
 # Images that are never the club's own photo: host defaults, website themes, UW marketing stock, stock libraries.
 GENERIC_IMAGES = ("linktr.ee/profiles/_next/static/logo-assets", "/wp-content/themes/", "/wp-content/plugins/",
                   "uw-s3-cdn", "/media/11062b_", "/media/nsplsh_", "gravatar.com",  # 11062b_/nsplsh_: Wix stock
-                  "linktr.ee/_marketing")
+                  "linktr.ee/_marketing", "/logo192.png", "/logo512.png")  # last two: React app defaults
 STOCK_HOSTS = ("unsplash.com", "pexels.com", "pixabay.com", "placeholder.com", "placehold.co", "placehold.it",
                "picsum.photos", "lorempixel.com", "dummyimage.com", "shutterstock.com", "istockphoto.com",
                "gettyimages.com", "stock.adobe.com")
 
 NOT_PHOTO = re.compile(r"logo|icon|favicon|sprite|badge|emoji|avatar|placeholder|banner[-_]?ad|qr[-_]?code|\bqr\b|"
-                       r"spinner|loader|arrow|button|spacer|pixel|blank|tracking|signature|map[-_]", re.I)
+                       r"spinner|loader|arrow|button|spacer|pixel|blank|tracking|signature|map[-_]|template|default|"
+                       r"temp(?=[._-])", re.I)  # temp: e.g. lucytemp.jpg, a stand-in on an officer bio
 LOGO_HINT = re.compile(r"logo|wordmark|crest|emblem|brand", re.I)
 # Logos that aren't the club's: social links and sponsors (a test run picked up an Instagram icon and a sponsor logo).
 OTHER_ORG = re.compile(r"instagram|facebook|twitter|linkedin|youtube|discord|tiktok|github|slack|venmo|paypal|"
@@ -536,8 +537,19 @@ def ensure(campus: str, card: dict, refetch: bool = False) -> dict:
             for p, lg in con.execute("SELECT photos, logo FROM club_media WHERE NOT (campus = ? AND key = ?)",
                                      (campus, key)):
                 taken |= {x["src"] for x in json.loads(p)} | ({json.loads(lg)["src"]} if json.loads(lg) else set())
+            # Hashes of other clubs' stored images: the same image on two clubs is a template, not either club's.
+            shared = set()
+            for p, lg in con.execute("SELECT photos, logo FROM club_media WHERE NOT (campus = ? AND key = ?)",
+                                     (campus, key)):
+                shared |= {x["file"][-12:-4] for x in json.loads(p)}
+                if json.loads(lg):
+                    shared.add(json.loads(lg)["file"][-12:-4])
         with _slots:
             found_photos, found_logo = collect(card, taken)
+        sha8 = lambda item: hashlib.sha256(item["jpeg"]).hexdigest()[:8]  # noqa: E731 - matches _store's file name
+        found_photos = [p for p in found_photos if sha8(p) not in shared]
+        if found_logo and sha8(found_logo) in shared:
+            found_logo = {}
         photos = [_store(campus, key, p) for p in found_photos]
         logo = _store(campus, key, found_logo) if found_logo else {}
         with closing(_db()) as con, con:
