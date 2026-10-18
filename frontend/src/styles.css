@@ -499,21 +499,6 @@ h3 {
   font-size: 13.5px;
   overflow-wrap: anywhere;
 }
-.fit {
-  background: rgba(201, 152, 30, 0.1);
-  border: 1px solid rgba(201, 152, 30, 0.35);
-  border-radius: 12px;
-  padding: 9px 11px;
-}
-.fit-label {
-  font-size: 12px;
-  color: var(--gold);
-  font-weight: 650;
-}
-.fit p {
-  margin: 3px 0 0;
-  font-size: 14px;
-}
 .club-card footer {
   margin-top: auto;
   display: flex;
@@ -869,22 +854,19 @@ h3 {
     width: 54px;
     height: 54px;
   }
-  .fit p {
-    font-size: 13px;
-  }
 }
 
 /* Collapsed cards: clamp the long fields so the footer (activity + "More details") always stays on screen. */
 .card-slot:not(.expanded) .desc {
   display: -webkit-box;
   -webkit-box-orient: vertical;
-  -webkit-line-clamp: 4;
+  -webkit-line-clamp: 7;
   overflow: hidden;
 }
 .card-slot:not(.expanded) .facts dd {
   display: -webkit-box;
   -webkit-box-orient: vertical;
-  -webkit-line-clamp: 2;
+  -webkit-line-clamp: 3;
   overflow: hidden;
 }
 .club-card footer {
@@ -896,10 +878,10 @@ h3 {
 }
 @media (max-height: 760px) {
   .card-slot:not(.expanded) .desc {
-    -webkit-line-clamp: 2;
+    -webkit-line-clamp: 4;
   }
   .card-slot:not(.expanded) .facts dd {
-    -webkit-line-clamp: 1;
+    -webkit-line-clamp: 2;
   }
   .facts {
     gap: 6px;
@@ -1086,13 +1068,6 @@ h1 .gold {
 .empty-state,
 .persona {
   backdrop-filter: blur(8px);
-}
-@media (max-height: 700px) {
-  /* SE-sized screens: one clean line of description so "why it fits" shows in full */
-  .card-slot:not(.expanded) .desc {
-    -webkit-line-clamp: 1;
-    flex: none;
-  }
 }
 
 /* matches: big, separate blocks per club; extra detail tucked behind "More info" */

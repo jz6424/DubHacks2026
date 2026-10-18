@@ -45,7 +45,7 @@ export function ClubCard({ card: c, expanded, onToggle }: Props) {
         </div>
       </header>
 
-      <p className="desc">{expanded ? c.description : short(c.description, 150)}</p>
+      <p className="desc">{c.description}</p>
 
       <dl className="facts">
         <div>
@@ -70,11 +70,6 @@ export function ClubCard({ card: c, expanded, onToggle }: Props) {
           <dd className={c.join_type === "unknown" ? "dim" : ""}>{JOIN[c.join_type]}</dd>
         </div>
       </dl>
-
-      <div className="fit">
-        <span className="fit-label">✨ Why it fits you</span>
-        <p>{c.fit_reason}</p>
-      </div>
 
       <footer>
         <span className={`status ${STATUS[c.status].tone}`}>
