@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { ApiError, api } from "./api";
 import logo from "./assets/logo.png";
+import { ClubFinder } from "./ClubFinder";
 import { DemoIntro } from "./DemoIntro";
 import { Matches } from "./Matches";
 import { Onboarding } from "./Onboarding";
@@ -34,6 +35,7 @@ export default function App() {
   const [swipes, setSwipesState] = useState<Swipe[]>([]);
   const [penalties, setPenaltiesState] = useState<Penalty[]>([]);
   const [error, setError] = useState<string | null>(null);
+  const [finding, setFinding] = useState(false); // home-page club lookup is showing results
   const [limited, setLimited] = useState<string | null>(null); // server refused a new search (daily limits)
 
   useEffect(() => store.set("hm.screen", screen), [screen]);
@@ -41,7 +43,10 @@ export default function App() {
   useEffect(() => store.set("hm.job", jobId), [jobId]);
 
   useEffect(() => {
-    api.options().then(setOptions).catch((e) => setError(String(e.message ?? e)));
+    api
+      .options()
+      .then(setOptions)
+      .catch((e) => setError(String(e.message ?? e)));
   }, []);
 
   // Swipes and "show fewer" rules are per job, so a refresh (or reopening on the same device) keeps your place.
@@ -158,31 +163,42 @@ export default function App() {
             <h1>
               Find your people <span className="gold">at UW</span>
             </h1>
-            <p className="lede">
-              Tell us what you're into. We research real, currently active student clubs, then you swipe: right to join, left to pass.
-            </p>
-            <ul className="how">
-              <li>
-                <span>1</span> Answer a few quick questions
-              </li>
-              <li>
-                <span>2</span> We check HuskyLink, club sites and public posts
-              </li>
-              <li>
-                <span>3</span> Swipe, then get how to join, time, cost and contacts
-              </li>
-            </ul>
-            <button type="button" className="primary big" onClick={() => setScreen("onboarding")} disabled={!options}>
-              Get started
-            </button>
-            <button type="button" className="ghost" onClick={tryDemo}>
-              Try the demo (CS sophomore)
-            </button>
+            <ClubFinder onActive={setFinding} />
+            {!finding && (
+              <>
+                <p className="lede">
+                  Tell us what you're into. We research real, currently active student clubs, then you swipe: right to join, left to pass.
+                </p>
+                <ul className="how">
+                  <li>
+                    <span>1</span> Answer a few quick questions
+                  </li>
+                  <li>
+                    <span>2</span> We check HuskyLink, club sites and public posts
+                  </li>
+                  <li>
+                    <span>3</span> Swipe, then get how to join, time, cost and contacts
+                  </li>
+                </ul>
+                <button type="button" className="primary big" onClick={() => setScreen("onboarding")} disabled={!options}>
+                  Get started
+                </button>
+                <button type="button" className="ghost" onClick={tryDemo}>
+                  Try the demo (CS sophomore)
+                </button>
+              </>
+            )}
           </section>
         )}
 
         {screen === "onboarding" && options && (
-          <Onboarding options={options} profile={profile} onChange={setProfile} onDone={() => setScreen("confirm")} onBack={() => setScreen("welcome")} />
+          <Onboarding
+            options={options}
+            profile={profile}
+            onChange={setProfile}
+            onDone={() => setScreen("confirm")}
+            onBack={() => setScreen("welcome")}
+          />
         )}
 
         {screen === "confirm" && <Confirm profile={profile} onEdit={() => setScreen("onboarding")} onGo={() => startResearch()} />}
@@ -229,7 +245,8 @@ export default function App() {
             )}
             <div className="found">
               <div className="found-count">
-                <strong>{found.length}</strong> club{found.length === 1 ? "" : "s"} found
+                <strong>{found.length}</strong> club
+                {found.length === 1 ? "" : "s"} found
               </div>
               <div className="found-list">
                 {found.map((c) => (
@@ -290,7 +307,9 @@ export default function App() {
                 onPenalties={setPenalties}
                 onSeeMatches={() => setScreen("matches")}
                 campus={job.profile.campus ?? "seattle"}
-                onAddCard={(c) => setJob((j) => (j && !j.cards.some((x) => x.club_id === c.club_id) ? { ...j, cards: [...j.cards, c] } : j))}
+                onAddCard={(c) =>
+                  setJob((j) => (j && !j.cards.some((x) => x.club_id === c.club_id) ? { ...j, cards: [...j.cards, c] } : j))
+                }
               />
             )}
           </>
@@ -308,7 +327,9 @@ export default function App() {
         )}
       </main>
 
-      <footer className="foot">Student project · Not affiliated with or endorsed by the University of Washington · Info may be out of date: confirm with each club.</footer>
+      <footer className="foot">
+        Student project · Not affiliated with or endorsed by the University of Washington · Info may be out of date: confirm with each club.
+      </footer>
     </div>
   );
 }
@@ -341,7 +362,9 @@ function Confirm({ profile, onEdit, onGo }: { profile: Profile; onEdit: () => vo
     <section className="screen confirm">
       <h2>Does this sound like you?</h2>
       <pre className="summary">{summary ?? "…"}</pre>
-      <p className="muted small">We'll research clubs that fit. It takes a few minutes, and you can start swiping as soon as a few are ready.</p>
+      <p className="muted small">
+        We'll research clubs that fit. It takes a few minutes, and you can start swiping as soon as a few are ready.
+      </p>
       <div className="nav">
         <button type="button" className="ghost" onClick={onEdit}>
           ← Edit answers
