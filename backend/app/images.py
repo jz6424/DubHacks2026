@@ -7,6 +7,8 @@ connection (redirects included) must resolve to public IPs only.
     python -m app.images backfill [--refetch] [job_id ...]   fetch media for catalog clubs and jobs (default: all)
     python -m app.images show [name filter]                  print chosen photos and logo per club, with sources
     python -m app.images sheet OUT.jpg [name filter]         contact sheet of the same, to eyeball quality
+    python -m app.images move "FROM club" "TO club"          hand a club's photos (and logo, if TO has none) to another
+                                                             club; pins both so re-fetches leave them alone
 """
 import hashlib
 import http.client
@@ -495,6 +497,8 @@ def _db() -> sqlite3.Connection:
     con = sqlite3.connect(CATALOG_DB, timeout=10)
     con.execute("PRAGMA journal_mode=WAL")
     con.executescript(SCHEMA)
+    if "pinned" not in {r[1] for r in con.execute("PRAGMA table_info(club_media)")}:
+        con.execute("ALTER TABLE club_media ADD COLUMN pinned INTEGER NOT NULL DEFAULT 0")
     return con
 
 
@@ -542,8 +546,10 @@ def ensure(campus: str, card: dict, refetch: bool = False) -> dict:
         return {"photos": [], "logo": {}}
     with _lock_for(campus, key):
         with closing(_db()) as con:
-            row = con.execute("SELECT photos, logo, fetched_at FROM club_media WHERE campus = ? AND key = ?",
+            row = con.execute("SELECT photos, logo, fetched_at, pinned FROM club_media WHERE campus = ? AND key = ?",
                               (campus, key)).fetchone()
+            if row and row[3]:  # set by hand (move): never re-fetched
+                return {"photos": json.loads(row[0]), "logo": json.loads(row[1])}
             if row and not refetch:
                 photos, logo = json.loads(row[0]), json.loads(row[1])
                 if photos or logo or time.time() - row[2] < CATALOG_MAX_AGE_DAYS * 86400:
@@ -568,8 +574,8 @@ def ensure(campus: str, card: dict, refetch: bool = False) -> dict:
         photos = [_store(campus, key, p) for p in found_photos]
         logo = _store(campus, key, found_logo) if found_logo else {}
         with closing(_db()) as con, con:
-            con.execute("INSERT OR REPLACE INTO club_media VALUES (?,?,?,?,?)",
-                        (campus, key, json.dumps(photos), json.dumps(logo), time.time()))
+            con.execute("INSERT OR REPLACE INTO club_media (campus, key, photos, logo, fetched_at, pinned) "
+                        "VALUES (?,?,?,?,?,0)", (campus, key, json.dumps(photos), json.dumps(logo), time.time()))
         return {"photos": photos, "logo": logo}
 
 
@@ -651,12 +657,34 @@ def sheet(out: str, name_filter: str = "") -> None:
     print(f"wrote {out} ({len(rows)} clubs)")
 
 
+def move(src_name: str, dst_name: str, campus: str = "seattle") -> None:
+    """Give src's photos (and its logo, if dst has none) to dst, e.g. a photo a sister club claimed first from a shared
+    website. Both rows are pinned so later backfills (even --refetch) keep this by-hand choice."""
+    src, dst = norm(src_name), norm(dst_name)
+    with closing(_db()) as con, con:
+        get = lambda k: con.execute("SELECT photos, logo FROM club_media WHERE campus = ? AND key = ?",  # noqa: E731
+                                    (campus, k)).fetchone() or ("[]", "{}")
+        sp, sl = map(json.loads, get(src))
+        dp, dl = map(json.loads, get(dst))
+        have = {p["file"] for p in dp}
+        dp = [p for p in sp if p["file"] not in have] + dp  # moved photos first: they're why this was done by hand
+        if not dl and sl:
+            dl, sl = sl, {}
+        for k, photos, logo in ((src, [], sl), (dst, dp[:MAX_PHOTOS], dl)):
+            con.execute("INSERT OR REPLACE INTO club_media (campus, key, photos, logo, fetched_at, pinned) "
+                        "VALUES (?,?,?,?,?,1)", (campus, k, json.dumps(photos), json.dumps(logo), time.time()))
+    print(f"{dst}: {len(dp[:MAX_PHOTOS])} photos, {'logo' if dl else 'no logo'} (pinned); "
+          f"{src}: 0 photos, {'logo' if sl else 'no logo'} (pinned)")
+
+
 if __name__ == "__main__":
     args = sys.argv[1:]
     if args[:1] == ["backfill"]:
         backfill([a for a in args[1:] if a != "--refetch"], refetch="--refetch" in args)
     elif args[:1] == ["show"]:
         show(" ".join(args[1:]))
+    elif args[:1] == ["move"] and len(args) == 3:
+        move(args[1], args[2])
     elif args[:1] == ["sheet"] and len(args) >= 2:
         sheet(args[1], " ".join(args[2:]))
     else:
