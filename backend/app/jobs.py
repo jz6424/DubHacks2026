@@ -363,19 +363,57 @@ def draft(job_id: str, club_id: str) -> str:
     return text
 
 
+def present(campus: str, cards: list[dict]) -> list[dict]:
+    """Cards as the frontend gets them: shared club media plus status (also fixes pre-"unverified" jobs), detail
+    level, and image = photos[0] or logo for older clients."""
+    media = images.lookup(campus, [c["name"] for c in cards])
+    out = []
+    for c in cards:
+        m = media.get(_norm(c["name"]), {})
+        photos, logo = m.get("photos", []), m.get("logo", "")
+        out.append({**c, "status": card_status(c), "photos": photos, "logo": logo,
+                    "image": photos[0] if photos else logo, "detail": detail_level(c)})
+    return out
+
+
 def public(job: dict) -> dict:
     """What the frontend gets: everything except bulky internals."""
     out = {k: job[k] for k in ("id", "status", "summary", "profile", "cards", "actions", "usage", "error",
                                "researchers")} | {"running": is_running(job["id"]), "created": job.get("created")}
-    media = images.lookup(catalog.campus_of(job["profile"]), [c["name"] for c in job["cards"]])
-    out["cards"] = []
-    for c in job["cards"]:
-        m = media.get(_norm(c["name"]), {})
-        photos, logo = m.get("photos", []), m.get("logo", "")
-        # status: also fixes pre-"unverified" jobs; image: photos[0] or logo, for older clients
-        out["cards"].append({**c, "status": card_status(c), "photos": photos, "logo": logo,
-                             "image": photos[0] if photos else logo, "detail": detail_level(c)})
+    out["cards"] = present(catalog.campus_of(job["profile"]), job["cards"])
     return out
+
+
+def search_catalog(campus: str, q: str, limit: int = 20) -> list[dict]:
+    """Catalog clubs for the search sheet, in job-card shape with neutral per-student fields."""
+    return present(campus, [{**c, "fit_reason": "", "wildcard": False} for c in catalog.search(campus, q, limit)])
+
+
+def add_from_catalog(job_id: str, club_id: str) -> dict | None:
+    """Put a searched catalog club into the job's deck (no model calls), or return the job's existing card for it.
+    None if the club isn't in the catalog for the job's campus."""
+    job = load(job_id)
+    campus = catalog.campus_of(job["profile"])
+    club = catalog.by_club_id(campus, club_id)
+    if not club:
+        return None
+    result = {}
+
+    def put(j):
+        same = next((c for c in j["cards"] if _norm(c["name"]) == _norm(club["name"])), None)
+        if same:
+            result["card"] = same
+            return
+        card = {**club, "fit_reason": "", "wildcard": False, "from_search": True}
+        if any(c["club_id"] == card["club_id"] for c in j["cards"]):
+            card["club_id"] += f"-{len(j['cards'])}"
+        j["cards"].append(card)
+        j["actions"] = (j["actions"] + [f"🔍 Added {card['name']} from search"])[-40:]
+        result["card"] = card
+
+    _update(job_id, put)
+    images.ensure_async(campus, result["card"])  # no-op if it already has media
+    return present(campus, [result["card"]])[0]
 
 
 def any_running() -> bool:

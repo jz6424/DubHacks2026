@@ -84,3 +84,52 @@ def known(campus: str, interests: list[str], identity_ok: bool, limit: int = 40)
 def stats() -> dict:
     with closing(_db()) as con:
         return dict(con.execute("SELECT campus, count(*) FROM clubs GROUP BY campus").fetchall())
+
+
+def _compact(text: str) -> str:
+    return re.sub(r"[^a-z0-9]", "", (text or "").lower())
+
+
+def by_club_id(campus: str, club_id: str) -> dict | None:
+    """One catalog club (with interest tags) by the club_id search returned."""
+    with closing(_db()) as con:
+        row = con.execute("SELECT c.card, (SELECT json_group_array(interest) FROM club_interests t WHERE "
+                          "t.campus = c.campus AND t.key = c.key) FROM clubs c WHERE c.campus = ? AND c.club_id = ?",
+                          (campus, club_id)).fetchone()
+    return {**json.loads(row[0]), "interest_areas": json.loads(row[1])} if row else None
+
+
+def search(campus: str, q: str, limit: int = 20) -> list[dict]:
+    """Clubs matching a student's search, all catalog entries (expired ones are still real clubs), with their
+    interest tags. Ranked: name prefix, name substring, then category/description words; fresh or seeded first
+    within each rank. Identity-based clubs are included: a direct search is the student asking."""
+    q = (q or "").strip()[:100]
+    if len(q) < 2:
+        return []
+    cq, nq = _compact(q), norm(q)
+    words = [w for w in re.findall(r"[a-z0-9]+", q.lower()) if len(w) >= 2]
+    cutoff = time.time() - CATALOG_MAX_AGE_DAYS * 86400
+    with closing(_db()) as con:
+        rows = con.execute(
+            "SELECT c.card, c.fetched_at, c.seeded, (SELECT json_group_array(interest) FROM club_interests t "
+            "  WHERE t.campus = c.campus AND t.key = c.key) FROM clubs c WHERE c.campus = ?", (campus,)).fetchall()
+    hits = []
+    for card, fetched_at, seeded, tags in rows:
+        card = json.loads(card)
+        name = card.get("name", "")
+        # Match within words (and hyphen-joined ones: "C-Squared" -> csquared), never across word boundaries
+        # ("Solar Car UW" must not match "aruw").
+        name_words = re.findall(r"[a-z0-9]+", name.lower())
+        tokens = name_words + [_compact(t) for t in re.findall(r"[\w-]+", name.lower()) if "-" in t]
+        spaced, qs = " ".join(name_words), " ".join(re.findall(r"[a-z0-9]+", q.lower()))
+        if spaced.startswith(qs) or any(t.startswith(cq) for t in tokens) or (nq and norm(name).startswith(nq)):
+            rank = 0
+        elif qs in spaced or any(cq in t for t in tokens):
+            rank = 1
+        elif words and all(w in f"{card.get('category', '')} {card.get('description', '')}".lower() for w in words):
+            rank = 2
+        else:
+            continue
+        stale = 0 if (seeded or fetched_at > cutoff) else 1
+        hits.append(((rank, stale, name.lower()), {**card, "interest_areas": json.loads(tags)}))
+    return [c for _, c in sorted(hits, key=lambda h: h[0])[:limit]]

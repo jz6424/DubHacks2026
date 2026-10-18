@@ -28,6 +28,26 @@ def catalog_stats() -> dict:
     return {"clubs": catalog.stats(), "spend": limits.status()}
 
 
+@app.get("/api/catalog/search")
+def catalog_search(q: str = "", campus: Literal["seattle", "bothell", "tacoma"] = "seattle", limit: int = 20) -> dict:
+    """Search all catalog clubs by name, category or description; same card shape as jobs, neutral fit_reason."""
+    return {"clubs": jobs.search_catalog(campus, q, max(1, min(limit, 50)))}
+
+
+class FromCatalog(BaseModel):
+    club_id: str
+
+
+@app.post("/api/jobs/{job_id}/cards/from-catalog")
+def card_from_catalog(job_id: str, body: FromCatalog) -> dict:
+    """Add a searched catalog club to this job's deck (no model calls), or return the card it already has."""
+    _job(job_id)
+    card = jobs.add_from_catalog(job_id, body.club_id)
+    if not card:
+        raise HTTPException(404, "no such club in the catalog")
+    return card
+
+
 @app.post("/api/summary")
 def summary(profile: Profile) -> dict:
     return {"summary": profile.summary(), "key": profile.key()}
