@@ -54,7 +54,9 @@ given, and hand each club to the app with the add_club_card tool.
 - Only include identity-based clubs if the student's interests include "Cultural/identity-based communities".
 - Respect the student's dues budget, commitment level and experience preference when choosing clubs. With strict
   preferences, near-misses are expected: a club that misses one (small dues, a bit more time, a light application)
-  is fine if fit_reason says so plainly. Prefer a near-miss over coming back short.
+  is fine if fit_reason says so in a few words. Prefer a near-miss over coming back short.
+- fit_reason is ONE short sentence (at most 18 words) that names the one or two strongest matches with the student's
+  answers. It is shown on the card front, so anything longer gets cut off.
 - Budget: roughly 10 web searches and 10 page fetches for your whole slice. Keep going until you've added your
   target number of cards or used the budget, then stop and reply with one short sentence.
 - If add_club_card answers that a club is a duplicate, pick a different club.
@@ -120,7 +122,7 @@ CARD_SCHEMA: dict = {
         "dues": {"type": "string"},
         "meeting_schedule": {"type": "string"},
         "join_type": {"type": "string", "enum": ["open", "application", "tryout", "interview", "unknown"]},
-        "fit_reason": {"type": "string", "description": "why it fits this student, tied to their answers"},
+        "fit_reason": {"type": "string", "description": "ONE short sentence (at most 18 words) naming the one or two strongest matches with this student's answers, e.g. \"Weekend robot builds that give a CS sophomore real résumé projects.\" No lists, no hedging; mention a near-miss only if it matters."},
         "wildcard": {"type": "boolean"},
         "interest_areas": {"type": "array", "items": {"type": "string", "enum": INTERESTS},
                            "description": "every app interest area this club fits"},
@@ -162,7 +164,7 @@ USE_KNOWN_TOOL = {
     "input_schema": {
         "type": "object", "additionalProperties": False, "required": ["club_id", "fit_reason", "wildcard"],
         "properties": {"club_id": {"type": "string", "description": "club_id exactly as listed in known clubs"},
-                       "fit_reason": {"type": "string", "description": "why it fits this student, tied to their answers"},
+                       "fit_reason": {"type": "string", "description": "ONE short sentence (at most 18 words) naming the one or two strongest matches with this student's answers, e.g. \"Weekend robot builds that give a CS sophomore real résumé projects.\" No lists, no hedging; mention a near-miss only if it matters."},
                        "wildcard": {"type": "boolean"}},
     },
 }

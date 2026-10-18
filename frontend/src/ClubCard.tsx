@@ -73,7 +73,7 @@ export function ClubCard({ card: c, expanded, onToggle }: Props) {
 
       <div className="fit">
         <span className="fit-label">✨ Why it fits you</span>
-        <p>{expanded ? c.fit_reason : short(c.fit_reason, 170)}</p>
+        <p>{c.fit_reason}</p>
       </div>
 
       <footer>

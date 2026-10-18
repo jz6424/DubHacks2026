@@ -36,7 +36,7 @@ Show one card at a time:
 🏷️ [CLUB NAME] [category emoji + category]
 📝 1–2 sentence description
 ⏱️ Commitment [tier + hrs/wk] | 💵 Dues | 📅 Meets | 🚪 Joining: Open/Application/Tryout
-✨ Why it fits you (tied to their answers)
+✨ Why it fits you (one short sentence, the 1–2 strongest matches with their answers)
 🟢 Last active: date + source
 👉 Right | 👈 Left | ⭐ Super-like | ❓ Tell me more
 Handling:

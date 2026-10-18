@@ -875,8 +875,7 @@ h3 {
 }
 
 /* Collapsed cards: clamp the long fields so the footer (activity + "More details") always stays on screen. */
-.card-slot:not(.expanded) .desc,
-.card-slot:not(.expanded) .fit p {
+.card-slot:not(.expanded) .desc {
   display: -webkit-box;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 4;
@@ -896,8 +895,7 @@ h3 {
   flex: none;
 }
 @media (max-height: 760px) {
-  .card-slot:not(.expanded) .desc,
-  .card-slot:not(.expanded) .fit p {
+  .card-slot:not(.expanded) .desc {
     -webkit-line-clamp: 2;
   }
   .card-slot:not(.expanded) .facts dd {
@@ -1088,4 +1086,11 @@ h1 .gold {
 .empty-state,
 .persona {
   backdrop-filter: blur(8px);
+}
+@media (max-height: 700px) {
+  /* SE-sized screens: one clean line of description so "why it fits" shows in full */
+  .card-slot:not(.expanded) .desc {
+    -webkit-line-clamp: 1;
+    flex: none;
+  }
 }

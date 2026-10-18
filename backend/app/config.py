@@ -23,7 +23,7 @@ _load_env()
 
 MODEL = os.environ.get("HUSKYMATCH_MODEL", "claude-opus-5-5")
 RESEARCHERS = int(os.environ.get("HUSKYMATCH_RESEARCHERS", "3"))  # parallel research agents per student
-TARGET_CARDS = int(os.environ.get("HUSKYMATCH_TARGET_CARDS", "18"))
+TARGET_CARDS = int(os.environ.get("HUSKYMATCH_TARGET_CARDS", "13"))  # aim for 10–15 cards per student
 CATALOG_MAX_AGE_DAYS = float(os.environ.get("HUSKYMATCH_CATALOG_DAYS", "14"))  # older catalog entries get re-researched
 LIMITS_DB = DATA / "limits.db"
 MAX_JOBS_PER_IP_PER_DAY = int(os.environ.get("HUSKYMATCH_MAX_JOBS_PER_IP_PER_DAY", "3"))  # new research runs per visitor
