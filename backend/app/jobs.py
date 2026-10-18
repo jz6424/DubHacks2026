@@ -11,7 +11,7 @@ from concurrent.futures import ThreadPoolExecutor
 from datetime import date
 from typing import Any
 
-from . import catalog, claude, limits
+from . import catalog, claude, images, limits
 from .config import JOBS, RESEARCHERS, TARGET_CARDS
 from .profile import IDENTITY_INTEREST, INTERESTS, Profile
 
@@ -164,6 +164,7 @@ def _run(job_id: str) -> None:
                     catalog.upsert(campus, card)
                 except Exception:  # noqa: BLE001 - the catalog is a cache; never lose a card over it
                     traceback.print_exc()
+            images.ensure_async(campus, card)  # no-op if the club already has one; cards gain it on a later poll
             result = {}
 
             def put(j):
@@ -325,7 +326,9 @@ def public(job: dict) -> dict:
     """What the frontend gets: everything except bulky internals."""
     out = {k: job[k] for k in ("id", "status", "summary", "profile", "cards", "actions", "usage", "error",
                                "researchers")} | {"running": is_running(job["id"]), "created": job.get("created")}
-    out["cards"] = [{**c, "status": card_status(c)} for c in job["cards"]]  # also fixes jobs saved before "unverified"
+    pics = images.lookup(catalog.campus_of(job["profile"]), [c["name"] for c in job["cards"]])
+    out["cards"] = [{**c, "status": card_status(c), "image": pics.get(_norm(c["name"]), "")}  # status: also fixes
+                    for c in job["cards"]]                                                  # pre-"unverified" jobs
     return out
 
 

@@ -2,10 +2,14 @@
 from typing import Literal
 
 import anthropic
+import re
+
 from fastapi import FastAPI, HTTPException, Request
+from fastapi.responses import FileResponse
 from pydantic import BaseModel
 
 from . import catalog, jobs, limits
+from .config import IMAGES
 from .profile import BUDGET_LABEL, COMMITMENT_LABEL, GOALS, INTERESTS, Profile
 
 app = FastAPI(title="Me&UDub")
@@ -104,3 +108,13 @@ def draft(job_id: str, club_id: str) -> dict:
     job = _job(job_id)
     _card(job, club_id)
     return {"text": _call(jobs.draft, job_id, club_id)}
+
+
+@app.get("/api/images/{name}")
+def image(name: str) -> FileResponse:
+    """Club photos. Names carry a content hash, so they can be cached forever; always JPEGs we re-encoded ourselves."""
+    if not re.fullmatch(r"[a-z]+-[a-z0-9]+-[0-9a-f]{8}\.jpg", name) or not (IMAGES / name).is_file():
+        raise HTTPException(404, "no such image")
+    return FileResponse(IMAGES / name, media_type="image/jpeg",
+                        headers={"Cache-Control": "public, max-age=31536000, immutable",
+                                 "X-Content-Type-Options": "nosniff"})
