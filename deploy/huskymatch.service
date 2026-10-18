@@ -1,5 +1,5 @@
 [Unit]
-Description=HuskyMatch API
+Description=Me&UDub API
 After=network-online.target
 Wants=network-online.target
 

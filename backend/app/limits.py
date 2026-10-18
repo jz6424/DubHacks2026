@@ -10,7 +10,7 @@ from datetime import datetime, timezone
 from .config import DAILY_BUDGET_USD, JOB_COST_RESERVE_USD, LIMITS_DB, MAX_JOBS_PER_IP_PER_DAY
 
 LIMIT_MSG = "You've hit today's limit for new searches. Try the demo, or come back tomorrow."
-BUDGET_MSG = "HuskyMatch has used up today's research budget. Try the demo, or come back tomorrow."
+BUDGET_MSG = "Me&UDub has used up today's research budget. Try the demo, or come back tomorrow."
 
 SCHEMA = """
 CREATE TABLE IF NOT EXISTS job_starts (day TEXT NOT NULL, ip TEXT NOT NULL, job_id TEXT NOT NULL, at REAL NOT NULL);

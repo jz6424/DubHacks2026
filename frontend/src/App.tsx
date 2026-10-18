@@ -138,7 +138,7 @@ export default function App() {
       </div>
       <header className="topbar">
         <button type="button" className="brand" onClick={() => setScreen(jobId ? "swipe" : "welcome")}>
-          <span aria-hidden>💜</span> HuskyMatch
+          <span aria-hidden>💜</span> Me&amp;UDub
         </button>
         {jobId && screen !== "welcome" && (
           <button type="button" className="ghost small" onClick={startOver}>

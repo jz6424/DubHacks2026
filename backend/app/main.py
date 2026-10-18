@@ -1,4 +1,4 @@
-"""HuskyMatch API."""
+"""Me&UDub API."""
 from typing import Literal
 
 import anthropic
@@ -8,7 +8,7 @@ from pydantic import BaseModel
 from . import catalog, jobs, limits
 from .profile import BUDGET_LABEL, COMMITMENT_LABEL, GOALS, INTERESTS, Profile
 
-app = FastAPI(title="HuskyMatch")
+app = FastAPI(title="Me&UDub")
 
 
 @app.get("/api/options")
@@ -70,7 +70,7 @@ def _call(fn, *args):
     except limits.LimitHit as e:
         raise HTTPException(429, str(e))
     except anthropic.RateLimitError:
-        raise HTTPException(429, "HuskyMatch is busy right now; try again in a minute.")
+        raise HTTPException(429, "Me&UDub is busy right now; try again in a minute.")
     except anthropic.APIStatusError as e:
         raise HTTPException(502, f"model error ({e.status_code})")
     except anthropic.APIConnectionError:

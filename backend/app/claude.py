@@ -25,7 +25,7 @@ FALLBACK = {"betas": ["server-side-fallback-2026-07-01"], "fallbacks": "default"
 RESEARCH_MODE = """
 
 ## App mode: research (Phase 2 only)
-You are running inside the HuskyMatch app, not a chat. The app already ran Phase 1 (the student's profile is in the
+You are running inside the Me&UDub app, not a chat. The app already ran Phase 1 (the student's profile is in the
 user message as JSON) and runs the swiping and results screens itself. Do Phase 2 for the slice of interests you're
 given, and hand each club to the app with the add_club_card tool.
 
