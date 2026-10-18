@@ -71,6 +71,8 @@ def vet_card(card: dict, check_thin: bool = True, allow_partial: bool = False) -
     return card, (thin_card(card, allow_partial) if check_thin else None)
 
 
+MIN_FIT_SCORE = 40  # below this a card isn't added (the tool description says so too)
+KNOWN_LIMIT = 150  # every catalog club for a slice (typically 20-46, ~2-9k tokens, cached after the first turn)
 CATALOG_ONLY_MARGIN = 3  # a researcher with this many more known clubs than its share skips web search
 
 
@@ -171,7 +173,7 @@ def _run(job_id: str) -> None:
         taken: set[str] = set()
         for part in parts:
             mine = {}
-            for c in catalog.known(campus, part, profile.identity_opt_in()):
+            for c in catalog.known(campus, part, profile.identity_opt_in(), limit=KNOWN_LIMIT):
                 if _norm(c["name"]) not in taken and not thin_card(c, allow_partial=True):  # 1-source ones predate it
                     taken.add(_norm(c["name"]))
                     mine[c["club_id"]] = c
@@ -182,7 +184,7 @@ def _run(job_id: str) -> None:
         if catalog_only[0]:  # its wildcard then also comes from the catalog: a few clubs from other areas
             others = [x for x in INTERESTS if x not in profile.interests and x != IDENTITY_INTEREST]
             for c in catalog.known(campus, others, False, limit=12):
-                if _norm(c["name"]) not in taken and not thin_card(c, allow_partial=True) and len(known[0]) < 46:
+                if _norm(c["name"]) not in taken and not thin_card(c, allow_partial=True) and len(known[0]) < KNOWN_LIMIT:
                     taken.add(_norm(c["name"]))
                     known[0][c["club_id"]] = c
         if taken:
@@ -196,6 +198,11 @@ def _run(job_id: str) -> None:
                 return (f"Not added: you've already reached your target of {caps[i]} cards. "
                         "Stop now and reply with one short sentence.")
             card, why = vet_card(card, check_thin=not reused)
+            if isinstance(card.get("fit_score"), (int, float)):
+                card["fit_score"] = max(0, min(100, int(card["fit_score"])))
+                if card["fit_score"] < MIN_FIT_SCORE and not why:
+                    return (f"Not added: a fit_score of {card['fit_score']} means it doesn't fit this student "
+                            f"(below {MIN_FIT_SCORE}). Skip it.")
             if why:
                 on_action(f"↩️ Sent back {card['name']} for more detail")
                 return why
@@ -234,11 +241,12 @@ def _run(job_id: str) -> None:
             _update(job_id, lambda j: j.__setitem__("actions", (j["actions"] + [text])[-40:]))
             book_cost()
 
-        def use_known(i: int, club_id: str, fit_reason: str, wildcard: bool) -> str:
+        def use_known(i: int, club_id: str, fit_reason: str, wildcard: bool, fit_score: int | None = None) -> str:
             club = known[i].get(club_id)
             if not club:
                 return f"No known club with club_id {club_id!r}; use a club_id from the known clubs list."
-            return add_card(i, {**club, "fit_reason": fit_reason, "wildcard": wildcard}, reused=True)
+            return add_card(i, {**club, "fit_reason": fit_reason, "wildcard": wildcard, "fit_score": fit_score},
+                            reused=True)
 
         def worker(i: int) -> str:
             try:
@@ -246,7 +254,7 @@ def _run(job_id: str) -> None:
                                        add_card=lambda card: add_card(i, card),
                                        on_action=on_action, usage=usage, should_stop=lambda: False,
                                        known=list(known[i].values()),
-                                       use_known=lambda cid, why, wild: use_known(i, cid, why, wild),
+                                       use_known=lambda cid, why, wild, score=None: use_known(i, cid, why, wild, score),
                                        catalog_only=catalog_only[i])
             except Exception as e:  # noqa: BLE001 - one failed researcher shouldn't sink the others
                 traceback.print_exc()

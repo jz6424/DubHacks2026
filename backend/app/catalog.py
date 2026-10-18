@@ -10,7 +10,9 @@ from contextlib import closing
 from .config import CATALOG_DB, CATALOG_MAX_AGE_DAYS
 from .profile import IDENTITY_INTEREST
 
-PER_STUDENT = ("fit_reason", "wildcard", "interest_areas")  # not facts about the club
+FAITH_INTEREST = "Faith/spiritual"
+
+PER_STUDENT = ("fit_reason", "fit_score", "wildcard", "interest_areas")  # not facts about the club
 
 SCHEMA = """
 CREATE TABLE IF NOT EXISTS clubs (
@@ -75,7 +77,9 @@ def known(campus: str, interests: list[str], identity_ok: bool, limit: int = 40)
     out = []
     for _, card, tags in rows:
         tags = json.loads(tags)
-        if IDENTITY_INTEREST in tags and not identity_ok:
+        # Identity-based clubs only for students who opted in, except faith communities (Hillel, MSA, ...) for
+        # students who chose Faith: that choice is the opt-in.
+        if IDENTITY_INTEREST in tags and not identity_ok and not (FAITH_INTEREST in tags and FAITH_INTEREST in interests):
             continue
         out.append({**json.loads(card), "interest_areas": tags})
     return out

@@ -62,6 +62,8 @@ given, and hand each club to the app with the add_club_card tool.
   is fine if fit_reason says so in a few words. Prefer a near-miss over coming back short.
 - fit_reason is ONE short sentence (at most 18 words) that names the one or two strongest matches with the student's
   answers. It is shown on the card front, so anything longer gets cut off.
+- fit_score ranks the student's deck: score honestly and use the whole range (a near-miss is ~50, a solid fit ~70,
+  only near-perfect fits 90+); don't give everything 85.
 - Budget: roughly 10 web searches and 10 page fetches for your whole slice. Keep going until you've added your
   target number of cards or used the budget, then stop and reply with one short sentence.
 - If add_club_card answers that a club is a duplicate, pick a different club.
@@ -110,7 +112,7 @@ CARD_SCHEMA: dict = {
     "type": "object",
     "additionalProperties": False,
     "required": ["club_id", "name", "category", "category_emoji", "description", "commitment", "dues",
-                 "meeting_schedule", "join_type", "fit_reason", "wildcard", "status", "last_active", "links",
+                 "meeting_schedule", "join_type", "fit_reason", "fit_score", "wildcard", "status", "last_active", "links",
                  "application", "sources", "interest_areas"],
     "properties": {
         "club_id": {"type": "string", "description": "lowercase-hyphenated slug of the club name"},
@@ -131,6 +133,7 @@ CARD_SCHEMA: dict = {
         "join_type": {"type": "string", "enum": ["open", "application", "tryout", "interview", "unknown"]},
         "fit_reason": {"type": "string", "description": "ONE short sentence (at most 18 words) naming the one or two strongest matches with this student's answers, e.g. \"Weekend robot builds that give a CS sophomore real résumé projects.\" No lists, no hedging; mention a near-miss only if it matters."},
         "wildcard": {"type": "boolean"},
+        "fit_score": {"type": "integer", "description": "0-100: how well this club fits THIS student's answers: interests, commitment, budget, availability, experience, goals. 90+ = near-perfect, 70 = solid, 50 = near-miss, below 40 = don't add it."},
         "interest_areas": {"type": "array", "items": {"type": "string", "enum": INTERESTS},
                            "description": "every app interest area this club fits"},
         "status": {"type": "string", "enum": ["active", "may_be_inactive", "unverified"]},
@@ -169,9 +172,10 @@ USE_KNOWN_TOOL = {
     "description": "Add one of the known (already verified) clubs from the user message as a swipe card for this student.",
     "strict": True,
     "input_schema": {
-        "type": "object", "additionalProperties": False, "required": ["club_id", "fit_reason", "wildcard"],
+        "type": "object", "additionalProperties": False, "required": ["club_id", "fit_reason", "fit_score", "wildcard"],
         "properties": {"club_id": {"type": "string", "description": "club_id exactly as listed in known clubs"},
                        "fit_reason": {"type": "string", "description": "ONE short sentence (at most 18 words) naming the one or two strongest matches with this student's answers, e.g. \"Weekend robot builds that give a CS sophomore real résumé projects.\" No lists, no hedging; mention a near-miss only if it matters."},
+                       "fit_score": {"type": "integer", "description": "0-100: how well this club fits THIS student's answers: interests, commitment, budget, availability, experience, goals. 90+ = near-perfect, 70 = solid, 50 = near-miss, below 40 = don't add it."},
                        "wildcard": {"type": "boolean"}},
     },
 }
@@ -249,10 +253,11 @@ def _stream_turn(params: dict, on_action: Callable[[str], None], usage: Usage):
 def research(profile: dict, slice_interests: list[str], target: int, wildcards: int,
              add_card: Callable[[dict], str], on_action: Callable[[str], None], usage: Usage,
              should_stop: Callable[[], bool], known: list[dict] | None = None,
-             use_known: Callable[[str, str, bool], str] | None = None, catalog_only: bool = False,
+             use_known: Callable[[str, str, bool, int], str] | None = None, catalog_only: bool = False,
              avoid: list[str] | None = None, max_turns: int = 40, max_seconds: float = 420) -> str:
     """One research agent for one slice of interests. Returns how it ended. `known` are fresh catalog clubs for this
-    slice; the agent adds the ones that fit via use_known(club_id, fit_reason, wildcard) instead of searching.
+    slice; the agent adds the ones that fit via use_known(club_id, fit_reason, wildcard, fit_score) instead of
+    searching.
     catalog_only: there are plenty of known clubs, so pick from them with no web tools (fast and cheap).
     avoid: club names already covered elsewhere (catalog seeding), not to be added again."""
     known = known or []
@@ -307,7 +312,7 @@ def research(profile: dict, slice_interests: list[str], target: int, wildcards: 
             elif b.name == "add_club_card":
                 out = add_card(b.input)
             elif b.name == "use_known_club" and use_known:
-                out = use_known(b.input["club_id"], b.input["fit_reason"], b.input["wildcard"])
+                out = use_known(b.input["club_id"], b.input["fit_reason"], b.input["wildcard"], b.input.get("fit_score"))
             else:
                 out = None
             saved += bool(out and out.startswith("Saved"))
