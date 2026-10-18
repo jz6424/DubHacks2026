@@ -1,0 +1,671 @@
+[
+ {
+  "club_id": "mecha-de-uw",
+  "name": "MEChA de UW",
+  "category": "Cultural / Activism",
+  "category_emoji": "✊",
+  "description": "MEChA de UW is UW's chapter of the Movimiento Estudiantil Chicana/Chicano de Aztlán, a Chicano student movement group whose UW roots trace to 1968; its Instagram (@uw.mecha) has about 1,175 followers and 129 posts.",
+  "commitment": {
+   "level": "regular",
+   "hours_per_week": "couldn't confirm",
+   "estimated": true
+  },
+  "dues": "No dues listed (confirm with officers)",
+  "meeting_schedule": "couldn't confirm (the old students.washington.edu/mecha site, last updated around 2011, is out of date)",
+  "join_type": "unknown",
+  "fit_reason": "Chicanx/Latinx students and allies who want community, cultural pride, and student organizing.",
+  "wildcard": false,
+  "status": "unverified",
+  "last_active": {
+   "date": "unknown",
+   "source": "https://www.instagram.com/uw.mecha/"
+  },
+  "links": {
+   "huskylink": "",
+   "website": "",
+   "instagram": "https://www.instagram.com/uw.mecha/"
+  },
+  "application": {
+   "deadline": "unknown",
+   "url": "",
+   "steps": [
+    "DM or follow @uw.mecha on Instagram for meeting info"
+   ]
+  },
+  "sources": [
+   {
+    "url": "https://www.instagram.com/uw.mecha/",
+    "checked": "2026-10-18"
+   },
+   {
+    "url": "https://students.washington.edu/mecha/",
+    "checked": "2026-10-18"
+   },
+   {
+    "url": "https://students.washington.edu/mecha/historyofmecha.html",
+    "checked": "2026-10-18"
+   },
+   {
+    "url": "https://depts.washington.edu/civilr/mecha_documents.htm",
+    "checked": "2026-10-18"
+   }
+  ],
+  "interest_areas": [
+   "Cultural/identity-based communities",
+   "Service/volunteering/activism"
+  ]
+ },
+ {
+  "club_id": "irhr-uw",
+  "name": "Immigrant Rights are Human Rights: Students for La Resistencia",
+  "category": "Activism / Immigrant rights",
+  "category_emoji": "🦋",
+  "description": "A UW student organization that partners with La Resistencia to advocate for the rights and dignity of immigrants detained at the Northwest Detention Center, through student organizing, education, advocacy, and community action.",
+  "commitment": {
+   "level": "casual",
+   "hours_per_week": "couldn't confirm",
+   "estimated": true
+  },
+  "dues": "No dues listed (confirm with officers)",
+  "meeting_schedule": "couldn't confirm",
+  "join_type": "open",
+  "fit_reason": "Students who want hands-on immigrant-justice organizing; no experience needed.",
+  "wildcard": false,
+  "status": "active",
+  "last_active": {
+   "date": "2026-09-28",
+   "source": "https://dawgdaze.uw.edu/event/sip-and-sketch-with-immigrant-rights-are-human-rights-students-for-la-resistencia/"
+  },
+  "links": {
+   "huskylink": "",
+   "website": "",
+   "instagram": "https://www.instagram.com/irhr_uw/"
+  },
+  "application": {
+   "deadline": "unknown",
+   "url": "",
+   "steps": [
+    "Follow @irhr_uw on Instagram",
+    "Come to an event; everyone is welcome"
+   ]
+  },
+  "sources": [
+   {
+    "url": "https://www.instagram.com/irhr_uw/",
+    "checked": "2026-10-18"
+   },
+   {
+    "url": "https://dawgdaze.uw.edu/event/sip-and-sketch-with-immigrant-rights-are-human-rights-students-for-la-resistencia/",
+    "checked": "2026-10-18"
+   },
+   {
+    "url": "https://dawgdaze.uw.edu/event/sip-and-sketch-with-immigrant-rights-are-human-rights-students-for-la-resistencia-2/",
+    "checked": "2026-10-18"
+   },
+   {
+    "url": "https://laresistencianw.org/",
+    "checked": "2026-10-18"
+   },
+   {
+    "url": "https://jsis.washington.edu/humanrights/2023/10/04/keira-henson-deepens-immigrant-rights-solidarity-on-uw-campus/",
+    "checked": "2026-10-18"
+   }
+  ],
+  "interest_areas": [
+   "Cultural/identity-based communities",
+   "Service/volunteering/activism"
+  ]
+ },
+ {
+  "club_id": "blood-cancer-united-uw",
+  "name": "Blood Cancer United UW",
+  "category": "Service / Health",
+  "category_emoji": "🩸",
+  "description": "UW's branch of Blood Cancer United (formerly the Leukemia & Lymphoma Society) supports the fight against blood cancer through volunteer opportunities and fundraising for research and patient care.",
+  "commitment": {
+   "level": "casual",
+   "hours_per_week": "couldn't confirm",
+   "estimated": true
+  },
+  "dues": "No dues listed (confirm with officers)",
+  "meeting_schedule": "couldn't confirm",
+  "join_type": "open",
+  "fit_reason": "Pre-health students or anyone wanting to volunteer and fundraise against blood cancer.",
+  "wildcard": false,
+  "status": "active",
+  "last_active": {
+   "date": "2026-09-28",
+   "source": "https://dawgdaze.uw.edu/event/field-day-with-blood-cancer-united-uw/"
+  },
+  "links": {
+   "huskylink": "",
+   "website": "",
+   "instagram": "https://www.instagram.com/unitedoncampus_uw/"
+  },
+  "application": {
+   "deadline": "unknown",
+   "url": "",
+   "steps": [
+    "Follow @unitedoncampus_uw on Instagram",
+    "Show up to an event; anyone is welcome"
+   ]
+  },
+  "sources": [
+   {
+    "url": "https://www.instagram.com/unitedoncampus_uw/",
+    "checked": "2026-10-18"
+   },
+   {
+    "url": "https://dawgdaze.uw.edu/event/field-day-with-blood-cancer-united-uw/",
+    "checked": "2026-10-18"
+   }
+  ],
+  "interest_areas": [
+   "Service/volunteering/activism"
+  ]
+ },
+ {
+  "club_id": "tzu-chi-collegiate-association-seattle",
+  "name": "Tzu Chi Collegiate Association (TCCA) Seattle Chapter",
+  "category": "Service / Buddhist-affiliated",
+  "category_emoji": "🪷",
+  "description": "Seattle & UW Tzu Ching, tied to the Tzu Chi Foundation, brings students of all backgrounds together to serve the Seattle community through volunteer work, fundraising, and awareness campaigns, such as homeless supply distributions and elder visits.",
+  "commitment": {
+   "level": "casual",
+   "hours_per_week": "couldn't confirm",
+   "estimated": true
+  },
+  "dues": "No dues listed (confirm with officers)",
+  "meeting_schedule": "couldn't confirm",
+  "join_type": "open",
+  "fit_reason": "Students wanting manageable, close-to-campus volunteering in a values-driven community.",
+  "wildcard": false,
+  "status": "active",
+  "last_active": {
+   "date": "2026-09-29",
+   "source": "https://dawgdaze.uw.edu/event/tzu-chi-collegiate-association-tcca-volunteering-shelter-cat-blanket-making/"
+  },
+  "links": {
+   "huskylink": "https://huskylink.washington.edu/organization/tzuchiuw",
+   "website": "",
+   "instagram": "https://www.instagram.com/tzuching_seattle/"
+  },
+  "application": {
+   "deadline": "unknown",
+   "url": "",
+   "steps": [
+    "Follow @tzuching_seattle on Instagram or email uwtzuchingseattle@gmail.com",
+    "Join a volunteer event"
+   ]
+  },
+  "sources": [
+   {
+    "url": "https://www.instagram.com/tzuching_seattle/",
+    "checked": "2026-10-18"
+   },
+   {
+    "url": "https://huskylink.washington.edu/organization/tzuchiuw",
+    "checked": "2026-10-18"
+   },
+   {
+    "url": "https://dawgdaze.uw.edu/event/tzu-chi-collegiate-association-tcca-volunteering-shelter-cat-blanket-making/",
+    "checked": "2026-10-18"
+   }
+  ],
+  "interest_areas": [
+   "Faith/spiritual",
+   "Service/volunteering/activism"
+  ]
+ },
+ {
+  "club_id": "uw-algorithmic-trading-club",
+  "name": "Algorithmic Trading Club @ UW",
+  "category": "Quant finance",
+  "category_emoji": "📈",
+  "description": "ATC (formerly the Financial Engineering Club, est. 2019) is an interdisciplinary community, supported by the Allen School, for students into quantitative finance, with workshops, speakers, trading games, and competitions.",
+  "commitment": {
+   "level": "regular",
+   "hours_per_week": "couldn't confirm",
+   "estimated": true
+  },
+  "dues": "No dues listed (confirm with officers)",
+  "meeting_schedule": "couldn't confirm",
+  "join_type": "application",
+  "fit_reason": "CS, math, and ACMS students aiming for quant trading or research careers.",
+  "wildcard": false,
+  "status": "active",
+  "last_active": {
+   "date": "2026-09-26",
+   "source": "https://dawgdaze.uw.edu/event/trading-games-with-uw-algorithmic-trading-club-2/"
+  },
+  "links": {
+   "huskylink": "",
+   "website": "https://www.atcuw.org/",
+   "instagram": "https://www.instagram.com/atc.uw/"
+  },
+  "application": {
+   "deadline": "unknown",
+   "url": "https://forms.gle/7BZoRUbs7SJaAwpe9",
+   "steps": [
+    "Fill out the APPLY form on atcuw.org",
+    "Follow @atc.uw for events"
+   ]
+  },
+  "sources": [
+   {
+    "url": "https://www.atcuw.org/",
+    "checked": "2026-10-18"
+   },
+   {
+    "url": "https://www.instagram.com/atc.uw/",
+    "checked": "2026-10-18"
+   },
+   {
+    "url": "https://dawgdaze.uw.edu/event/trading-games-with-uw-algorithmic-trading-club/",
+    "checked": "2026-10-18"
+   },
+   {
+    "url": "https://dawgdaze.uw.edu/event/trading-games-with-uw-algorithmic-trading-club-2/",
+    "checked": "2026-10-18"
+   }
+  ],
+  "interest_areas": [
+   "Academic/professional (pre-med, pre-law, business, engineering, CS)",
+   "Research/competitive teams (robotics, case competitions, Model UN)"
+  ]
+ },
+ {
+  "club_id": "phi-delta-epsilon-uw",
+  "name": "Phi Delta Epsilon (WA Alpha Chapter)",
+  "category": "Pre-med fraternity",
+  "category_emoji": "🩺",
+  "description": "UW's chapter of the international medical fraternity (chartered 2016) gives pre-med students mentorship, philanthropy with Seattle Children's Hospital, leadership roles, and a close 'phamily' network.",
+  "commitment": {
+   "level": "committed",
+   "hours_per_week": "couldn't confirm",
+   "estimated": true
+  },
+  "dues": "No dues listed (confirm with officers)",
+  "meeting_schedule": "Mandatory chapter meetings every other week, plus committee work and occasional service/social events",
+  "join_type": "interview",
+  "fit_reason": "Committed pre-med (MD/DO) students wanting mentorship and a tight-knit professional fraternity.",
+  "wildcard": false,
+  "status": "active",
+  "last_active": {
+   "date": "2026-09-29",
+   "source": "https://dawgdaze.uw.edu/event/phi-delta-epsilon-international-medical-fraternity/"
+  },
+  "links": {
+   "huskylink": "",
+   "website": "https://phideuw.org/",
+   "instagram": "https://instagram.com/phideuw"
+  },
+  "application": {
+   "deadline": "unknown",
+   "url": "https://phideuw.org/recruitment/",
+   "steps": [
+    "Join the email interest list on the recruitment page",
+    "Attend at least one fall or spring recruitment event",
+    "If invited, attend the invite-only event and interview"
+   ]
+  },
+  "sources": [
+   {
+    "url": "https://phideuw.org/",
+    "checked": "2026-10-18"
+   },
+   {
+    "url": "https://phideuw.org/recruitment/",
+    "checked": "2026-10-18"
+   },
+   {
+    "url": "https://phideuw.org/frequently-asked-questions/",
+    "checked": "2026-10-18"
+   },
+   {
+    "url": "https://dawgdaze.uw.edu/event/phi-delta-epsilon-international-medical-fraternity/",
+    "checked": "2026-10-18"
+   }
+  ],
+  "interest_areas": [
+   "Academic/professional (pre-med, pre-law, business, engineering, CS)",
+   "Social/Greek life"
+  ]
+ },
+ {
+  "club_id": "uw-investment-group",
+  "name": "UW Investment Group (UWIG)",
+  "category": "Finance / Investing",
+  "category_emoji": "💹",
+  "description": "UWIG (formerly UWFA) is a student-run asset-management club managing two portfolios; members research sectors, build one-pagers with comps and DCFs, and pitch stocks to an Investment Committee each quarter.",
+  "commitment": {
+   "level": "committed",
+   "hours_per_week": "couldn't confirm",
+   "estimated": true
+  },
+  "dues": "No dues listed (confirm with officers)",
+  "meeting_schedule": "Weekly speaker events; sector teams pitch at the week 8 meeting each quarter; attendance requirements apply",
+  "join_type": "interview",
+  "fit_reason": "Students targeting finance careers who want hands-on stock pitching and valuation training.",
+  "wildcard": false,
+  "status": "unverified",
+  "last_active": {
+   "date": "unknown",
+   "source": "https://www.uwinvestmentgroup.com/past-pitches"
+  },
+  "links": {
+   "huskylink": "",
+   "website": "https://www.uwinvestmentgroup.com/",
+   "instagram": "http://www.instagram.com/uw_investmentgroup/"
+  },
+  "application": {
+   "deadline": "unknown (membership closed for Fall; ATP recruits Fall and Spring)",
+   "url": "https://www.uwinvestmentgroup.com/join-us",
+   "steps": [
+    "Submit the Analyst Training Program application",
+    "Interview if selected"
+   ]
+  },
+  "sources": [
+   {
+    "url": "https://www.uwinvestmentgroup.com/",
+    "checked": "2026-10-18"
+   },
+   {
+    "url": "https://www.uwinvestmentgroup.com/join-us",
+    "checked": "2026-10-18"
+   },
+   {
+    "url": "https://www.uwinvestmentgroup.com/uw-investment-group",
+    "checked": "2026-10-18"
+   },
+   {
+    "url": "https://www.uwinvestmentgroup.com/past-pitches",
+    "checked": "2026-10-18"
+   },
+   {
+    "url": "https://www.uwinvestmentgroup.com/pm-quarterly-outlook-investor-letter",
+    "checked": "2026-10-18"
+   },
+   {
+    "url": "http://www.instagram.com/uw_investmentgroup/",
+    "checked": "2026-10-18"
+   }
+  ],
+  "interest_areas": [
+   "Academic/professional (pre-med, pre-law, business, engineering, CS)"
+  ]
+ },
+ {
+  "club_id": "delta-epsilon-mu-uw",
+  "name": "Delta Epsilon Mu (Alpha Kappa Chapter)",
+  "category": "Pre-health fraternity",
+  "category_emoji": "⚕️",
+  "description": "DEM is a professional co-ed pre-health fraternity (UW chapter founded 2017) for students headed into medicine, nursing, dentistry, public health, and more, with philanthropy, professional development, and social bonding.",
+  "commitment": {
+   "level": "committed",
+   "hours_per_week": "10-15",
+   "estimated": false
+  },
+  "dues": "Dues set by chapter and national; amounts not listed (confirm with officers)",
+  "meeting_schedule": "couldn't confirm",
+  "join_type": "interview",
+  "fit_reason": "Pre-health students of any track wanting a service-minded professional fraternity family.",
+  "wildcard": false,
+  "status": "active",
+  "last_active": {
+   "date": "2026-09-28",
+   "source": "https://dawgdaze.uw.edu/event/delta-epsilon-mu-pre-health-fraternity/"
+  },
+  "links": {
+   "huskylink": "",
+   "website": "https://www.demuw.com/",
+   "instagram": "https://www.instagram.com/dem_alphakappa/"
+  },
+  "application": {
+   "deadline": "unknown",
+   "url": "https://www.demuw.com/recruitment",
+   "steps": [
+    "Sign up for recruitment notifications",
+    "Attend at least two of four recruitment events (fall or spring)",
+    "Submit application",
+    "Interview if application approved"
+   ]
+  },
+  "sources": [
+   {
+    "url": "https://www.demuw.com/",
+    "checked": "2026-10-18"
+   },
+   {
+    "url": "https://www.demuw.com/about",
+    "checked": "2026-10-18"
+   },
+   {
+    "url": "https://www.demuw.com/recruitment",
+    "checked": "2026-10-18"
+   },
+   {
+    "url": "https://www.demuw.com/faq",
+    "checked": "2026-10-18"
+   },
+   {
+    "url": "https://www.instagram.com/dem_alphakappa/",
+    "checked": "2026-10-18"
+   },
+   {
+    "url": "https://dawgdaze.uw.edu/event/delta-epsilon-mu-pre-health-fraternity/",
+    "checked": "2026-10-18"
+   }
+  ],
+  "interest_areas": [
+   "Academic/professional (pre-med, pre-law, business, engineering, CS)",
+   "Social/Greek life",
+   "Service/volunteering/activism"
+  ]
+ },
+ {
+  "club_id": "uw-corporate-banking-club",
+  "name": "UW Corporate Banking Club",
+  "category": "Finance / Banking",
+  "category_emoji": "🏦",
+  "description": "A student-led club teaching corporate banking fundamentals and helping students through recruiting with a curriculum, private resources, alumni networking, firm visits, and case competitions.",
+  "commitment": {
+   "level": "regular",
+   "hours_per_week": "couldn't confirm",
+   "estimated": true
+  },
+  "dues": "No dues listed (confirm with officers)",
+  "meeting_schedule": "couldn't confirm",
+  "join_type": "interview",
+  "fit_reason": "Students exploring corporate banking who want structured recruiting prep and networking.",
+  "wildcard": false,
+  "status": "unverified",
+  "last_active": {
+   "date": "unknown",
+   "source": "https://www.uwcbc.com/"
+  },
+  "links": {
+   "huskylink": "",
+   "website": "https://www.uwcbc.com/",
+   "instagram": "https://www.instagram.com/uw_cbc/"
+  },
+  "application": {
+   "deadline": "unknown",
+   "url": "https://www.uwcbc.com/application",
+   "steps": [
+    "Fill out the interest form application",
+    "Complete an individual interview"
+   ]
+  },
+  "sources": [
+   {
+    "url": "https://www.uwcbc.com/",
+    "checked": "2026-10-18"
+   },
+   {
+    "url": "https://www.uwcbc.com/about-us",
+    "checked": "2026-10-18"
+   },
+   {
+    "url": "https://www.uwcbc.com/application",
+    "checked": "2026-10-18"
+   },
+   {
+    "url": "https://www.uwcbc.com/resources",
+    "checked": "2026-10-18"
+   },
+   {
+    "url": "https://www.instagram.com/uw_cbc/",
+    "checked": "2026-10-18"
+   }
+  ],
+  "interest_areas": [
+   "Academic/professional (pre-med, pre-law, business, engineering, CS)"
+  ]
+ },
+ {
+  "club_id": "uw-womens-club-volleyball",
+  "name": "Women's Club Volleyball at UW",
+  "category": "Club sport",
+  "category_emoji": "🏐",
+  "description": "A club team more competitive than intramurals but less than NCAA, playing in the PIVA league against schools across the Northwest and BC and traveling to NCVF Nationals in April.",
+  "commitment": {
+   "level": "committed",
+   "hours_per_week": "couldn't confirm",
+   "estimated": true
+  },
+  "dues": "No dues listed (confirm with officers)",
+  "meeting_schedule": "couldn't confirm",
+  "join_type": "unknown",
+  "fit_reason": "Experienced volleyball players wanting competitive travel play without NCAA-level demands.",
+  "wildcard": false,
+  "status": "unverified",
+  "last_active": {
+   "date": "unknown",
+   "source": "https://www.instagram.com/uw_wcvb/"
+  },
+  "links": {
+   "huskylink": "",
+   "website": "",
+   "instagram": "https://www.instagram.com/uw_wcvb/"
+  },
+  "application": {
+   "deadline": "unknown",
+   "url": "",
+   "steps": [
+    "Check @uw_wcvb on Instagram for tryout or join info"
+   ]
+  },
+  "sources": [
+   {
+    "url": "https://www.instagram.com/uw_wcvb/",
+    "checked": "2026-10-18"
+   },
+   {
+    "url": "https://www.washington.edu/ima/rec-clubs/club-offerings",
+    "checked": "2026-10-18"
+   }
+  ],
+  "interest_areas": [
+   "Sports/outdoor/recreation"
+  ]
+ },
+ {
+  "club_id": "husky-coding-project",
+  "name": "Husky Coding Project",
+  "category": "Software projects",
+  "category_emoji": "💻",
+  "description": "A student-led incubator where students of any major or skill level build real-world software in teams, guided by project managers and mentors, to break the 'need experience to get experience' cycle.",
+  "commitment": {
+   "level": "regular",
+   "hours_per_week": "couldn't confirm",
+   "estimated": true
+  },
+  "dues": "No dues listed (confirm with officers)",
+  "meeting_schedule": "Weekly project team meetings (day/time couldn't confirm)",
+  "join_type": "application",
+  "fit_reason": "Beginner-to-experienced coders who want team project experience for their resume.",
+  "wildcard": false,
+  "status": "active",
+  "last_active": {
+   "date": "2026-10-02",
+   "source": "https://dawgdaze.uw.edu/event/husky-coding-project-info-session/"
+  },
+  "links": {
+   "huskylink": "",
+   "website": "https://hcp-uw.com/",
+   "instagram": "https://www.instagram.com/hcp.uw/"
+  },
+  "application": {
+   "deadline": "2026-10-09 (passed for this fall)",
+   "url": "https://docs.google.com/forms/d/e/1FAIpQLSeOnMHo8rQ4YMbk8Su41uIdAB9wh_0_6f0oiJardRrxpgf0Sg/viewform?usp=dialog",
+   "steps": [
+    "Join the HCP Discord",
+    "Complete the HCP application form",
+    "Attend Project Formation Day (10/20/2026)"
+   ]
+  },
+  "sources": [
+   {
+    "url": "https://hcp-uw.com/",
+    "checked": "2026-10-18"
+   },
+   {
+    "url": "https://www.instagram.com/hcp.uw/",
+    "checked": "2026-10-18"
+   },
+   {
+    "url": "https://dawgdaze.uw.edu/event/husky-coding-project-info-session/",
+    "checked": "2026-10-18"
+   }
+  ],
+  "interest_areas": [
+   "Tech/hackathons/building projects",
+   "Academic/professional (pre-med, pre-law, business, engineering, CS)"
+  ]
+ },
+ {
+  "club_id": "uw-pre-physical-therapy-club",
+  "name": "Pre-PT Club @ UW",
+  "category": "Pre-health",
+  "category_emoji": "🦵",
+  "description": "The Pre-PT Club @ UW is a pre-physical therapy student club on Instagram (@uwpreptclub, about 239 followers, 26 posts); details couldn't be confirmed elsewhere.",
+  "commitment": {
+   "level": "casual",
+   "hours_per_week": "couldn't confirm",
+   "estimated": true
+  },
+  "dues": "No dues listed (confirm with officers)",
+  "meeting_schedule": "couldn't confirm",
+  "join_type": "unknown",
+  "fit_reason": "Students considering physical therapy who want peers and info on the PT path.",
+  "wildcard": false,
+  "status": "unverified",
+  "last_active": {
+   "date": "unknown",
+   "source": "https://www.instagram.com/uwpreptclub/"
+  },
+  "links": {
+   "huskylink": "",
+   "website": "",
+   "instagram": "https://www.instagram.com/uwpreptclub/"
+  },
+  "application": {
+   "deadline": "unknown",
+   "url": "",
+   "steps": [
+    "Follow or DM @uwpreptclub on Instagram"
+   ]
+  },
+  "sources": [
+   {
+    "url": "https://www.instagram.com/uwpreptclub/",
+    "checked": "2026-10-18"
+   }
+  ],
+  "interest_areas": [
+   "Academic/professional (pre-med, pre-law, business, engineering, CS)"
+  ]
+ }
+]
