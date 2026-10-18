@@ -249,11 +249,14 @@ def _stream_turn(params: dict, on_action: Callable[[str], None], usage: Usage):
 def research(profile: dict, slice_interests: list[str], target: int, wildcards: int,
              add_card: Callable[[dict], str], on_action: Callable[[str], None], usage: Usage,
              should_stop: Callable[[], bool], known: list[dict] | None = None,
-             use_known: Callable[[str, str, bool], str] | None = None,
-             max_turns: int = 40, max_seconds: float = 420) -> str:
+             use_known: Callable[[str, str, bool], str] | None = None, catalog_only: bool = False,
+             avoid: list[str] | None = None, max_turns: int = 40, max_seconds: float = 420) -> str:
     """One research agent for one slice of interests. Returns how it ended. `known` are fresh catalog clubs for this
-    slice; the agent adds the ones that fit via use_known(club_id, fit_reason, wildcard) instead of searching."""
+    slice; the agent adds the ones that fit via use_known(club_id, fit_reason, wildcard) instead of searching.
+    catalog_only: there are plenty of known clubs, so pick from them with no web tools (fast and cheap).
+    avoid: club names already covered elsewhere (catalog seeding), not to be added again."""
     known = known or []
+    catalog_only = catalog_only and bool(known and use_known)
     ask = (f"Today's date: {date.today().isoformat()}\n"
            f"Student profile (from onboarding):\n{json.dumps(profile, indent=1)}\n\n"
            f"Your slice: find about {target} clubs for these interest areas: {json.dumps(slice_interests)}."
@@ -261,8 +264,13 @@ def research(profile: dict, slice_interests: list[str], target: int, wildcards: 
               if wildcards else "")
            + " Other researchers are covering the student's other interests at the same time."
            + (f"\n\nKnown clubs (verified in the last few weeks; use_known_club for the ones that fit):\n"
-              f"{json.dumps([_brief(k) for k in known], indent=1)}" if known else ""))
-    tools = [*_web_tools(6, 6), ADD_CARD_TOOL] + ([USE_KNOWN_TOOL] if known and use_known else [])
+              f"{json.dumps([_brief(k) for k in known], indent=1)}" if known else "")
+           + ("\n\nThere are enough known clubs this time: no web search. Add the ones that fit this student with "
+              "use_known_club (near-misses are fine when fit_reason says so), then reply with one short sentence."
+              if catalog_only else "")
+           + (f"\n\nAlready covered, don't add these: {json.dumps(avoid)}" if avoid else ""))
+    tools = ([USE_KNOWN_TOOL] if catalog_only else
+             [*_web_tools(6, 6), ADD_CARD_TOOL] + ([USE_KNOWN_TOOL] if known and use_known else []))
     messages: list[dict] = [{"role": "user", "content": ask}]
     t0 = time.time()
     saved, nudged = 0, False
@@ -282,7 +290,7 @@ def research(profile: dict, slice_interests: list[str], target: int, wildcards: 
             continue  # long server-tool turn: re-send to let it continue
         calls = [b for b in msg.content if b.type == "tool_use"]
         if not calls:
-            if saved < target and not nudged and time.time() - t0 < max_seconds * 0.7:
+            if saved < target and not nudged and not catalog_only and time.time() - t0 < max_seconds * 0.7:
                 nudged = True  # researchers tend to stop early under strict preferences
                 messages.append({"role": "user", "content": (
                     f"You've added {saved} of your target {target} cards. If you have search budget left, keep going: "

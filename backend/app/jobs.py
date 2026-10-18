@@ -56,6 +56,16 @@ def card_status(card: dict, today: date | None = None) -> str:
     return "may_be_inactive" if card.get("status") == "may_be_inactive" else "active"
 
 
+def vet_card(card: dict, check_thin: bool = True) -> tuple[dict, str | None]:
+    """Normalize a researched card (club_id slug, status from the date) and say why it's too thin to keep, if it is."""
+    card = {**card, "club_id": re.sub(r"[^a-z0-9-]+", "-", card["club_id"].lower()).strip("-") or uuid.uuid4().hex[:8]}
+    card["status"] = card_status(card)
+    return card, (thin_card(card) if check_thin else None)
+
+
+CATALOG_ONLY_MARGIN = 3  # a researcher with this many more known clubs than its share skips web search
+
+
 def _path(job_id: str):
     return JOBS / f"{job_id}.json"
 
@@ -158,20 +168,27 @@ def _run(job_id: str) -> None:
                     taken.add(_norm(c["name"]))
                     mine[c["club_id"]] = c
             known.append(mine)
-        if taken:
-            note = f"📚 {len(taken)} clubs already in the catalog for these interests"
-            _update(job_id, lambda j: j.__setitem__("actions", (j["actions"] + [note])[-40:]))
-
         caps = [per + (1 if i == 0 else 0) for i in range(len(parts))]  # researcher 0 also adds the wildcard
+        # Enough known clubs for a slice: pick from the catalog without web search (cheap and fast).
+        catalog_only = [len(known[i]) >= caps[i] + CATALOG_ONLY_MARGIN for i in range(len(parts))]
+        if catalog_only[0]:  # its wildcard then also comes from the catalog: a few clubs from other areas
+            others = [x for x in INTERESTS if x not in profile.interests and x != IDENTITY_INTEREST]
+            for c in catalog.known(campus, others, False, limit=12):
+                if _norm(c["name"]) not in taken and not thin_card(c) and len(known[0]) < 40 + 6:
+                    taken.add(_norm(c["name"]))
+                    known[0][c["club_id"]] = c
+        if taken:
+            note = f"📚 {len(taken)} clubs already in the catalog for these interests" + (
+                " (picking from those, no web search)" if all(catalog_only) else "")
+            _update(job_id, lambda j: j.__setitem__("actions", (j["actions"] + [note])[-40:]))
         counts = [0] * len(parts)
 
         def add_card(i: int, card: dict, reused: bool = False) -> str:
             if counts[i] >= caps[i]:
                 return (f"Not added: you've already reached your target of {caps[i]} cards. "
                         "Stop now and reply with one short sentence.")
-            card = {**card, "club_id": re.sub(r"[^a-z0-9-]+", "-", card["club_id"].lower()).strip("-") or uuid.uuid4().hex[:8]}
-            card["status"] = card_status(card)
-            if not reused and (why := thin_card(card)):
+            card, why = vet_card(card, check_thin=not reused)
+            if why:
                 on_action(f"↩️ Sent back {card['name']} for more detail")
                 return why
             if not reused:
@@ -221,7 +238,8 @@ def _run(job_id: str) -> None:
                                        add_card=lambda card: add_card(i, card),
                                        on_action=on_action, usage=usage, should_stop=lambda: False,
                                        known=list(known[i].values()),
-                                       use_known=lambda cid, why, wild: use_known(i, cid, why, wild))
+                                       use_known=lambda cid, why, wild: use_known(i, cid, why, wild),
+                                       catalog_only=catalog_only[i])
             except Exception as e:  # noqa: BLE001 - one failed researcher shouldn't sink the others
                 traceback.print_exc()
                 return f"error: {type(e).__name__}: {str(e)[:200]}"
