@@ -1,0 +1,1788 @@
+[
+ {
+  "club_id": "dubhacks",
+  "name": "DubHacks",
+  "category": "Hackathons",
+  "category_emoji": "💻",
+  "description": "Student-run tech and entrepreneurship nonprofit at UW that hosts the Pacific Northwest's largest hackathon and runs NEXT, UW's student startup accelerator.",
+  "commitment": {
+   "level": "casual",
+   "hours_per_week": "One 36-hr hackathon weekend/yr (as a hacker)",
+   "estimated": true
+  },
+  "dues": "No dues listed (confirm with officers)",
+  "meeting_schedule": "Annual hackathon; DubHacks '26 ran Oct 17-18, 2026 at UW Seattle. Organizing-team schedule couldn't confirm.",
+  "join_type": "application",
+  "fit_reason": "Builders who want a beginner-friendly weekend hackathon or to grow a startup idea.",
+  "wildcard": false,
+  "status": "active",
+  "last_active": {
+   "date": "2026-10-17",
+   "source": "https://dh26.dubhacks.co/"
+  },
+  "links": {
+   "huskylink": "",
+   "website": "https://dubhacks.co/",
+   "instagram": "https://www.instagram.com/dubhacks"
+  },
+  "application": {
+   "deadline": "Hacker applications for 2026 are closed; next cycle unknown",
+   "url": "https://dh26.dubhacks.co/#attend",
+   "steps": [
+    "Submit a hacker application on the DubHacks site",
+    "Or sign up via the volunteer form on dubhacks.co"
+   ]
+  },
+  "sources": [
+   {
+    "url": "https://dubhacks.co/",
+    "checked": "2026-10-18"
+   },
+   {
+    "url": "https://dh26.dubhacks.co/",
+    "checked": "2026-10-18"
+   },
+   {
+    "url": "https://www.geekwire.com/calendar-event/dubhacks-hackathon/",
+    "checked": "2026-10-18"
+   }
+  ],
+  "interest_areas": [
+   "Tech/hackathons/building projects",
+   "Academic/professional (pre-med, pre-law, business, engineering, CS)"
+  ]
+ },
+ {
+  "club_id": "husky-robotics",
+  "name": "Husky Robotics",
+  "category": "Robotics",
+  "category_emoji": "🤖",
+  "description": "Student team that designs and builds autonomous planetary exploration (Mars) rovers for the University Rover Challenge and Canadian International Rover Challenge.",
+  "commitment": {
+   "level": "committed",
+   "hours_per_week": "couldn't confirm",
+   "estimated": true
+  },
+  "dues": "$250 member fee (newly added, per UW Magazine June 2026)",
+  "meeting_schedule": "couldn't confirm (lab space in the Engineering Annex)",
+  "join_type": "application",
+  "fit_reason": "Engineers, coders, scientists and business students wanting hands-on Mars rover building; very competitive.",
+  "wildcard": false,
+  "status": "active",
+  "last_active": {
+   "date": "2026-09-28",
+   "source": "https://dawgdaze.uw.edu/event/husky-robotics-team-info-session/"
+  },
+  "links": {
+   "huskylink": "https://huskylink.washington.edu/organization/uwrobots",
+   "website": "https://uwrobots.org/",
+   "instagram": "https://www.instagram.com/uwrobots/"
+  },
+  "application": {
+   "deadline": "unknown (main admissions Autumn and Winter quarters)",
+   "url": "https://uwrobots.org/join",
+   "steps": [
+    "Fill out the 'Apply to Join' Google Form (UW login)",
+    "Decisions released by the third week of each cycle"
+   ]
+  },
+  "sources": [
+   {
+    "url": "https://uwrobots.org/",
+    "checked": "2026-10-18"
+   },
+   {
+    "url": "https://uwrobots.org/join",
+    "checked": "2026-10-18"
+   },
+   {
+    "url": "https://magazine.washington.edu/feature/husky-robotics-is-the-uws-most-popular-club-but-they-made-an-exception-for-a-vip/",
+    "checked": "2026-10-18"
+   },
+   {
+    "url": "https://dawgdaze.uw.edu/event/husky-robotics-team-info-session/",
+    "checked": "2026-10-18"
+   }
+  ],
+  "interest_areas": [
+   "Tech/hackathons/building projects",
+   "Research/competitive teams (robotics, case competitions, Model UN)"
+  ]
+ },
+ {
+  "club_id": "sarp-rocketry",
+  "name": "Society for Advanced Rocket Propulsion (SARP)",
+  "category": "Rocketry",
+  "category_emoji": "🚀",
+  "description": "UW student team that designs, builds, tests and launches rockets, organized into seven subteams from propulsion and avionics to manufacturing and business.",
+  "commitment": {
+   "level": "committed",
+   "hours_per_week": "~10 hrs/wk (entry-level average)",
+   "estimated": false
+  },
+  "dues": "No dues listed (confirm with officers)",
+  "meeting_schedule": "couldn't confirm",
+  "join_type": "application",
+  "fit_reason": "Hands-on builders who want serious rocket engineering experience and can give ~10 hours weekly.",
+  "wildcard": false,
+  "status": "active",
+  "last_active": {
+   "date": "2026-10-03",
+   "source": "https://www.sarpuw.com/join.html"
+  },
+  "links": {
+   "huskylink": "",
+   "website": "https://www.sarpuw.com/",
+   "instagram": "https://instagram.com/uwsarp"
+  },
+  "application": {
+   "deadline": "Fall 2026 applications closed Oct 3, 2026 at 11:59pm",
+   "url": "https://www.sarpuw.com/join.html",
+   "steps": [
+    "Submit the General Member or Business application (Google Form)",
+    "Hear within two weeks whether you're offered an interview",
+    "Interview"
+   ]
+  },
+  "sources": [
+   {
+    "url": "https://www.sarpuw.com/",
+    "checked": "2026-10-18"
+   },
+   {
+    "url": "https://www.sarpuw.com/join.html",
+    "checked": "2026-10-18"
+   },
+   {
+    "url": "https://www.sarpuw.com/team.html",
+    "checked": "2026-10-18"
+   }
+  ],
+  "interest_areas": [
+   "Tech/hackathons/building projects",
+   "Research/competitive teams (robotics, case competitions, Model UN)"
+  ]
+ },
+ {
+  "club_id": "uw-formula-motorsports",
+  "name": "UW Formula Motorsports",
+  "category": "Engineering Project Team",
+  "category_emoji": "🏎️",
+  "description": "UW's Formula SAE team of 75+ students who design, build and test race cars; its 2026 car T37 is the team's first driverless car.",
+  "commitment": {
+   "level": "all_in",
+   "hours_per_week": "20+ hrs/wk",
+   "estimated": false
+  },
+  "dues": "No dues listed (confirm with officers)",
+  "meeting_schedule": "couldn't confirm",
+  "join_type": "interview",
+  "fit_reason": "Students ready to pour 20+ hours a week into building a competitive race car.",
+  "wildcard": false,
+  "status": "active",
+  "last_active": {
+   "date": "2026-07-29",
+   "source": "https://proformanceracingschool.com/uw-attends-ev-showdown-in-michigan/"
+  },
+  "links": {
+   "huskylink": "",
+   "website": "https://www.uwformula.com/",
+   "instagram": "https://www.instagram.com/uwformula/"
+  },
+  "application": {
+   "deadline": "unknown (applications open mid-summer, close end of summer)",
+   "url": "https://www.uwformula.com/about",
+   "steps": [
+    "Submit short answers, resume and portfolio",
+    "Behavioral and technical interviews at start of fall",
+    "Decisions and onboarding in fall quarter"
+   ]
+  },
+  "sources": [
+   {
+    "url": "https://www.uwformula.com/",
+    "checked": "2026-10-18"
+   },
+   {
+    "url": "https://www.uwformula.com/about",
+    "checked": "2026-10-18"
+   },
+   {
+    "url": "https://www.formulastudent.de/teams/fse/details/tid/542",
+    "checked": "2026-10-18"
+   },
+   {
+    "url": "https://proformanceracingschool.com/uw-attends-ev-showdown-in-michigan/",
+    "checked": "2026-10-18"
+   }
+  ],
+  "interest_areas": [
+   "Tech/hackathons/building projects",
+   "Research/competitive teams (robotics, case competitions, Model UN)"
+  ]
+ },
+ {
+  "club_id": "aruw-advanced-robotics",
+  "name": "Advanced Robotics at the University of Washington (ARUW)",
+  "category": "Robotics",
+  "category_emoji": "🦾",
+  "description": "Coalition of 70+ engineering, CS, physics, art and business students who build a team of robots to compete in the RoboMaster/ARC Robotics competition.",
+  "commitment": {
+   "level": "committed",
+   "hours_per_week": "~9 hrs/wk",
+   "estimated": false
+  },
+  "dues": "No membership or application fee (per ARUW FAQ)",
+  "meeting_schedule": "Scheduled subteam meetings (~9 hrs/wk); specific times couldn't confirm",
+  "join_type": "interview",
+  "fit_reason": "Robotics fans wanting a competitive, multi-subteam build team; no prior robotics experience needed.",
+  "wildcard": false,
+  "status": "may_be_inactive",
+  "last_active": {
+   "date": "2025-09-04",
+   "source": "https://aruw.org/news"
+  },
+  "links": {
+   "huskylink": "",
+   "website": "https://aruw.org/",
+   "instagram": "http://instagram.com/uwadvancedrobotics"
+  },
+  "application": {
+   "deadline": "Autumn 2026 applications closed; next cycle start of Winter quarter",
+   "url": "https://aruw.org/apply",
+   "steps": [
+    "Submit holistic general application",
+    "Mechanical/Software applicants complete a technical application",
+    "Interview with team members"
+   ]
+  },
+  "sources": [
+   {
+    "url": "https://aruw.org/",
+    "checked": "2026-10-18"
+   },
+   {
+    "url": "https://aruw.org/apply",
+    "checked": "2026-10-18"
+   },
+   {
+    "url": "https://aruw.org/news",
+    "checked": "2026-10-18"
+   }
+  ],
+  "interest_areas": [
+   "Tech/hackathons/building projects",
+   "Research/competitive teams (robotics, case competitions, Model UN)"
+  ]
+ },
+ {
+  "club_id": "uwrov",
+  "name": "UWROV (UW Underwater Robotics Team)",
+  "category": "Robotics",
+  "category_emoji": "🌊",
+  "description": "Interdisciplinary RSO that builds underwater remotely operated vehicles and competes at the MATE ROV World Championship, placing 9th overall in 2026.",
+  "commitment": {
+   "level": "regular",
+   "hours_per_week": "~3+ hrs/wk (3-hr weekly meeting plus extra meetings)",
+   "estimated": true
+  },
+  "dues": "No dues listed (confirm with officers)",
+  "meeting_schedule": "Weekly team-wide in-person meetings Sundays 1-4pm, plus additional flexible weekday meetings",
+  "join_type": "application",
+  "fit_reason": "Students into robotics and the ocean who want mechanical, electrical, software or business roles.",
+  "wildcard": false,
+  "status": "active",
+  "last_active": {
+   "date": "2026-10-09",
+   "source": "https://docs.google.com/forms/d/e/1FAIpQLSe7Hrpp_nH02SkSalhhOX88CfFylBclX1ZYPnaRywgFxi2-PA/viewform"
+  },
+  "links": {
+   "huskylink": "",
+   "website": "https://uwrov.org/",
+   "instagram": ""
+  },
+  "application": {
+   "deadline": "Priority deadline Oct 9, 2026; later apps rolling from Winter quarter",
+   "url": "https://docs.google.com/forms/d/e/1FAIpQLSe7Hrpp_nH02SkSalhhOX88CfFylBclX1ZYPnaRywgFxi2-PA/viewform",
+   "steps": [
+    "Fill out the 2026-2027 application (~15-20 min)",
+    "Pick a primary area: Business, Electrical, Mechanical or Software",
+    "Include a resume link"
+   ]
+  },
+  "sources": [
+   {
+    "url": "https://uwrov.org/",
+    "checked": "2026-10-18"
+   },
+   {
+    "url": "https://docs.google.com/forms/d/e/1FAIpQLSe7Hrpp_nH02SkSalhhOX88CfFylBclX1ZYPnaRywgFxi2-PA/viewform",
+    "checked": "2026-10-18"
+   }
+  ],
+  "interest_areas": [
+   "Tech/hackathons/building projects",
+   "Research/competitive teams (robotics, case competitions, Model UN)"
+  ]
+ },
+ {
+  "club_id": "batmans-kitchen",
+  "name": "Batman's Kitchen (UW CTF Team)",
+  "category": "Cybersecurity",
+  "category_emoji": "🔐",
+  "description": "UW's cybersecurity Capture the Flag team; competes in online CTFs and runs workshops on web, binary and cryptography exploitation.",
+  "commitment": {
+   "level": "regular",
+   "hours_per_week": "~2 hrs/wk (weekly meeting) plus optional CTFs",
+   "estimated": true
+  },
+  "dues": "No dues listed (confirm with officers)",
+  "meeting_schedule": "Wednesdays 5-7 PM, with occasional Friday afternoon CTFs and events",
+  "join_type": "open",
+  "fit_reason": "Curious hackers who want to learn security by competing in capture-the-flag challenges.",
+  "wildcard": false,
+  "status": "may_be_inactive",
+  "last_active": {
+   "date": "2026-02-20",
+   "source": "https://ctftime.org/event/3098"
+  },
+  "links": {
+   "huskylink": "",
+   "website": "https://uwctf.cs.washington.edu",
+   "instagram": ""
+  },
+  "application": {
+   "deadline": "unknown",
+   "url": "https://discord.com/invite/u9USAb3PF7",
+   "steps": [
+    "Join the team's Discord server",
+    "Show up to a Wednesday meeting"
+   ]
+  },
+  "sources": [
+   {
+    "url": "https://uwctf.cs.washington.edu",
+    "checked": "2026-10-18"
+   },
+   {
+    "url": "https://ctftime.org/event/3098",
+    "checked": "2026-10-18"
+   }
+  ],
+  "interest_areas": [
+   "Tech/hackathons/building projects",
+   "Research/competitive teams (robotics, case competitions, Model UN)"
+  ]
+ },
+ {
+  "club_id": "swecc",
+  "name": "Software Engineering Career Club (SWECC)",
+  "category": "Software Engineering",
+  "category_emoji": "⌨️",
+  "description": "Student-led community helping aspiring software engineers through hands-on open-source projects (SWECC Labs), mentorship, mock interviews and workshops.",
+  "commitment": {
+   "level": "casual",
+   "hours_per_week": "~1 hr/wk general meeting, more if in Labs",
+   "estimated": true
+  },
+  "dues": "No dues listed (confirm with officers)",
+  "meeting_schedule": "Fall 2026 general meetings Wednesdays 5:30-6:30 PM, Loew Hall 216",
+  "join_type": "open",
+  "fit_reason": "CS-minded students wanting team projects, interview practice and career prep.",
+  "wildcard": false,
+  "status": "active",
+  "last_active": {
+   "date": "2026-10-06",
+   "source": "https://calendar.google.com/calendar/ical/swecc%40uw.edu/public/basic.ics"
+  },
+  "links": {
+   "huskylink": "",
+   "website": "https://swecc.org/",
+   "instagram": "https://www.instagram.com/swecc.uw/"
+  },
+  "application": {
+   "deadline": "unknown",
+   "url": "https://swecc.org/",
+   "steps": [
+    "Join the SWECC Discord",
+    "Attend a Wednesday general meeting",
+    "Sign up for Labs, mock interviews or a cohort"
+   ]
+  },
+  "sources": [
+   {
+    "url": "https://swecc.org/",
+    "checked": "2026-10-18"
+   },
+   {
+    "url": "https://calendar.google.com/calendar/ical/swecc%40uw.edu/public/basic.ics",
+    "checked": "2026-10-18"
+   },
+   {
+    "url": "https://www.cs.washington.edu/academics/undergraduate/undergrad-student-life/student-organizations",
+    "checked": "2026-10-18"
+   }
+  ],
+  "interest_areas": [
+   "Tech/hackathons/building projects",
+   "Academic/professional (pre-med, pre-law, business, engineering, CS)"
+  ]
+ },
+ {
+  "club_id": "interactive-intelligence-i2",
+  "name": "Interactive Intelligence (i2)",
+  "category": "AI/ML",
+  "category_emoji": "🧠",
+  "description": "UW's student-led NeuroAI education and research organization, running an intro ML/neuroscience course, a data science course, research fellows and research teams.",
+  "commitment": {
+   "level": "casual",
+   "hours_per_week": "~1 hr/wk (Intro Course session)",
+   "estimated": true
+  },
+  "dues": "No dues listed (confirm with officers)",
+  "meeting_schedule": "Autumn 2026: Intro Course Fridays 5-6 PM; Data Science Initiative time TBD",
+  "join_type": "open",
+  "fit_reason": "Students of any major curious about AI and neuroscience, from beginners to aspiring researchers.",
+  "wildcard": false,
+  "status": "active",
+  "last_active": {
+   "date": "2026-09-20",
+   "source": "https://uw-i2.org/"
+  },
+  "links": {
+   "huskylink": "https://huskylink.washington.edu/organization/i2",
+   "website": "https://uw-i2.org/",
+   "instagram": "https://www.instagram.com/uw_i2/"
+  },
+  "application": {
+   "deadline": "unknown",
+   "url": "https://uw-i2.org/join",
+   "steps": [
+    "Join the i2 Discord (open to all UW students)",
+    "Apply separately for the Intro Course or fill out the DSI interest form"
+   ]
+  },
+  "sources": [
+   {
+    "url": "https://uw-i2.org/",
+    "checked": "2026-10-18"
+   },
+   {
+    "url": "https://uw-i2.org/schedule",
+    "checked": "2026-10-18"
+   },
+   {
+    "url": "https://uw-i2.org/join",
+    "checked": "2026-10-18"
+   },
+   {
+    "url": "https://uw-i2.org/constitution",
+    "checked": "2026-10-18"
+   }
+  ],
+  "interest_areas": [
+   "Tech/hackathons/building projects",
+   "Research/competitive teams (robotics, case competitions, Model UN)",
+   "Academic/professional (pre-med, pre-law, business, engineering, CS)"
+  ]
+ },
+ {
+  "club_id": "cseed",
+  "name": "cseed",
+  "category": "Startups & Building",
+  "category_emoji": "🌱",
+  "description": "UW builder community for curious people to build, design and try new things; runs buildspace, a six-week cohort for making progress on your own idea.",
+  "commitment": {
+   "level": "casual",
+   "hours_per_week": "Weekly meeting (length not listed); buildspace adds weekly build nights",
+   "estimated": true
+  },
+  "dues": "No dues listed (confirm with officers)",
+  "meeting_schedule": "Meets every week (per join page); buildspace cohort Oct 15-Nov 17, 2026 with weekly in-person build nights",
+  "join_type": "open",
+  "fit_reason": "Anyone with a side-project or startup idea who wants a cohort building alongside them.",
+  "wildcard": false,
+  "status": "active",
+  "last_active": {
+   "date": "2026-10-15",
+   "source": "https://students.washington.edu/xra/"
+  },
+  "links": {
+   "huskylink": "",
+   "website": "https://www.cseed.co/",
+   "instagram": "https://www.instagram.com/cseeduw/"
+  },
+  "application": {
+   "deadline": "Membership open; buildspace priority deadline was Oct 7, 2026",
+   "url": "https://www.cseed.co/join/",
+   "steps": [
+    "Fill out the ~2-minute membership form",
+    "Apply separately to buildspace if interested"
+   ]
+  },
+  "sources": [
+   {
+    "url": "https://www.cseed.co/",
+    "checked": "2026-10-18"
+   },
+   {
+    "url": "https://www.cseed.co/join/",
+    "checked": "2026-10-18"
+   },
+   {
+    "url": "https://students.washington.edu/xra/",
+    "checked": "2026-10-18"
+   }
+  ],
+  "interest_areas": [
+   "Tech/hackathons/building projects"
+  ]
+ },
+ {
+  "club_id": "technology-consulting-association",
+  "name": "Technology Consulting Association (TCA)",
+  "category": "Tech Consulting",
+  "category_emoji": "📊",
+  "description": "UW's student-run machine learning consulting and development club that trains members through workshops, then builds ML solutions on real client engagements.",
+  "commitment": {
+   "level": "committed",
+   "hours_per_week": "~5-7 hrs/wk",
+   "estimated": false
+  },
+  "dues": "No dues listed (confirm with officers)",
+  "meeting_schedule": "couldn't confirm (meetings, workshops and team work; varies by project phase)",
+  "join_type": "application",
+  "fit_reason": "Students wanting to build ML solutions for real clients; no CS major or ML experience required.",
+  "wildcard": false,
+  "status": "active",
+  "last_active": {
+   "date": "2026-09-24",
+   "source": "https://dawgdaze.uw.edu/event/dawgs-who-deploy-technology-consulting-association-tca-interest-meeting/"
+  },
+  "links": {
+   "huskylink": "",
+   "website": "https://uwtechconsulting.com/",
+   "instagram": "https://www.instagram.com/tca_uw"
+  },
+  "application": {
+   "deadline": "unknown (recruits on a cycle)",
+   "url": "https://uwtechconsulting.com/",
+   "steps": [
+    "Check the Join page for the current application link",
+    "Apply during the recruiting cycle"
+   ]
+  },
+  "sources": [
+   {
+    "url": "https://uwtechconsulting.com/",
+    "checked": "2026-10-18"
+   },
+   {
+    "url": "https://dawgdaze.uw.edu/event/dawgs-who-deploy-technology-consulting-association-tca-interest-meeting/",
+    "checked": "2026-10-18"
+   }
+  ],
+  "interest_areas": [
+   "Tech/hackathons/building projects",
+   "Academic/professional (pre-med, pre-law, business, engineering, CS)"
+  ]
+ },
+ {
+  "club_id": "extended-reality-association",
+  "name": "Extended Reality Association (XRA)",
+  "category": "AR/VR Development",
+  "category_emoji": "🥽",
+  "description": "Allen School-affiliated community exploring VR, AR and spatial computing through headset meetups, student XR projects and one-day hackathons.",
+  "commitment": {
+   "level": "casual",
+   "hours_per_week": "Event-based (meetups and occasional one-day hackathons)",
+   "estimated": true
+  },
+  "dues": "No dues listed (confirm with officers); Hack the AM 2026 was free",
+  "meeting_schedule": "Event-based via Luma; Hack the AM held Apr 18, 2026; XRA Hackathon 2027 on Sat Jan 30, 2027",
+  "join_type": "open",
+  "fit_reason": "Students wanting to try Vision Pro/Quest and build XR apps, no experience needed.",
+  "wildcard": false,
+  "status": "active",
+  "last_active": {
+   "date": "2026-04-18",
+   "source": "https://students.washington.edu/xra/hacktheam/faq.html"
+  },
+  "links": {
+   "huskylink": "",
+   "website": "https://students.washington.edu/xra/",
+   "instagram": "https://instagram.com/uw_xra"
+  },
+  "application": {
+   "deadline": "Hackathon 2027 participant applications open Nov 22",
+   "url": "https://students.washington.edu/xra/hackathon/",
+   "steps": [
+    "Join the XRA Discord",
+    "Watch Luma for meetups",
+    "Apply to the hackathon when applications open"
+   ]
+  },
+  "sources": [
+   {
+    "url": "https://students.washington.edu/xra/",
+    "checked": "2026-10-18"
+   },
+   {
+    "url": "https://students.washington.edu/xra/hackathon/",
+    "checked": "2026-10-18"
+   },
+   {
+    "url": "https://students.washington.edu/xra/hacktheam/faq.html",
+    "checked": "2026-10-18"
+   }
+  ],
+  "interest_areas": [
+   "Tech/hackathons/building projects"
+  ]
+ },
+ {
+  "club_id": "synaptech",
+  "name": "Synaptech",
+  "category": "Neurotech",
+  "category_emoji": "⚡",
+  "description": "UW's neuroengineering RSO where students build neurotechnologies like EEG and BCI projects through project groups, workshops and an annual neurohackathon.",
+  "commitment": {
+   "level": "casual",
+   "hours_per_week": "~1 hr/wk meeting, more if in a project group",
+   "estimated": true
+  },
+  "dues": "No dues listed (confirm with officers)",
+  "meeting_schedule": "Thursdays 6:30-7:30 PM, Gould Hall (GLD) 435, during the school year",
+  "join_type": "open",
+  "fit_reason": "Students of any major excited about brain-computer interfaces and hands-on neurotech projects.",
+  "wildcard": false,
+  "status": "may_be_inactive",
+  "last_active": {
+   "date": "2025-05-16",
+   "source": "https://centerforneurotech.uw.edu/2025/05/01/may-2025-newsletter"
+  },
+  "links": {
+   "huskylink": "",
+   "website": "https://synaptechuw.org/",
+   "instagram": "https://www.instagram.com/uwsynaptech/"
+  },
+  "application": {
+   "deadline": "No application required",
+   "url": "https://synaptechuw.org/",
+   "steps": [
+    "Join the Discord",
+    "Come to a Thursday meeting"
+   ]
+  },
+  "sources": [
+   {
+    "url": "https://synaptechuw.org/",
+    "checked": "2026-10-18"
+   },
+   {
+    "url": "https://centerforneurotech.uw.edu/2025/05/01/may-2025-newsletter",
+    "checked": "2026-10-18"
+   }
+  ],
+  "interest_areas": [
+   "Tech/hackathons/building projects",
+   "Research/competitive teams (robotics, case competitions, Model UN)"
+  ]
+ },
+ {
+  "club_id": "husky-satellite-lab",
+  "name": "Husky Satellite Lab",
+  "category": "Space/Satellites",
+  "category_emoji": "🛰️",
+  "description": "Student-run CubeSat research and development lab (founded 2015) pursuing a three-mission path to the Moon; currently building HuskySat-2.",
+  "commitment": {
+   "level": "regular",
+   "hours_per_week": "couldn't confirm",
+   "estimated": true
+  },
+  "dues": "No dues listed (confirm with officers)",
+  "meeting_schedule": "Autumn 2024: general meetings every other Wednesday 6-7 PM, Miller Hall 301; members-only subteam meetings (may have changed)",
+  "join_type": "interview",
+  "fit_reason": "Space-tech enthusiasts of any year or experience who want to help build a real satellite.",
+  "wildcard": false,
+  "status": "may_be_inactive",
+  "last_active": {
+   "date": "2025-10-10",
+   "source": "https://huskysat.aa.washington.edu/join"
+  },
+  "links": {
+   "huskylink": "https://huskylink.washington.edu/organization/cubesat",
+   "website": "https://huskysat.org/",
+   "instagram": "https://www.instagram.com/huskysatlab/"
+  },
+  "application": {
+   "deadline": "Applications currently closed; 2025-26 window was Sep 15-Oct 10",
+   "url": "https://huskysat.org/join",
+   "steps": [
+    "Submit general application plus division questions (UW Google login)",
+    "Leads review and interview applicants",
+    "Decision within about two weeks"
+   ]
+  },
+  "sources": [
+   {
+    "url": "https://huskysat.org/",
+    "checked": "2026-10-18"
+   },
+   {
+    "url": "https://huskysat.org/join",
+    "checked": "2026-10-18"
+   },
+   {
+    "url": "https://huskysat.aa.washington.edu/join",
+    "checked": "2026-10-18"
+   }
+  ],
+  "interest_areas": [
+   "Tech/hackathons/building projects",
+   "Research/competitive teams (robotics, case competitions, Model UN)"
+  ]
+ },
+ {
+  "club_id": "uw-kendo-club",
+  "name": "Kendo Club at University of Washington",
+  "category": "Martial Arts",
+  "category_emoji": "⚔️",
+  "description": "Student club practicing kendo, the Japanese sword martial art, at UW's IMA; members also attend regional seminars, taikai (tournaments) and rank testing.",
+  "commitment": {
+   "level": "regular",
+   "hours_per_week": "~4 hrs/wk",
+   "estimated": true
+  },
+  "dues": "$20/quarter club dues; beginner package $65 (bokken, bag, quarterly dues); annual federation dues extra (listed as $35 for 2022); gear such as shinai/uniform extra",
+  "meeting_schedule": "Wednesdays 7-9pm (IMA Gym B) and Fridays 7-9pm (IMA Studio 216)",
+  "join_type": "open",
+  "fit_reason": "Beginners curious about Japanese martial arts who want a disciplined twice-weekly practice.",
+  "wildcard": false,
+  "status": "active",
+  "last_active": {
+   "date": "2026-10-10",
+   "source": "https://sites.uw.edu/uwkc/"
+  },
+  "links": {
+   "huskylink": "",
+   "website": "https://sites.uw.edu/uwkc/",
+   "instagram": "https://www.instagram.com/kendo_uw/"
+  },
+  "application": {
+   "deadline": "Beginner trial period: first two weeks of each quarter",
+   "url": "https://sites.uw.edu/uwkc/join/",
+   "steps": [
+    "Attend practice during the first two weeks of a quarter (no payment during the trial)",
+    "Pay dues / beginner package after the trial",
+    "Experienced kendoka can join any time"
+   ]
+  },
+  "sources": [
+   {
+    "url": "https://sites.uw.edu/uwkc/",
+    "checked": "2026-10-18"
+   },
+   {
+    "url": "https://sites.uw.edu/uwkc/join/",
+    "checked": "2026-10-18"
+   },
+   {
+    "url": "https://sites.uw.edu/uwkc/costs/",
+    "checked": "2026-10-18"
+   },
+   {
+    "url": "https://www.washington.edu/ima/rec-clubs/club-offerings/",
+    "checked": "2026-10-18"
+   }
+  ],
+  "interest_areas": [
+   "Sports/outdoor/recreation"
+  ]
+ },
+ {
+  "club_id": "husky-triathlon-club",
+  "name": "Husky Triathlon Club",
+  "category": "Club Sports",
+  "category_emoji": "🏊",
+  "description": "UW collegiate club for athletes who swim, bike and run, from national-level racers to beginners who recently learned to swim; races collegiate and regional triathlons and hosts the Husky Indoor Triathlon.",
+  "commitment": {
+   "level": "regular",
+   "hours_per_week": "3-4+ hrs/wk for sprint training (10-12 for Ironman)",
+   "estimated": false
+  },
+  "dues": "$80 for the 2026-2027 academic year (PayPal/Zelle); club says dues shouldn't be a barrier - email if cost is a concern",
+  "meeting_schedule": "Workouts posted on the club's Events Calendar; training frequency is up to each member",
+  "join_type": "open",
+  "fit_reason": "Endurance athletes or ambitious beginners wanting a training group for swim, bike and run.",
+  "wildcard": false,
+  "status": "may_be_inactive",
+  "last_active": {
+   "date": "2026-02-07",
+   "source": "https://as.mapometer.com/events/event/husky_winter_indoor_triathlon_2026"
+  },
+  "links": {
+   "huskylink": "",
+   "website": "http://www.huskytriathlon.com/",
+   "instagram": "https://www.instagram.com/huskytriathlon/"
+  },
+  "application": {
+   "deadline": "unknown",
+   "url": "http://www.huskytriathlon.com/join-us-2",
+   "steps": [
+    "Visit the Join Us page or email huskytri@gmail.com",
+    "Pay the annual membership fee"
+   ]
+  },
+  "sources": [
+   {
+    "url": "http://www.huskytriathlon.com/",
+    "checked": "2026-10-18"
+   },
+   {
+    "url": "http://www.huskytriathlon.com/membership-fees",
+    "checked": "2026-10-18"
+   },
+   {
+    "url": "http://www.huskytriathlon.com/faqs",
+    "checked": "2026-10-18"
+   },
+   {
+    "url": "http://www.huskytriathlon.com/race-schedule",
+    "checked": "2026-10-18"
+   },
+   {
+    "url": "https://as.mapometer.com/events/event/husky_winter_indoor_triathlon_2026",
+    "checked": "2026-10-18"
+   }
+  ],
+  "interest_areas": [
+   "Sports/outdoor/recreation"
+  ]
+ },
+ {
+  "club_id": "washington-yacht-club",
+  "name": "Washington Yacht Club",
+  "category": "Outdoor & Water Sports",
+  "category_emoji": "⛵",
+  "description": "Student-run nonprofit sailing club at UW since 1948, based at the Waterfront Activities Center, offering boats, lessons, social sails and quarterly Snooze & Cruise trips; no experience needed.",
+  "commitment": {
+   "level": "casual",
+   "hours_per_week": "flexible; lessons and sails by sign-up",
+   "estimated": true
+  },
+  "dues": "Requires a quarterly UW IMA membership; club fee amount not listed on site (confirm with officers at sailing@uw.edu)",
+  "meeting_schedule": "General meetings, social sails (incl. Friday Social Sailing), lessons and novice classes by sign-up; fall 2026 interest meeting was Wed 10/7, 5:30pm, Sieg Hall 227",
+  "join_type": "open",
+  "fit_reason": "Anyone wanting to learn to sail or sail casually on Lake Washington with no experience.",
+  "wildcard": false,
+  "status": "active",
+  "last_active": {
+   "date": "2026-10-07",
+   "source": "https://washingtonyachtclub.org/"
+  },
+  "links": {
+   "huskylink": "",
+   "website": "https://washingtonyachtclub.org/",
+   "instagram": "https://www.instagram.com/washingtonyachtclub/"
+  },
+  "application": {
+   "deadline": "unknown",
+   "url": "https://washingtonyachtclub.org/about-us/join/",
+   "steps": [
+    "Get a quarterly IMA membership",
+    "Fill out the WYC join form",
+    "Sign up for lessons on the Lessons & Events page"
+   ]
+  },
+  "sources": [
+   {
+    "url": "https://washingtonyachtclub.org/",
+    "checked": "2026-10-18"
+   },
+   {
+    "url": "https://washingtonyachtclub.org/faq/",
+    "checked": "2026-10-18"
+   },
+   {
+    "url": "https://washingtonyachtclub.org/about-us/join/",
+    "checked": "2026-10-18"
+   },
+   {
+    "url": "https://www.washington.edu/ima/rec-clubs/club-offerings/",
+    "checked": "2026-10-18"
+   }
+  ],
+  "interest_areas": [
+   "Sports/outdoor/recreation"
+  ]
+ },
+ {
+  "club_id": "husky-rugby",
+  "name": "Husky Rugby",
+  "category": "Club Sports",
+  "category_emoji": "🏉",
+  "description": "UW men's club rugby team competing in the Northwest Collegiate Rugby Conference (American College Rugby), emphasizing brotherhood, discipline and conditioning; no prior rugby experience needed.",
+  "commitment": {
+   "level": "committed",
+   "hours_per_week": "~5 hrs/wk practice plus matches",
+   "estimated": true
+  },
+  "dues": "No dues listed (confirm with officers)",
+  "meeting_schedule": "Spring 2026 open practices Mon/Wed/Fri 7:45-9:30pm at IMA Turf Field #1; other seasons vary (see recruiting page)",
+  "join_type": "tryout",
+  "fit_reason": "Athletic newcomers or experienced players wanting a tough, tight-knit contact team sport.",
+  "wildcard": false,
+  "status": "active",
+  "last_active": {
+   "date": "2026-04-24",
+   "source": "https://www.huskyrugby.com/schedule"
+  },
+  "links": {
+   "huskylink": "",
+   "website": "https://www.huskyrugby.com/",
+   "instagram": "https://www.instagram.com/huskyrugbyclub/"
+  },
+  "application": {
+   "deadline": "unknown",
+   "url": "https://www.huskyrugby.com/join-the-team",
+   "steps": [
+    "Read the recruitment sheet",
+    "Submit the 'Join the Pack' form",
+    "Coach follows up; attend rookie days / practice (email coach@huskyrugby.com)"
+   ]
+  },
+  "sources": [
+   {
+    "url": "https://www.huskyrugby.com/",
+    "checked": "2026-10-18"
+   },
+   {
+    "url": "https://huskyrugby.com/recruiting",
+    "checked": "2026-10-18"
+   },
+   {
+    "url": "https://www.huskyrugby.com/join-the-team",
+    "checked": "2026-10-18"
+   },
+   {
+    "url": "https://www.huskyrugby.com/schedule",
+    "checked": "2026-10-18"
+   },
+   {
+    "url": "https://www.washington.edu/ima/rec-clubs/club-offerings/",
+    "checked": "2026-10-18"
+   }
+  ],
+  "interest_areas": [
+   "Sports/outdoor/recreation"
+  ]
+ },
+ {
+  "club_id": "husky-sailing-team",
+  "name": "Husky Sailing Team",
+  "category": "Club Sports",
+  "category_emoji": "⛵",
+  "description": "Student-run competitive dinghy sailing club that races schools around the Pacific Northwest out of Sail Sand Point on Lake Washington; welcomes all skill levels, including first-timers.",
+  "commitment": {
+   "level": "regular",
+   "hours_per_week": "~2-3 practices/wk",
+   "estimated": true
+  },
+  "dues": "No dues listed (confirm with officers)",
+  "meeting_schedule": "Practices 2-3 days a week at Sail Sand Point (per a 2015 team profile; confirm current times)",
+  "join_type": "open",
+  "fit_reason": "Students wanting competitive sailing and regatta travel, even with zero sailing background.",
+  "wildcard": false,
+  "status": "active",
+  "last_active": {
+   "date": "2026-09-28",
+   "source": "https://dawgdaze.uw.edu/event/sail-along-with-husky-sailing-team/"
+  },
+  "links": {
+   "huskylink": "",
+   "website": "",
+   "instagram": "https://www.instagram.com/huskysailingteam/"
+  },
+  "application": {
+   "deadline": "unknown",
+   "url": "",
+   "steps": [
+    "Email recruitment at uwsailingsocial@gmail.com or DM @huskysailingteam",
+    "Must be able to swim"
+   ]
+  },
+  "sources": [
+   {
+    "url": "https://www.instagram.com/huskysailingteam/",
+    "checked": "2026-10-18"
+   },
+   {
+    "url": "https://dawgdaze.uw.edu/event/sail-along-with-husky-sailing-team/",
+    "checked": "2026-10-18"
+   },
+   {
+    "url": "https://sailingworld.com/racing/college-sailing-spotlight-university-of-washington",
+    "checked": "2026-10-18"
+   },
+   {
+    "url": "https://www.washington.edu/ima/rec-clubs/club-offerings/",
+    "checked": "2026-10-18"
+   }
+  ],
+  "interest_areas": [
+   "Sports/outdoor/recreation"
+  ]
+ },
+ {
+  "club_id": "uw-ihsa-equestrian-team",
+  "name": "IHSA Equestrian Team at the UW",
+  "category": "Club Sports",
+  "category_emoji": "🐎",
+  "description": "UW club equestrian team competing in Intercollegiate Horse Shows Association hunt seat and western events; riders of all levels take lessons at Stanwood Equestrian Center without owning a horse.",
+  "commitment": {
+   "level": "regular",
+   "hours_per_week": "~3-4 hrs/wk (weekly lesson + ~1 hr drive each way)",
+   "estimated": true
+  },
+  "dues": "About $100/year (varies by show vs non-show member; payment plans available); lessons extra",
+  "meeting_schedule": "Lessons at Stanwood Equestrian Center (main practices Saturdays per UW Magazine); show members take at least one lesson/week in season; 2026-27 shows Nov 2026-Mar 2027",
+  "join_type": "open",
+  "fit_reason": "Horse lovers of any riding level who want lessons and intercollegiate show experience.",
+  "wildcard": false,
+  "status": "active",
+  "last_active": {
+   "date": "2026-05-04",
+   "source": "https://www.localgymsandfitness.com/US/McMinnville/169701886447326/IHSA-Equestrian-Team-at-the-UW"
+  },
+  "links": {
+   "huskylink": "",
+   "website": "https://sites.uw.edu/ihsa/",
+   "instagram": "https://www.instagram.com/uwequestrian/"
+  },
+  "application": {
+   "deadline": "unknown",
+   "url": "https://sites.uw.edu/ihsa/contact/",
+   "steps": [
+    "Email ihsa@uw.edu",
+    "Pay annual dues",
+    "Schedule lessons via Ready2Ride Training"
+   ]
+  },
+  "sources": [
+   {
+    "url": "https://sites.uw.edu/ihsa/",
+    "checked": "2026-10-18"
+   },
+   {
+    "url": "https://sites.uw.edu/ihsa/faq/",
+    "checked": "2026-10-18"
+   },
+   {
+    "url": "https://sites.uw.edu/ihsa/show-schedule/",
+    "checked": "2026-10-18"
+   },
+   {
+    "url": "https://magazine.washington.edu/feature/students-saddle-up-for-fun-on-uw-equestrian-team",
+    "checked": "2026-10-18"
+   }
+  ],
+  "interest_areas": [
+   "Sports/outdoor/recreation"
+  ]
+ },
+ {
+  "club_id": "husky-badminton-club",
+  "name": "Husky Badminton Club",
+  "category": "Club Sports",
+  "category_emoji": "🏸",
+  "description": "Student-run badminton club welcoming all skill levels, whether you want to improve, compete or just have fun; hosts the Husky Open tournament.",
+  "commitment": {
+   "level": "regular",
+   "hours_per_week": "up to 9 hrs/wk offered; come as often as you like",
+   "estimated": false
+  },
+  "dues": "$35/quarter or $90/year (if joining in fall); $5/day drop-in for non-members",
+  "meeting_schedule": "Mon & Thu 7-10pm, Sat 2-5pm, IMA Gym B (per club site last updated 10/2021)",
+  "join_type": "open",
+  "fit_reason": "Casual or competitive badminton players wanting flexible drop-in court time.",
+  "wildcard": false,
+  "status": "may_be_inactive",
+  "last_active": {
+   "date": "2025-02-15",
+   "source": "https://recreation.ucsd.edu/sports-clubs-posts/2-15-25-2-16-25-husky-badminton-tournament"
+  },
+  "links": {
+   "huskylink": "",
+   "website": "https://students.washington.edu/bmtclub/",
+   "instagram": "https://www.instagram.com/husky.badminton"
+  },
+  "application": {
+   "deadline": "unknown",
+   "url": "https://students.washington.edu/bmtclub/",
+   "steps": [
+    "Attend a club session (first visit or two free)",
+    "Fill out the membership form at a session",
+    "Pay the quarterly or annual fee"
+   ]
+  },
+  "sources": [
+   {
+    "url": "https://students.washington.edu/bmtclub/",
+    "checked": "2026-10-18"
+   },
+   {
+    "url": "https://www.washington.edu/ima/rec-clubs/club-offerings/",
+    "checked": "2026-10-18"
+   },
+   {
+    "url": "https://recreation.ucsd.edu/sports-clubs-posts/2-15-25-2-16-25-husky-badminton-tournament",
+    "checked": "2026-10-18"
+   }
+  ],
+  "interest_areas": [
+   "Sports/outdoor/recreation"
+  ]
+ },
+ {
+  "club_id": "university-kayak-club",
+  "name": "University Kayak Club",
+  "category": "Outdoor & Water Sports",
+  "category_emoji": "🛶",
+  "description": "UW-sponsored club promoting human-powered boating, mainly recreational whitewater and sea kayaking, with trips year-round; welcomes all levels, especially beginners.",
+  "commitment": {
+   "level": "casual",
+   "hours_per_week": "flexible; trips and pool sessions as you choose",
+   "estimated": true
+  },
+  "dues": "Students $20/quarter; American Canoe Association membership ($30) required for club trips",
+  "meeting_schedule": "Pool sessions / club-room orientations at the Waterfront Activities Center per club calendar (older page: Sunday mornings 8:30-11:30am)",
+  "join_type": "open",
+  "fit_reason": "Beginner or experienced paddlers wanting whitewater and sea kayak trips around the Northwest.",
+  "wildcard": false,
+  "status": "unverified",
+  "last_active": {
+   "date": "unknown",
+   "source": "https://students.washington.edu/ukc/07_website"
+  },
+  "links": {
+   "huskylink": "",
+   "website": "https://students.washington.edu/ukc/07_website",
+   "instagram": ""
+  },
+  "application": {
+   "deadline": "unknown",
+   "url": "https://students.washington.edu/ukc/07_website",
+   "steps": [
+    "Pay dues at the HUB ticket office",
+    "Attend a pool session or club-room orientation (wet-exit skills)",
+    "Join the ACA for trip insurance"
+   ]
+  },
+  "sources": [
+   {
+    "url": "https://students.washington.edu/ukc/07_website",
+    "checked": "2026-10-18"
+   },
+   {
+    "url": "https://students.washington.edu/ukc/00_website/overview/membership.html",
+    "checked": "2026-10-18"
+   }
+  ],
+  "interest_areas": [
+   "Sports/outdoor/recreation"
+  ]
+ },
+ {
+  "club_id": "uw-mens-volleyball-club",
+  "name": "UW Men's Volleyball Club",
+  "category": "Club Sports",
+  "category_emoji": "🏐",
+  "description": "Men's club volleyball with competitive traveling A/B teams and a developmental team, competing in conference play and NCVF nationals, plus fundraisers and social outings.",
+  "commitment": {
+   "level": "regular",
+   "hours_per_week": "~4 hrs/wk practice plus tournaments",
+   "estimated": true
+  },
+  "dues": "Per year: $80 (Black/developmental tier), $370 (Gold), $370 + $700-1,000 travel (Purple)",
+  "meeting_schedule": "Tue & Thu 8:30-10:30pm, IMA Gym C; main competition season winter quarter",
+  "join_type": "tryout",
+  "fit_reason": "Volleyball players wanting competitive or developmental play with tournament travel.",
+  "wildcard": false,
+  "status": "unverified",
+  "last_active": {
+   "date": "unknown",
+   "source": "https://students.washington.edu/mensvb/index.html"
+  },
+  "links": {
+   "huskylink": "",
+   "website": "https://students.washington.edu/mensvb/index.html",
+   "instagram": "https://www.instagram.com/uwmensvball/"
+  },
+  "application": {
+   "deadline": "Fall tryouts in early October (year not stated on site)",
+   "url": "https://students.washington.edu/mensvb/index.html",
+   "steps": [
+    "Attend fall tryouts at IMA Gym C",
+    "Get placed on A, B or developmental team"
+   ]
+  },
+  "sources": [
+   {
+    "url": "https://students.washington.edu/mensvb/index.html",
+    "checked": "2026-10-18"
+   },
+   {
+    "url": "https://students.washington.edu/mensvb/faq.html",
+    "checked": "2026-10-18"
+   },
+   {
+    "url": "https://www.washington.edu/ima/rec-clubs/club-offerings/",
+    "checked": "2026-10-18"
+   }
+  ],
+  "interest_areas": [
+   "Sports/outdoor/recreation"
+  ]
+ },
+ {
+  "club_id": "husky-wrestling-club",
+  "name": "Husky Wrestling Club",
+  "category": "Club Sports",
+  "category_emoji": "🤼",
+  "description": "NCWA Northwest Conference wrestling club open to all UW students and skill levels; it has produced All-Americans and national qualifiers and hosts the Showdown on Montlake.",
+  "commitment": {
+   "level": "regular",
+   "hours_per_week": "~4-7 hrs/wk",
+   "estimated": true
+  },
+  "dues": "$30/quarter practice dues; competition dues $150 first quarter, then $100/quarter (competing is optional). UW IMA membership required (included for UW Seattle students).",
+  "meeting_schedule": "Tue & Thu 8:30-10:20pm (Mat Room B, regular practice); Mon 7-8:20pm (Mat Room A, competition practice); Fri 5:30-7pm open mat. Fall 2026 practices Oct 1-Dec 18.",
+  "join_type": "open",
+  "fit_reason": "Former or new wrestlers wanting regular mat time and collegiate competition.",
+  "wildcard": false,
+  "status": "active",
+  "last_active": {
+   "date": "2026-10-01",
+   "source": "https://www.uwhuskywrestling.org/schedule-events"
+  },
+  "links": {
+   "huskylink": "",
+   "website": "https://www.uwhuskywrestling.org",
+   "instagram": "https://www.instagram.com/huskywrestlingclub/"
+  },
+  "application": {
+   "deadline": "none listed (join any quarter)",
+   "url": "https://www.uwhuskywrestling.org/about",
+   "steps": [
+    "Have a UW IMA membership (included for UW Seattle students)",
+    "Show up to a Tue/Thu practice in Mat Room B",
+    "Register with the NCWA if you want to compete"
+   ]
+  },
+  "sources": [
+   {
+    "url": "https://www.uwhuskywrestling.org",
+    "checked": "2026-10-18"
+   },
+   {
+    "url": "https://www.uwhuskywrestling.org/about",
+    "checked": "2026-10-18"
+   },
+   {
+    "url": "https://www.uwhuskywrestling.org/schedule-events",
+    "checked": "2026-10-18"
+   },
+   {
+    "url": "https://www.uwhuskywrestling.org/roster",
+    "checked": "2026-10-18"
+   },
+   {
+    "url": "https://www.instagram.com/huskywrestlingclub/",
+    "checked": "2026-10-18"
+   },
+   {
+    "url": "https://www.washington.edu/ima/rec-clubs/club-offerings/",
+    "checked": "2026-10-18"
+   }
+  ],
+  "interest_areas": [
+   "Sports/outdoor/recreation"
+  ]
+ },
+ {
+  "club_id": "husky-wushu",
+  "name": "Husky Wushu",
+  "category": "Martial Arts",
+  "category_emoji": "🥋",
+  "description": "UW student team practicing and promoting Wushu (contemporary Chinese martial arts); performs demos at campus events and competes in collegiate and regional tournaments.",
+  "commitment": {
+   "level": "committed",
+   "hours_per_week": "~6 hrs/wk",
+   "estimated": true
+  },
+  "dues": "No dues listed (confirm with officers)",
+  "meeting_schedule": "Mon & Wed 8-10pm (IMA Archery Room), Fri 3:30-5:30pm (Mat Room B), per the club's older site; check Instagram @uwwushu for the current schedule",
+  "join_type": "open",
+  "fit_reason": "Students wanting acrobatic martial arts training plus performing and competing.",
+  "wildcard": false,
+  "status": "active",
+  "last_active": {
+   "date": "2026-09-28",
+   "source": "https://dawgdaze.uw.edu/event/husky-wushu-workshop-learn-kung-fu/"
+  },
+  "links": {
+   "huskylink": "",
+   "website": "https://students.washington.edu/uwwushu/",
+   "instagram": "https://www.instagram.com/uwwushu/"
+  },
+  "application": {
+   "deadline": "unknown",
+   "url": "https://students.washington.edu/uwwushu/",
+   "steps": [
+    "Drop by a practice or message via the site/Instagram"
+   ]
+  },
+  "sources": [
+   {
+    "url": "https://students.washington.edu/uwwushu/",
+    "checked": "2026-10-18"
+   },
+   {
+    "url": "https://www.instagram.com/uwwushu/",
+    "checked": "2026-10-18"
+   },
+   {
+    "url": "https://dawgdaze.uw.edu/event/husky-wushu-workshop-learn-kung-fu/",
+    "checked": "2026-10-18"
+   },
+   {
+    "url": "https://www.washington.edu/ima/rec-clubs/club-offerings/",
+    "checked": "2026-10-18"
+   }
+  ],
+  "interest_areas": [
+   "Sports/outdoor/recreation"
+  ]
+ },
+ {
+  "club_id": "society-of-women-engineers-uw",
+  "name": "Society of Women Engineers at UW (SWE UW)",
+  "category": "Engineering Society",
+  "category_emoji": "👩‍🔧",
+  "description": "UW chapter of the Society of Women Engineers, empowering women and nonbinary engineers to succeed in their careers; hosts programs and events for 500+ students, including K-14 outreach, SWE Family, GradSWE, mentorship and the SWEHacks hackathon.",
+  "commitment": {
+   "level": "casual",
+   "hours_per_week": "couldn't confirm",
+   "estimated": true
+  },
+  "dues": "$20/year national collegiate membership, or $50 one-time College to Career (C2C) membership; email swe@uw.edu about SWE UW scholarships if dues are a barrier. Events are open to members and non-members.",
+  "meeting_schedule": "couldn't confirm (events posted on the chapter calendar)",
+  "join_type": "open",
+  "fit_reason": "Women and nonbinary engineering students wanting mentorship, outreach and career connections.",
+  "wildcard": false,
+  "status": "unverified",
+  "last_active": {
+   "date": "unknown",
+   "source": "https://www.sweuw.org/"
+  },
+  "links": {
+   "huskylink": "",
+   "website": "https://www.sweuw.org/",
+   "instagram": "https://www.instagram.com/uwswe"
+  },
+  "application": {
+   "deadline": "unknown",
+   "url": "https://www.sweuw.org/membership",
+   "steps": [
+    "Create a swe.org account with your @uw.edu email",
+    "Choose 'Washington, University of' and your discipline",
+    "Pay collegiate ($20/yr) or C2C ($50) membership",
+    "Join the SWE@UW Slack / mailing list via swe@uw.edu"
+   ]
+  },
+  "sources": [
+   {
+    "url": "https://www.sweuw.org/",
+    "checked": "2026-10-18"
+   },
+   {
+    "url": "https://www.sweuw.org/membership",
+    "checked": "2026-10-18"
+   }
+  ],
+  "interest_areas": [
+   "Academic/professional (pre-med, pre-law, business, engineering, CS)",
+   "Tech/hackathons/building projects",
+   "Service/volunteering/activism"
+  ]
+ },
+ {
+  "club_id": "nsbe-uw",
+  "name": "National Society of Black Engineers, UW Chapter (NSBE UW)",
+  "category": "Engineering Society",
+  "category_emoji": "⚙️",
+  "description": "UW chapter of the National Society of Black Engineers, a student-managed 'family' focused on academic, professional and personal development, with academic help, a resume drive, a Big/Little program and Pre-College Initiative outreach.",
+  "commitment": {
+   "level": "casual",
+   "hours_per_week": "~1-2 hrs/wk",
+   "estimated": true
+  },
+  "dues": "National dues $20 (required to attend regional and national conventions); no chapter dues listed (confirm with officers)",
+  "meeting_schedule": "Weekly, 5:30-6:30 PM in the Black Room, Samuel E. Kelly Ethnic Cultural Center (hybrid with Zoom); older chapter page says Tuesdays",
+  "join_type": "open",
+  "fit_reason": "STEM students wanting a close-knit professional community with industry speakers and conferences.",
+  "wildcard": false,
+  "status": "may_be_inactive",
+  "last_active": {
+   "date": "2024-07-05",
+   "source": "https://engr.washington.edu/news/article/2024-07-05/50-years-uplifting-voices"
+  },
+  "links": {
+   "huskylink": "",
+   "website": "https://nsbeuw.wixsite.com/nsbeuw",
+   "instagram": "https://www.instagram.com/uwnsbe"
+  },
+  "application": {
+   "deadline": "unknown",
+   "url": "https://nsbeuw.wixsite.com/nsbeuw/membership",
+   "steps": [
+    "Attend a weekly meeting",
+    "Email uwnsbe@uw.edu to join",
+    "Pay $20 national dues to attend conventions"
+   ]
+  },
+  "sources": [
+   {
+    "url": "https://nsbeuw.wixsite.com/nsbeuw",
+    "checked": "2026-10-18"
+   },
+   {
+    "url": "https://nsbeuw.wixsite.com/nsbeuw/membership",
+    "checked": "2026-10-18"
+   },
+   {
+    "url": "https://students.washington.edu/uwnsbe/",
+    "checked": "2026-10-18"
+   },
+   {
+    "url": "https://engr.washington.edu/news/article/2024-07-05/50-years-uplifting-voices",
+    "checked": "2026-10-18"
+   }
+  ],
+  "interest_areas": [
+   "Academic/professional (pre-med, pre-law, business, engineering, CS)",
+   "Cultural/identity-based communities"
+  ]
+ },
+ {
+  "club_id": "shpe-uw",
+  "name": "Society of Hispanic Professional Engineers, UW Chapter (UW SHPE)",
+  "category": "Engineering Society",
+  "category_emoji": "🛠️",
+  "description": "UW student chapter of SHPE supporting Hispanic students and other underrepresented communities in STEM through academic support, professional development, mentorship (MentorSHPE), networking and outreach such as Future Meets Present.",
+  "commitment": {
+   "level": "casual",
+   "hours_per_week": "~1-2 hrs/wk",
+   "estimated": true
+  },
+  "dues": "No dues listed (confirm with officers); some events have small fees (e.g., $15 Evening With Industry)",
+  "meeting_schedule": "Events/general body meetings usually Wednesdays 5:30-6:30 PM at the ECC (Room 306) per the 2024-25 event list; current schedule on the chapter calendar",
+  "join_type": "open",
+  "fit_reason": "STEM students seeking familia-style community, mentorship and industry info sessions.",
+  "wildcard": false,
+  "status": "may_be_inactive",
+  "last_active": {
+   "date": "2025-06-01",
+   "source": "https://www.uwshpe.com/upcomingevents"
+  },
+  "links": {
+   "huskylink": "https://huskylink.washington.edu/organization/shpe",
+   "website": "https://www.uwshpe.com/",
+   "instagram": "https://www.instagram.com/shpeuw"
+  },
+  "application": {
+   "deadline": "unknown",
+   "url": "https://www.uwshpe.com/",
+   "steps": [
+    "Use 'Join Now!' on uwshpe.com or email shpe@uw.edu",
+    "Add the chapter calendar and attend a general meeting",
+    "Join the Discord for announcements"
+   ]
+  },
+  "sources": [
+   {
+    "url": "https://www.uwshpe.com/",
+    "checked": "2026-10-18"
+   },
+   {
+    "url": "https://www.uwshpe.com/upcomingevents",
+    "checked": "2026-10-18"
+   }
+  ],
+  "interest_areas": [
+   "Academic/professional (pre-med, pre-law, business, engineering, CS)",
+   "Cultural/identity-based communities"
+  ]
+ },
+ {
+  "club_id": "asce-uw",
+  "name": "American Society of Civil Engineers, UW Student Chapter (ASCE UW)",
+  "category": "Engineering Society",
+  "category_emoji": "🏗️",
+  "description": "UW's ASCE student chapter supports civil engineering students' personal and professional development and links them to the professional civil engineering community, including weekly Lunch & Learns.",
+  "commitment": {
+   "level": "casual",
+   "hours_per_week": "~1 hr/wk",
+   "estimated": true
+  },
+  "dues": "$10 per student chapter dues; national ASCE student membership (free) also required",
+  "meeting_schedule": "Weekly Lunch & Learns (day/time couldn't confirm; posted on Instagram/Discord)",
+  "join_type": "open",
+  "fit_reason": "Civil engineering students wanting industry talks and professional connections.",
+  "wildcard": false,
+  "status": "may_be_inactive",
+  "last_active": {
+   "date": "2025-03-04",
+   "source": "https://sites.uw.edu/asce/"
+  },
+  "links": {
+   "huskylink": "",
+   "website": "https://sites.uw.edu/asce/",
+   "instagram": "https://www.instagram.com/uw_asce"
+  },
+  "application": {
+   "deadline": "unknown",
+   "url": "https://sites.uw.edu/asce/memberships/",
+   "steps": [
+    "Join free national ASCE student membership",
+    "Fill out the chapter membership form",
+    "Pay $10 dues",
+    "Join the Discord"
+   ]
+  },
+  "sources": [
+   {
+    "url": "https://sites.uw.edu/asce/",
+    "checked": "2026-10-18"
+   },
+   {
+    "url": "https://sites.uw.edu/asce/memberships/",
+    "checked": "2026-10-18"
+   },
+   {
+    "url": "https://sites.uw.edu/asce/events/",
+    "checked": "2026-10-18"
+   }
+  ],
+  "interest_areas": [
+   "Academic/professional (pre-med, pre-law, business, engineering, CS)"
+  ]
+ },
+ {
+  "club_id": "science-engineering-business-association-uw",
+  "name": "Science & Engineering Business Association (SEBA)",
+  "category": "Business & Engineering",
+  "category_emoji": "🔬",
+  "description": "UW student organization connecting science and engineering students with Seattle business leaders through monthly First Tuesday speaker meetings, a Networking Lunch Series and the Science & Technology Showcase.",
+  "commitment": {
+   "level": "casual",
+   "hours_per_week": "<1 hr/wk",
+   "estimated": true
+  },
+  "dues": "No membership fees; all events are free",
+  "meeting_schedule": "First Tuesday meetings monthly with guest speakers (time/place couldn't confirm)",
+  "join_type": "open",
+  "fit_reason": "STEM students curious about startups, commercialization and business careers.",
+  "wildcard": false,
+  "status": "unverified",
+  "last_active": {
+   "date": "unknown",
+   "source": "https://www.uwseba.com/"
+  },
+  "links": {
+   "huskylink": "",
+   "website": "https://www.uwseba.com/",
+   "instagram": ""
+  },
+  "application": {
+   "deadline": "unknown",
+   "url": "https://www.uwseba.com/membership",
+   "steps": [
+    "Click 'Become a Member' and join the mailing list",
+    "For Active Member status: attend 3 First Tuesday meetings in the year",
+    "Volunteer at one major SEBA event (email membership@uwseba.com)"
+   ]
+  },
+  "sources": [
+   {
+    "url": "https://www.uwseba.com/",
+    "checked": "2026-10-18"
+   },
+   {
+    "url": "https://www.uwseba.com/membership",
+    "checked": "2026-10-18"
+   },
+   {
+    "url": "https://www.uwseba.com/first-tuesday-meetings",
+    "checked": "2026-10-18"
+   }
+  ],
+  "interest_areas": [
+   "Academic/professional (pre-med, pre-law, business, engineering, CS)"
+  ]
+ },
+ {
+  "club_id": "uw-american-marketing-association",
+  "name": "UW American Marketing Association (UW AMA)",
+  "category": "Business & Marketing",
+  "category_emoji": "📈",
+  "description": "Undergraduate marketing organization on the Seattle campus offering speakers, company visits, masterclasses, case competitions, an in-house consulting 'Agency' and networking.",
+  "commitment": {
+   "level": "casual",
+   "hours_per_week": "~1-2 hrs/wk",
+   "estimated": true
+  },
+  "dues": "$15/year chapter dues (Venmo) + $29/year national AMA dues",
+  "meeting_schedule": "Speaker meetings during the quarter, e.g., Wed Oct 21, 6:30-7:30 PM in PACCAR 390; no fixed weekly schedule listed",
+  "join_type": "open",
+  "fit_reason": "Students of any major curious about marketing careers, brands and case competitions.",
+  "wildcard": false,
+  "status": "active",
+  "last_active": {
+   "date": "2026-10-15",
+   "source": "https://www.uwama.com/"
+  },
+  "links": {
+   "huskylink": "",
+   "website": "https://www.uwama.com/",
+   "instagram": "https://www.instagram.com/uw_ama"
+  },
+  "application": {
+   "deadline": "Open year-round (AMA Agency applications closed Oct 16)",
+   "url": "https://www.uwama.com/how-to-join",
+   "steps": [
+    "Pay $15 chapter dues via Venmo",
+    "Pay $29 national dues at ama.org",
+    "Optional Exclusive Member: 3 speaker meetings, 1 social, 1 philanthropy event per quarter"
+   ]
+  },
+  "sources": [
+   {
+    "url": "https://www.uwama.com/",
+    "checked": "2026-10-18"
+   },
+   {
+    "url": "https://www.uwama.com/how-to-join",
+    "checked": "2026-10-18"
+   },
+   {
+    "url": "https://www.uwama.com/event-calendar",
+    "checked": "2026-10-18"
+   }
+  ],
+  "interest_areas": [
+   "Academic/professional (pre-med, pre-law, business, engineering, CS)",
+   "Research/competitive teams (robotics, case competitions, Model UN)"
+  ]
+ },
+ {
+  "club_id": "undergraduate-women-in-business-uw",
+  "name": "Undergraduate Women in Business (UWiB)",
+  "category": "Business",
+  "category_emoji": "💼",
+  "description": "UW student organization developing the next generation of female business leaders through speakers, industry spotlights, company visits, skill workshops and networking; open to all genders, majors and backgrounds.",
+  "commitment": {
+   "level": "casual",
+   "hours_per_week": "~1 hr/wk",
+   "estimated": true
+  },
+  "dues": "$15 per quarter (new students can attend 2 meetings before paying)",
+  "meeting_schedule": "Weeknight meetings/events, e.g., Tue Oct 13 6-7 PM (PCAR 294), Mon Oct 19 6:30-7:30 PM (PACCAR 394); general members attend 3 per quarter",
+  "join_type": "open",
+  "fit_reason": "Students exploring business careers who want workshops, company visits and a supportive network.",
+  "wildcard": false,
+  "status": "active",
+  "last_active": {
+   "date": "2026-10-13",
+   "source": "https://www.uwuwib.com/"
+  },
+  "links": {
+   "huskylink": "",
+   "website": "https://www.uwuwib.com/",
+   "instagram": "https://www.instagram.com/uw_uwib"
+  },
+  "application": {
+   "deadline": "unknown",
+   "url": "https://www.uwuwib.com/get-involved",
+   "steps": [
+    "Fill out the registration form linked on Instagram/Linktree",
+    "Attend up to 2 meetings, then pay $15/quarter dues",
+    "Optional: join a committee for Gold Member status"
+   ]
+  },
+  "sources": [
+   {
+    "url": "https://www.uwuwib.com/",
+    "checked": "2026-10-18"
+   },
+   {
+    "url": "https://www.uwuwib.com/get-involved",
+    "checked": "2026-10-18"
+   }
+  ],
+  "interest_areas": [
+   "Academic/professional (pre-med, pre-law, business, engineering, CS)"
+  ]
+ },
+ {
+  "club_id": "net-impact-uw",
+  "name": "Net Impact UW",
+  "category": "Sustainable Business",
+  "category_emoji": "🌱",
+  "description": "Sustainable business club at the Foster School aiming to inspire environmental action and social awareness through education, activism and career development, with an annual fall panel, Sustainability Career Fair and Climate Solutions Summit.",
+  "commitment": {
+   "level": "casual",
+   "hours_per_week": "~1 hr/wk",
+   "estimated": true
+  },
+  "dues": "No dues listed (confirm with officers)",
+  "meeting_schedule": "Weekly meetings Wednesdays 5:30-6:30 PM, PACCAR 297 (open to all majors, free snacks)",
+  "join_type": "open",
+  "fit_reason": "Students who want business careers that tackle climate and social impact.",
+  "wildcard": false,
+  "status": "may_be_inactive",
+  "last_active": {
+   "date": "unknown",
+   "source": "https://www.uwnetimpact.org/fall-panel"
+  },
+  "links": {
+   "huskylink": "",
+   "website": "https://www.uwnetimpact.org/",
+   "instagram": "https://www.instagram.com/netimpactuw"
+  },
+  "application": {
+   "deadline": "unknown",
+   "url": "https://www.uwnetimpact.org/",
+   "steps": [
+    "Fill out the 'Join Us!' Google Form",
+    "Attend a Wednesday meeting",
+    "Apply separately via 'Join Our Team' for consulting (NICE) roles"
+   ]
+  },
+  "sources": [
+   {
+    "url": "https://www.uwnetimpact.org/",
+    "checked": "2026-10-18"
+   },
+   {
+    "url": "https://www.uwnetimpact.org/fall-panel",
+    "checked": "2026-10-18"
+   }
+  ],
+  "interest_areas": [
+   "Academic/professional (pre-med, pre-law, business, engineering, CS)",
+   "Service/volunteering/activism"
+  ]
+ }
+]
