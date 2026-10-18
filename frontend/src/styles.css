@@ -1,19 +1,20 @@
 :root {
-  --bg: #140e22;
-  --bg2: #1c1530;
-  --card: #241b3d;
-  --card2: #2d2250;
-  --line: #3a2e5e;
-  --text: #f3eefc;
-  --muted: #a99cc8;
-  --purple: #7c5ce0;
-  --purple2: #9b82f0;
-  --gold: #d9b968;
-  --good: #4fd18b;
-  --warn: #f2b84b;
-  --bad: #ff6b81;
+  /* light theme: gold page, warm-white cards, deep purple text */
+  --bg: #e9c766;
+  --bg2: #fbf3dc;
+  --card: #fffaee;
+  --card2: #f6ecd2;
+  --line: #e2d2a6;
+  --text: #24173f;
+  --muted: #5f5179;
+  --purple: #5b3cc4;
+  --purple2: #4b2fb0;
+  --gold: #8a6410;
+  --good: #1d8a50;
+  --warn: #a86500;
+  --bad: #c42f48;
   --radius: 18px;
-  color-scheme: dark;
+  color-scheme: light;
 }
 * {
   box-sizing: border-box;
@@ -50,6 +51,9 @@ button:disabled {
 }
 .gold {
   color: var(--gold);
+}
+h1 .gold {
+  color: var(--purple);
 }
 .est {
   color: var(--muted);
@@ -96,9 +100,9 @@ main {
   padding: 18px 0 14px;
 }
 .banner.error {
-  background: #3a1620;
-  border: 1px solid #6b2333;
-  color: #ffd0d8;
+  background: #fde8eb;
+  border: 1px solid #f0a8b4;
+  color: #8a1f33;
   border-radius: 10px;
   padding: 8px 12px;
   margin: 6px 0;
@@ -157,6 +161,7 @@ h3 {
   height: 26px;
   border-radius: 50%;
   background: var(--purple);
+  color: #fff;
   font-weight: 700;
   flex: none;
 }
@@ -170,8 +175,9 @@ h3 {
   border: 1px solid transparent;
 }
 .primary {
-  background: linear-gradient(135deg, var(--purple), #5b3cc4);
-  border-color: #6c4fd6;
+  background: linear-gradient(135deg, #6d4fd8, var(--purple));
+  border-color: var(--purple);
+  color: #fff;
 }
 .primary.big {
   padding: 14px 20px;
@@ -179,7 +185,7 @@ h3 {
 }
 .ghost {
   background: transparent;
-  border-color: var(--line);
+  border-color: rgba(36, 23, 63, 0.3);
 }
 .ghost.small {
   padding: 6px 12px;
@@ -250,7 +256,7 @@ h3 {
   text-align: left;
 }
 .chip.on {
-  background: #3a2a6e;
+  background: #ece5ff;
   border-color: var(--purple2);
   box-shadow: inset 0 0 0 1px var(--purple2);
 }
@@ -392,7 +398,7 @@ h3 {
   display: flex;
   flex-direction: column;
   gap: 10px;
-  box-shadow: 0 14px 40px rgba(0, 0, 0, 0.35);
+  box-shadow: 0 14px 34px rgba(80, 55, 0, 0.22);
   overflow: hidden;
 }
 .expanded .club-card {
@@ -432,11 +438,11 @@ h3 {
   font-weight: 650;
 }
 .pill.wild {
-  background: #3d3214;
+  background: #f7e7b4;
   color: var(--gold);
 }
 .pill.super {
-  background: #3d3214;
+  background: #f7e7b4;
   color: var(--gold);
   margin-left: 6px;
 }
@@ -450,7 +456,7 @@ h3 {
   gap: 8px;
 }
 .facts div {
-  background: rgba(0, 0, 0, 0.18);
+  background: rgba(120, 90, 20, 0.07);
   border-radius: 10px;
   padding: 7px 9px;
   min-width: 0;
@@ -465,8 +471,8 @@ h3 {
   overflow-wrap: anywhere;
 }
 .fit {
-  background: rgba(217, 185, 104, 0.08);
-  border: 1px solid rgba(217, 185, 104, 0.25);
+  background: rgba(201, 152, 30, 0.1);
+  border: 1px solid rgba(201, 152, 30, 0.35);
   border-radius: 12px;
   padding: 9px 11px;
 }
@@ -623,7 +629,7 @@ h3 {
   left: 50%;
   top: 70px;
   transform: translateX(-50%);
-  background: #2f2456;
+  background: var(--card);
   border: 1px solid var(--purple2);
   padding: 9px 16px;
   border-radius: 999px;
@@ -638,7 +644,7 @@ h3 {
 .sheet-backdrop {
   position: fixed;
   inset: 0;
-  background: rgba(8, 5, 16, 0.65);
+  background: rgba(36, 23, 63, 0.45);
   display: flex;
   align-items: flex-end;
   justify-content: center;
@@ -709,14 +715,14 @@ h3 {
   vertical-align: middle;
 }
 .hours {
-  background: rgba(79, 209, 139, 0.08);
-  border: 1px solid rgba(79, 209, 139, 0.3);
+  background: rgba(29, 138, 80, 0.08);
+  border: 1px solid rgba(29, 138, 80, 0.3);
   border-radius: 12px;
   padding: 10px 12px;
 }
 .hours.over {
-  background: rgba(242, 184, 75, 0.08);
-  border-color: rgba(242, 184, 75, 0.4);
+  background: rgba(168, 101, 0, 0.08);
+  border-color: rgba(168, 101, 0, 0.4);
 }
 .plan {
   background: var(--bg2);
@@ -781,7 +787,7 @@ h3 {
 }
 
 .pill.limited {
-  background: #2c2a33;
+  background: #f1ece0;
   color: var(--muted);
   border: 1px dashed var(--line);
 }
@@ -805,7 +811,7 @@ h3 {
   position: sticky;
   bottom: 12px;
   z-index: 5;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
+  box-shadow: 0 8px 24px rgba(80, 55, 0, 0.3);
 }
 @media (max-height: 700px) {
   .club-card {
