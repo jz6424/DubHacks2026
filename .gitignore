@@ -6,3 +6,6 @@ dist/
 data/
 .DS_Store
 .vite/
+
+# past attempts (Stepwise, Crash Replay): kept locally, not in the repo
+archive/
