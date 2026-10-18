@@ -1,0 +1,918 @@
+[
+ {
+  "club_id": "uw-mock-trial",
+  "name": "UW Mock Trial",
+  "category": "Mock trial / pre-law competition",
+  "category_emoji": "⚖️",
+  "description": "A small competitive team, founded in 2007, that simulates full criminal and civil trials; members play attorneys and witnesses and travel nationally to tournaments.",
+  "commitment": {
+   "level": "all_in",
+   "hours_per_week": "~7 hrs/wk (Tue/Thu 2 hrs + Sat 3 hrs; more before tournaments)",
+   "estimated": true
+  },
+  "dues": "No dues listed (confirm with officers); members pay own airfare and food for travel, team covers lodging",
+  "meeting_schedule": "Practices Tue & Thu 6-8pm and Sat 10am-1pm; Mon-Thu 6-8pm the week before a tournament",
+  "join_type": "tryout",
+  "fit_reason": "Aspiring lawyers and performers who want intense, travel-heavy courtroom competition.",
+  "wildcard": false,
+  "status": "active",
+  "last_active": {
+   "date": "2026-10-02",
+   "source": "https://dawgdaze.uw.edu/event/university-of-washington-mock-trial-virtual-information-session-2/"
+  },
+  "links": {
+   "huskylink": "",
+   "website": "http://www.uwmocktrial.com/",
+   "instagram": "https://www.instagram.com/uwmocktrial/"
+  },
+  "application": {
+   "deadline": "Auditions Oct 8, 10 and 11, 2026 (2026-27 season; next cycle unknown)",
+   "url": "http://www.uwmocktrial.com/join.html",
+   "steps": [
+    "Attend an info session (required to get an audition slot)",
+    "Prepare a memorized ~2.5-min persuasive speech on a topic of your choice",
+    "Prepare a ~2.5-min monologue from the team's list",
+    "Audition, including a short Q&A"
+   ]
+  },
+  "sources": [
+   {
+    "url": "http://www.uwmocktrial.com/join.html",
+    "checked": "2026-10-18"
+   },
+   {
+    "url": "https://dawgdaze.uw.edu/event/university-of-washington-mock-trial-information-session/",
+    "checked": "2026-10-18"
+   },
+   {
+    "url": "https://dawgdaze.uw.edu/event/university-of-washington-mock-trial-virtual-information-session-2/",
+    "checked": "2026-10-18"
+   }
+  ],
+  "interest_areas": [
+   "Research/competitive teams (robotics, case competitions, Model UN)",
+   "Academic/professional (pre-med, pre-law, business, engineering, CS)"
+  ]
+ },
+ {
+  "club_id": "washington-igem",
+  "name": "Washington iGEM",
+  "category": "Synthetic biology competition team",
+  "category_emoji": "🧬",
+  "description": "An undergraduate-run synthetic biology research team founded in 2008 that competes in the international iGEM competition, with wet lab, dry lab, human practices, and wiki/design subteams.",
+  "commitment": {
+   "level": "committed",
+   "hours_per_week": "~5-10 hrs/wk in the school year; ~10-20 in summer",
+   "estimated": false
+  },
+  "dues": "No dues listed (confirm with officers)",
+  "meeting_schedule": "couldn't confirm",
+  "join_type": "interview",
+  "fit_reason": "Students of any major wanting a year-long, hands-on research project with an international competition.",
+  "wildcard": false,
+  "status": "active",
+  "last_active": {
+   "date": "2026-09-29",
+   "source": "https://dawgdaze.uw.edu/event/igem-conversations-in-synthetic-biology/"
+  },
+  "links": {
+   "huskylink": "",
+   "website": "https://students.washington.edu/uwigem/",
+   "instagram": "https://www.instagram.com/washington_igem/"
+  },
+  "application": {
+   "deadline": "Applications open in December; interviews in January (exact dates unknown)",
+   "url": "https://students.washington.edu/uwigem/pages/apply.html",
+   "steps": [
+    "Submit online application with resume and short statement of interest",
+    "Casual interview if selected (January)",
+    "Join a subteam and onboard (February)"
+   ]
+  },
+  "sources": [
+   {
+    "url": "https://students.washington.edu/uwigem/",
+    "checked": "2026-10-18"
+   },
+   {
+    "url": "https://students.washington.edu/uwigem/pages/apply.html",
+    "checked": "2026-10-18"
+   },
+   {
+    "url": "https://dawgdaze.uw.edu/event/igem-conversations-in-synthetic-biology/",
+    "checked": "2026-10-18"
+   }
+  ],
+  "interest_areas": [
+   "Research/competitive teams (robotics, case competitions, Model UN)",
+   "Academic/professional (pre-med, pre-law, business, engineering, CS)",
+   "Tech/hackathons/building projects"
+  ]
+ },
+ {
+  "club_id": "quizbowl-at-uw",
+  "name": "Quizbowl at the University of Washington",
+  "category": "Quiz bowl team",
+  "category_emoji": "🧠",
+  "description": "An intercollegiate quizbowl team and student club whose practices read academic question packets, then pop culture questions and socializing; some members compete nationally, and UW teams have placed at ICT.",
+  "commitment": {
+   "level": "casual",
+   "hours_per_week": "~2-4 hrs/wk (two evening practices, attendance flexible)",
+   "estimated": true
+  },
+  "dues": "No dues listed (confirm with officers)",
+  "meeting_schedule": "Mondays and Thursdays at 7:00 PM (Fall Quarter, from Thu Oct 1); location TBA on site",
+  "join_type": "open",
+  "fit_reason": "Trivia lovers who want low-pressure practices with the option to travel to tournaments.",
+  "wildcard": false,
+  "status": "active",
+  "last_active": {
+   "date": "2026-09-29",
+   "source": "https://dawgdaze.uw.edu/event/quizbowl-at-the-university-of-washington-an-introduction/"
+  },
+  "links": {
+   "huskylink": "",
+   "website": "https://students.washington.edu/quizbowl/index.html",
+   "instagram": "https://www.instagram.com/uw.quizbowl/"
+  },
+  "application": {
+   "deadline": "unknown",
+   "url": "https://discord.gg/zVNC4mWN9D",
+   "steps": [
+    "Show up to any practice (no experience needed)",
+    "Join the Discord for announcements and online practices"
+   ]
+  },
+  "sources": [
+   {
+    "url": "https://students.washington.edu/quizbowl/index.html",
+    "checked": "2026-10-18"
+   },
+   {
+    "url": "https://dawgdaze.uw.edu/event/quizbowl-at-the-university-of-washington-an-introduction/",
+    "checked": "2026-10-18"
+   },
+   {
+    "url": "https://students.washington.edu/quizbowl/past-results.html",
+    "checked": "2026-10-18"
+   },
+   {
+    "url": "https://www.qbwiki.com/wiki/University_of_Washington",
+    "checked": "2026-10-18"
+   }
+  ],
+  "interest_areas": [
+   "Research/competitive teams (robotics, case competitions, Model UN)",
+   "Gaming/hobbies/special interests"
+  ]
+ },
+ {
+  "club_id": "reformed-university-fellowship-uw",
+  "name": "Reformed University Fellowship (RUF UW)",
+  "category": "Christian fellowship",
+  "category_emoji": "✝️",
+  "description": "A campus ministry of \"a diverse group of students seeking to know, love, and serve Jesus together in community\"; it says it is not just for Christians and is open to anyone exploring faith.",
+  "commitment": {
+   "level": "regular",
+   "hours_per_week": "~2-3 hrs/wk",
+   "estimated": true
+  },
+  "dues": "No dues listed (confirm with officers)",
+  "meeting_schedule": "Large Group Wednesdays 8 PM in Johnson Hall (JHN) 102; First-Year Fellowship Mondays 7 PM in the HUB",
+  "join_type": "open",
+  "fit_reason": "Students wanting weekly Christian worship and community, including those just exploring faith.",
+  "wildcard": false,
+  "status": "active",
+  "last_active": {
+   "date": "2026-09-30",
+   "source": "https://dawgdaze.uw.edu/event/ruf-christian-fellowship-large-group-kickoff/"
+  },
+  "links": {
+   "huskylink": "",
+   "website": "https://www.uw.ruf.org/",
+   "instagram": "https://www.instagram.com/ruf_uw"
+  },
+  "application": {
+   "deadline": "unknown",
+   "url": "",
+   "steps": [
+    "Show up to Wednesday Large Group or Monday First-Year Fellowship"
+   ]
+  },
+  "sources": [
+   {
+    "url": "https://ruf.org/ministry/university-of-washington/",
+    "checked": "2026-10-18"
+   },
+   {
+    "url": "https://dawgdaze.uw.edu/event/ruf-christian-fellowship-large-group-kickoff/",
+    "checked": "2026-10-18"
+   },
+   {
+    "url": "https://dawgdaze.uw.edu/event/ruf-christian-fellowship-craft-night/",
+    "checked": "2026-10-18"
+   }
+  ],
+  "interest_areas": [
+   "Faith/spiritual"
+  ]
+ },
+ {
+  "club_id": "hillel-uw",
+  "name": "Hillel UW: Center for Jewish Life on Campus",
+  "category": "Jewish community",
+  "category_emoji": "✡️",
+  "description": "A campus Jewish community serving Jewish students from a broad range of backgrounds with Shabbat and holiday observances, learning, cultural, social, social justice and Israel programs; its Welcome Back Shabbat said everyone is welcome regardless of background or observance.",
+  "commitment": {
+   "level": "casual",
+   "hours_per_week": "couldn't confirm",
+   "estimated": false
+  },
+  "dues": "No dues listed (confirm with officers)",
+  "meeting_schedule": "Weekly Torah Learning with Rabbi Lauren (listed Tue Oct 20); Friday Shabbat dinners (e.g., Oct 2 song circle 5:15 PM, dinner 6:30 PM) at 4745 17th Ave NE",
+  "join_type": "open",
+  "fit_reason": "Jewish students, of any level of observance, looking for Shabbat, learning and community.",
+  "wildcard": false,
+  "status": "active",
+  "last_active": {
+   "date": "2026-10-02",
+   "source": "https://dawgdaze.uw.edu/event/welcome-back-shabbat-with-hillel-uw/"
+  },
+  "links": {
+   "huskylink": "",
+   "website": "https://www.hilleluw.org/",
+   "instagram": "http://instagram.com/huskyhillel"
+  },
+  "application": {
+   "deadline": "unknown",
+   "url": "",
+   "steps": [
+    "Check the calendar at hilleluw.org and RSVP to an event"
+   ]
+  },
+  "sources": [
+   {
+    "url": "https://www.hilleluw.org/",
+    "checked": "2026-10-18"
+   },
+   {
+    "url": "https://dawgdaze.uw.edu/event/welcome-back-shabbat-with-hillel-uw/",
+    "checked": "2026-10-18"
+   },
+   {
+    "url": "https://dawgdaze.uw.edu/event/back-to-school-bbq-jewish-life-open-house/",
+    "checked": "2026-10-18"
+   }
+  ],
+  "interest_areas": [
+   "Faith/spiritual",
+   "Cultural/identity-based communities"
+  ]
+ },
+ {
+  "club_id": "chabad-uw",
+  "name": "Chabad Jewish Student Group (Chabad UW)",
+  "category": "Jewish community",
+  "category_emoji": "🕯️",
+  "description": "Chabad UW helps Jewish students connect with community and grow their Jewish knowledge, with a free homemade four-course Friday Shabbat dinner open to all Jewish Huskies, a weekly JewDub Tent on Red Square, and classes.",
+  "commitment": {
+   "level": "casual",
+   "hours_per_week": "couldn't confirm",
+   "estimated": false
+  },
+  "dues": "No dues listed (confirm with officers); Shabbat dinner is free",
+  "meeting_schedule": "Free Shabbat dinner Friday nights; JewDub Tent weekly on Red Square (time not listed); weekly classes",
+  "join_type": "open",
+  "fit_reason": "Jewish students who want free Shabbat dinners, holiday celebrations and Jewish learning.",
+  "wildcard": false,
+  "status": "active",
+  "last_active": {
+   "date": "2026-10-02",
+   "source": "https://dawgdaze.uw.edu/event/welcome-back-shabbat-under-the-stars/"
+  },
+  "links": {
+   "huskylink": "",
+   "website": "https://jewishuw.com/",
+   "instagram": "https://www.instagram.com/chabaduw/"
+  },
+  "application": {
+   "deadline": "unknown",
+   "url": "",
+   "steps": [
+    "Follow @chabaduw for the calendar",
+    "Come to Friday Shabbat dinner"
+   ]
+  },
+  "sources": [
+   {
+    "url": "https://jewishuw.com/",
+    "checked": "2026-10-18"
+   },
+   {
+    "url": "https://dawgdaze.uw.edu/event/welcome-back-shabbat-under-the-stars/",
+    "checked": "2026-10-18"
+   },
+   {
+    "url": "https://dawgdaze.uw.edu/event/annual-jewdub-sushi-in-the-sukkah/",
+    "checked": "2026-10-18"
+   }
+  ],
+  "interest_areas": [
+   "Faith/spiritual",
+   "Cultural/identity-based communities"
+  ]
+ },
+ {
+  "club_id": "uw-catholic-newman-center",
+  "name": "Catholic Newman Center at UW",
+  "category": "Catholic ministry",
+  "category_emoji": "⛪",
+  "description": "The Prince of Peace Catholic Newman Center, run by the Dominicans, serves UW students with daily Mass, confession, adoration, small groups, retreats and a monthly Diving Deeper talk series.",
+  "commitment": {
+   "level": "casual",
+   "hours_per_week": "couldn't confirm",
+   "estimated": false
+  },
+  "dues": "No dues listed (confirm with officers); fall retreat $75 with scholarships",
+  "meeting_schedule": "Sunday Mass 10am, 5pm, 7pm, 9pm; Wednesday 9pm; Mon/Tue/Thu/Fri 12:35pm; Diving Deeper third Thursdays 7pm; at 4502 20th Ave NE",
+  "join_type": "open",
+  "fit_reason": "Catholic students wanting Mass near campus plus retreats, service and small groups.",
+  "wildcard": false,
+  "status": "active",
+  "last_active": {
+   "date": "2026-10-17",
+   "source": "https://uwnewman.org/"
+  },
+  "links": {
+   "huskylink": "",
+   "website": "https://uwnewman.org/",
+   "instagram": "https://www.instagram.com/uwnewman"
+  },
+  "application": {
+   "deadline": "unknown",
+   "url": "https://uwnewman.org/new-to-newman",
+   "steps": [
+    "Attend Mass or a student event",
+    "Fill out the Small Group Interest Form"
+   ]
+  },
+  "sources": [
+   {
+    "url": "https://uwnewman.org/",
+    "checked": "2026-10-18"
+   },
+   {
+    "url": "https://nwcatholic.org/news/nathan-whalen-b6c48bcc-daf2-4f89-83ed-e8f645f27479/connection-evangelization-at-heart-of-newman-center-peer-ministry",
+    "checked": "2026-10-18"
+   }
+  ],
+  "interest_areas": [
+   "Faith/spiritual"
+  ]
+ },
+ {
+  "wildcard": false,
+  "club_id": "the-daily-uw",
+  "name": "The Daily",
+  "category": "Student newspaper",
+  "category_emoji": "📰",
+  "description": "The University of Washington's 100% student-run news organization, established in 1891, publishing online and in print. Staff from all majors work as writers, photographers, videographers, designers, copy editors, illustrators and audio journalists.",
+  "commitment": {
+   "level": "committed",
+   "hours_per_week": "~4 hrs/wk (copy editors: two 2-hr shifts); up to 15 for lead sports writers",
+   "estimated": false
+  },
+  "dues": "No dues listed; staff are paid per assignment",
+  "meeting_schedule": "New writers and photographers take a quarter-long development course with weekly classes (day/time couldn't confirm)",
+  "join_type": "application",
+  "fit_reason": "Aspiring journalists, photographers and designers who want paid, published portfolio work.",
+  "status": "active",
+  "last_active": {
+   "date": "2026-10-17",
+   "source": "https://www.dailyuw.com/"
+  },
+  "links": {
+   "huskylink": "",
+   "website": "https://www.dailyuw.com/",
+   "instagram": "https://www.instagram.com/thedailyuw"
+  },
+  "application": {
+   "deadline": "Autumn 2026 deadlines (Sept 16 to Oct 2) have passed; most roles reopen at the end of the quarter",
+   "url": "https://www.dailyuw.com/page/join",
+   "steps": [
+    "Check open positions on the Join Us page",
+    "Apply by the posted deadline (writers apply to the Daily 101 program)",
+    "Complete the quarter-long development course"
+   ]
+  },
+  "sources": [
+   {
+    "url": "https://www.dailyuw.com/page/join",
+    "checked": "2026-10-18"
+   },
+   {
+    "url": "https://www.dailyuw.com/",
+    "checked": "2026-10-18"
+   },
+   {
+    "url": "https://dawgdaze.uw.edu/event/the-daily-open-house/",
+    "checked": "2026-10-18"
+   },
+   {
+    "url": "https://www.washington.edu/boundless/uw-student-publications/",
+    "checked": "2026-10-18"
+   }
+  ],
+  "interest_areas": [
+   "Media/writing/publications"
+  ]
+ },
+ {
+  "wildcard": false,
+  "club_id": "rainy-dawg-radio",
+  "name": "Rainy Dawg Radio",
+  "category": "Student radio",
+  "category_emoji": "📻",
+  "description": "UW Seattle's only student-run radio station, founded in the early 2000s and broadcasting from HUB 131N. More than 50 volunteer DJs host weekly one-hour live shows, and the Blawg publishes music writing.",
+  "commitment": {
+   "level": "regular",
+   "hours_per_week": "~1 hr/wk on air (DJs); 1-hr weekly Blawg meeting",
+   "estimated": false
+  },
+  "dues": "No dues listed; volunteer (unpaid) positions",
+  "meeting_schedule": "Blawg meetings Fridays 2-3pm in the studio (HUB 131N); DJs host a weekly 1-hour show",
+  "join_type": "application",
+  "fit_reason": "Music lovers who want their own weekly radio show or to write music journalism.",
+  "status": "active",
+  "last_active": {
+   "date": "2026-10-12",
+   "source": "https://rainydawg.org"
+  },
+  "links": {
+   "huskylink": "",
+   "website": "https://rainydawg.org",
+   "instagram": "https://www.instagram.com/rainydawgradio"
+  },
+  "application": {
+   "deadline": "DJ applications open Oct 26, 2026 and close Nov 9, 2026 (once a year)",
+   "url": "https://rainydawg.org/about",
+   "steps": [
+    "Apply on rainydawg.org during the Fall DJ window",
+    "Or just come to a Friday Blawg meeting with an article pitch"
+   ]
+  },
+  "sources": [
+   {
+    "url": "https://rainydawg.org",
+    "checked": "2026-10-18"
+   },
+   {
+    "url": "https://rainydawg.org/about",
+    "checked": "2026-10-18"
+   },
+   {
+    "url": "https://dawgdaze.uw.edu/event/rainy-dawg-radio-open-studio/",
+    "checked": "2026-10-18"
+   }
+  ],
+  "interest_areas": [
+   "Media/writing/publications",
+   "Arts/music/dance/theater/film"
+  ]
+ },
+ {
+  "wildcard": false,
+  "club_id": "bricolage-literary-visual-arts-journal",
+  "name": "Bricolage Literary & Visual Arts Journal",
+  "category": "Literary magazine",
+  "category_emoji": "📖",
+  "description": "UW's undergraduate literary and visual arts journal, publishing prose, poetry and visual art in an annual issue since 1983, plus a zine. It is run by undergraduate volunteer staff who handle editing, production and outreach.",
+  "commitment": {
+   "level": "regular",
+   "hours_per_week": "1-2 hrs/wk in fall, 4-5 in winter (editor roles)",
+   "estimated": false
+  },
+  "dues": "No dues listed (confirm with officers)",
+  "meeting_schedule": "Editorial team meets weekly; all-staff meeting quarterly",
+  "join_type": "application",
+  "fit_reason": "Writers and artists who want hands-on literary editing and publishing experience.",
+  "status": "active",
+  "last_active": {
+   "date": "2026-09-29",
+   "source": "https://dawgdaze.uw.edu/event/writing-happy-hour-with-bricolage-literary-magazine/"
+  },
+  "links": {
+   "huskylink": "",
+   "website": "https://bricouw.wixsite.com/bricolageuw",
+   "instagram": "https://www.instagram.com/bricolageuw"
+  },
+  "application": {
+   "deadline": "Issue 45 staff applications are closed; submissions and volunteer reviewing also available",
+   "url": "https://bricouw.wixsite.com/bricolageuw/staff-applications",
+   "steps": [
+    "Submit work or volunteer to review submissions",
+    "Apply for a staff role when applications open (UW Seattle undergrads)",
+    "Email brico@uw.edu with questions"
+   ]
+  },
+  "sources": [
+   {
+    "url": "https://bricouw.wixsite.com/bricolageuw",
+    "checked": "2026-10-18"
+   },
+   {
+    "url": "https://bricouw.wixsite.com/bricolageuw/staff-applications",
+    "checked": "2026-10-18"
+   },
+   {
+    "url": "https://dawgdaze.uw.edu/event/writing-happy-hour-with-bricolage-literary-magazine/",
+    "checked": "2026-10-18"
+   },
+   {
+    "url": "https://english.washington.edu/student-groups",
+    "checked": "2026-10-18"
+   },
+   {
+    "url": "https://www.washington.edu/boundless/uw-student-publications/",
+    "checked": "2026-10-18"
+   }
+  ],
+  "interest_areas": [
+   "Media/writing/publications",
+   "Arts/music/dance/theater/film"
+  ]
+ },
+ {
+  "wildcard": false,
+  "club_id": "grey-matters-journal",
+  "name": "Grey Matters Journal",
+  "category": "Science journal",
+  "category_emoji": "🧠",
+  "description": "A UW student-run nonprofit that makes neuroscience accessible, publishing a quarterly undergraduate neuroscience journal and running public events and K-12 outreach. Roles span writing, editing, design, illustration, translation, podcasting and operations.",
+  "commitment": {
+   "level": "regular",
+   "hours_per_week": "couldn't confirm (varies by position)",
+   "estimated": false
+  },
+  "dues": "No dues listed (confirm with officers)",
+  "meeting_schedule": "Production team holds weekly writing sessions; quarterly welcome meetings and Journal Club are open to all",
+  "join_type": "application",
+  "fit_reason": "Science-curious students of any major who want to write, edit or design for publication.",
+  "status": "active",
+  "last_active": {
+   "date": "2026-09-28",
+   "source": "https://dawgdaze.uw.edu/event/see-a-real-human-brain-presented-by-grey-matters-journal/"
+  },
+  "links": {
+   "huskylink": "",
+   "website": "https://greymattersjournal.org/",
+   "instagram": "https://www.instagram.com/greymattersjournal"
+  },
+  "application": {
+   "deadline": "unknown (some Production and Operations roles listed as open)",
+   "url": "https://greymattersjournal.org/apply",
+   "steps": [
+    "Pick a position on the Applications page",
+    "Submit a separate application per role (UW NetID sign-in required)"
+   ]
+  },
+  "sources": [
+   {
+    "url": "https://greymattersjournal.org/",
+    "checked": "2026-10-18"
+   },
+   {
+    "url": "https://greymattersjournal.org/apply",
+    "checked": "2026-10-18"
+   },
+   {
+    "url": "https://greymattersjournal.org/faq",
+    "checked": "2026-10-18"
+   },
+   {
+    "url": "https://dawgdaze.uw.edu/event/see-a-real-human-brain-presented-by-grey-matters-journal/",
+    "checked": "2026-10-18"
+   }
+  ],
+  "interest_areas": [
+   "Media/writing/publications",
+   "Academic/professional (pre-med, pre-law, business, engineering, CS)"
+  ]
+ },
+ {
+  "club_id": "husky-tetris-club",
+  "name": "Husky Tetris Club",
+  "category": "Tetris",
+  "category_emoji": "🧱",
+  "description": "A UW club bringing together Tetris players of all skill levels, home to UW's Collegiate Tetris League semifinalist team. Hangouts feature score battles and head-to-head Classic and Modern Tetris.",
+  "commitment": {
+   "level": "casual",
+   "hours_per_week": "~2 hrs/wk",
+   "estimated": true
+  },
+  "dues": "No dues listed (confirm with officers)",
+  "meeting_schedule": "Tuesdays 7-9 PM, Savery Hall (SAV) 132",
+  "join_type": "open",
+  "fit_reason": "Block-stackers of any level who want casual play or a shot at collegiate Tetris competition.",
+  "wildcard": false,
+  "status": "active",
+  "last_active": {
+   "date": "2026-09-29",
+   "source": "https://dawgdaze.uw.edu/event/husky-tetris-club-hangout/"
+  },
+  "links": {
+   "huskylink": "https://huskylink.washington.edu/organization/huskytetris",
+   "website": "https://www.huskytetrisclub.com/",
+   "instagram": "https://www.instagram.com/huskytetrisclub"
+  },
+  "application": {
+   "deadline": "unknown",
+   "url": "https://discord.gg/n28wtrC2Fn",
+   "steps": [
+    "Join the club Discord",
+    "Drop in to a Tuesday meeting in SAV 132"
+   ]
+  },
+  "sources": [
+   {
+    "url": "https://www.huskytetrisclub.com/",
+    "checked": "2026-10-18"
+   },
+   {
+    "url": "https://dawgdaze.uw.edu/event/husky-tetris-club-hangout/",
+    "checked": "2026-10-18"
+   }
+  ],
+  "interest_areas": [
+   "Gaming/hobbies/special interests"
+  ]
+ },
+ {
+  "club_id": "mahjong-society-uw",
+  "name": "Mahjong Society at UW",
+  "category": "Mahjong",
+  "category_emoji": "🀄",
+  "description": "A beginner-friendly community of students who learn and play mahjong variants including Riichi, Hong Kong and Taiwanese; no gambling. Runs weekly general meetings, monthly workshops and tournaments.",
+  "commitment": {
+   "level": "casual",
+   "hours_per_week": "~2 hrs/wk",
+   "estimated": true
+  },
+  "dues": "No dues listed (confirm with officers)",
+  "meeting_schedule": "Official general meetings Tuesdays 5-7 PM at HUB Games; monthly workshops (Riichi Workshop Oct 28, 2026, 5-7 PM, Spratlen Hall 311)",
+  "join_type": "open",
+  "fit_reason": "Anyone curious about mahjong, from total beginners to experienced Riichi players.",
+  "wildcard": false,
+  "status": "active",
+  "last_active": {
+   "date": "2026-09-27",
+   "source": "https://dawgdaze.uw.edu/event/mahjong-society-free-play/"
+  },
+  "links": {
+   "huskylink": "",
+   "website": "https://mahjongsociety.wixsite.com/mojos",
+   "instagram": "https://www.instagram.com/mjs.uw/"
+  },
+  "application": {
+   "deadline": "unknown",
+   "url": "https://discord.gg/yU5PgQbkp4",
+   "steps": [
+    "Join the Discord for updates and spontaneous games",
+    "Show up Tuesday 5-7 PM at HUB Games",
+    "RSVP for workshops via the Linktree forms"
+   ]
+  },
+  "sources": [
+   {
+    "url": "https://mahjongsociety.wixsite.com/mojos",
+    "checked": "2026-10-18"
+   },
+   {
+    "url": "https://linktr.ee/uwmahjongsociety",
+    "checked": "2026-10-18"
+   },
+   {
+    "url": "https://dawgdaze.uw.edu/event/mahjong-society-free-play/",
+    "checked": "2026-10-18"
+   },
+   {
+    "url": "https://docs.google.com/spreadsheets/d/10-Z5OYYwpHZPVR2lUEAwJTnskZtkmw1TGkLvwOzmcbk/edit?gid=0",
+    "checked": "2026-10-18"
+   }
+  ],
+  "interest_areas": [
+   "Gaming/hobbies/special interests"
+  ]
+ },
+ {
+  "club_id": "uw-costume-club",
+  "name": "UW Costume Club",
+  "category": "Costume & sewing",
+  "category_emoji": "🧵",
+  "description": "A creative club for sewing, mending and costume-making, with officers teaching machine and hand sewing basics. Weekly drop-in sessions in Hutchinson Hall.",
+  "commitment": {
+   "level": "casual",
+   "hours_per_week": "~1-4 hrs/wk (drop-in)",
+   "estimated": true
+  },
+  "dues": "No dues listed; Discord is free to join (confirm with officers)",
+  "meeting_schedule": "Thursdays 6-10 PM, Hutchinson Hall 135 (drop-in; building locks at 5 PM, ask officers on Discord to be let in)",
+  "join_type": "open",
+  "fit_reason": "Crafters and cosplayers wanting hands-on sewing help and a creative community, no experience needed.",
+  "wildcard": false,
+  "status": "active",
+  "last_active": {
+   "date": "2026-10-01",
+   "source": "https://dawgdaze.uw.edu/event/sewing-101-with-costume-club/"
+  },
+  "links": {
+   "huskylink": "https://huskylink.washington.edu/organization/costume",
+   "website": "",
+   "instagram": "https://www.instagram.com/uwcostumeclub/"
+  },
+  "application": {
+   "deadline": "unknown",
+   "url": "https://discord.gg/9FGhppagYs",
+   "steps": [
+    "Join the Discord",
+    "Drop in Thursday 6-10 PM at Hutchinson 135"
+   ]
+  },
+  "sources": [
+   {
+    "url": "https://linktr.ee/uwcostumeclub",
+    "checked": "2026-10-18"
+   },
+   {
+    "url": "https://dawgdaze.uw.edu/event/sewing-101-with-costume-club/",
+    "checked": "2026-10-18"
+   }
+  ],
+  "interest_areas": [
+   "Gaming/hobbies/special interests",
+   "Arts/music/dance/theater/film"
+  ]
+ },
+ {
+  "club_id": "anime-discovery-project",
+  "name": "Anime Discovery Project",
+  "category": "Anime",
+  "category_emoji": "🎌",
+  "description": "UW's original anime RSO (since 1991), holding weekly showings of lesser-known anime chosen each quarter, with a movie the week before finals. Welcomes all UW-affiliated anime lovers.",
+  "commitment": {
+   "level": "casual",
+   "hours_per_week": "couldn't confirm",
+   "estimated": false
+  },
+  "dues": "No dues listed (confirm with officers)",
+  "meeting_schedule": "Weekly anime showings during the quarter (day/time posted on Discord)",
+  "join_type": "open",
+  "fit_reason": "Anime fans who want to discover new shows and watch together each week.",
+  "wildcard": false,
+  "status": "active",
+  "last_active": {
+   "date": "2026-09-28",
+   "source": "https://dawgdaze.uw.edu/event/anime-discovery-project-at-uw/"
+  },
+  "links": {
+   "huskylink": "",
+   "website": "https://adp.moe/",
+   "instagram": "https://www.instagram.com/uwadp/"
+  },
+  "application": {
+   "deadline": "unknown",
+   "url": "https://adp.moe/discord",
+   "steps": [
+    "Join the ADP Discord for showing times",
+    "Attend a weekly showing"
+   ]
+  },
+  "sources": [
+   {
+    "url": "https://adp.moe/",
+    "checked": "2026-10-18"
+   },
+   {
+    "url": "https://adp.moe/about-adp",
+    "checked": "2026-10-18"
+   },
+   {
+    "url": "https://adp.moe/history",
+    "checked": "2026-10-18"
+   },
+   {
+    "url": "https://dawgdaze.uw.edu/event/anime-discovery-project-at-uw/",
+    "checked": "2026-10-18"
+   },
+   {
+    "url": "https://docs.google.com/spreadsheets/d/10-Z5OYYwpHZPVR2lUEAwJTnskZtkmw1TGkLvwOzmcbk/edit?gid=0",
+    "checked": "2026-10-18"
+   }
+  ],
+  "interest_areas": [
+   "Gaming/hobbies/special interests",
+   "Arts/music/dance/theater/film"
+  ]
+ },
+ {
+  "club_id": "uw-chess-club",
+  "name": "UW Chess Club",
+  "category": "Chess",
+  "category_emoji": "♟️",
+  "description": "A campus chess club open to all skill levels, with weekly puzzles, 5-minute blitz tournaments, casual games and Bughouse. Co-hosts the Husky Open tournament with the Washington Chess Federation.",
+  "commitment": {
+   "level": "casual",
+   "hours_per_week": "~1.5 hrs/wk",
+   "estimated": true
+  },
+  "dues": "No dues listed for weekly meetings; Husky Open entry is $20-25 for UW students",
+  "meeting_schedule": "Tuesdays 3:30-5 PM, HUB Room 337",
+  "join_type": "open",
+  "fit_reason": "Chess players of any rating wanting relaxed weekly games plus the occasional rated tournament.",
+  "wildcard": false,
+  "status": "unverified",
+  "last_active": {
+   "date": "unknown",
+   "source": "https://students.washington.edu/chessuw"
+  },
+  "links": {
+   "huskylink": "",
+   "website": "https://students.washington.edu/chessuw",
+   "instagram": ""
+  },
+  "application": {
+   "deadline": "unknown",
+   "url": "https://students.washington.edu/chessuw",
+   "steps": [
+    "Join the mailing list on the club site",
+    "Drop in Tuesday 3:30-5 PM in HUB 337"
+   ]
+  },
+  "sources": [
+   {
+    "url": "https://students.washington.edu/chessuw",
+    "checked": "2026-10-18"
+   },
+   {
+    "url": "https://nwchess.com/calendar/2026%20Husky%20Open.pdf",
+    "checked": "2026-10-18"
+   }
+  ],
+  "interest_areas": [
+   "Gaming/hobbies/special interests"
+  ]
+ },
+ {
+  "club_id": "uw-esports",
+  "name": "UW Esports",
+  "category": "Esports",
+  "category_emoji": "🎮",
+  "description": "UW's official competitive gaming program, with teams in Valorant, League of Legends, Super Smash Bros. Ultimate and Rocket League that play weekly; it is joining the Power Esports Conference. Students can also volunteer in shoutcasting, production and outreach.",
+  "commitment": {
+   "level": "committed",
+   "hours_per_week": "couldn't confirm",
+   "estimated": false
+  },
+  "dues": "No dues listed for teams (confirm with officers); HUB Games PC time is $3.50/hr for students",
+  "meeting_schedule": "Teams play weekly; official matches Mondays from 4:30 PM and Wednesdays 4:30-9 PM in the HUB Esports Lounge",
+  "join_type": "tryout",
+  "fit_reason": "Serious competitive gamers, plus aspiring casters and broadcast techs.",
+  "wildcard": false,
+  "status": "unverified",
+  "last_active": {
+   "date": "unknown",
+   "source": "https://hub.washington.edu/play/esports/"
+  },
+  "links": {
+   "huskylink": "",
+   "website": "https://hub.washington.edu/play/esports/",
+   "instagram": "https://www.instagram.com/uofwaesports"
+  },
+  "application": {
+   "deadline": "unknown",
+   "url": "https://discord.gg/daHhzD5G53",
+   "steps": [
+    "Join the UW Esports Discord",
+    "Fill out the tryout form in #Recruitment (or the volunteer form)"
+   ]
+  },
+  "sources": [
+   {
+    "url": "https://hub.washington.edu/play/esports/",
+    "checked": "2026-10-18"
+   },
+   {
+    "url": "https://en.wikipedia.org/wiki/Power_Esports_Conference",
+    "checked": "2026-10-18"
+   },
+   {
+    "url": "https://esportsinsider.com/2020/09/university-of-washington-uw-esports/",
+    "checked": "2026-10-18"
+   }
+  ],
+  "interest_areas": [
+   "Gaming/hobbies/special interests",
+   "Research/competitive teams (robotics, case competitions, Model UN)"
+  ]
+ }
+]

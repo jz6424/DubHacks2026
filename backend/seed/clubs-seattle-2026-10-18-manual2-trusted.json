@@ -1,0 +1,95 @@
+[
+ {
+  "club_id": "product-space-uw",
+  "name": "Product Space @ UW",
+  "category": "Product Management",
+  "category_emoji": "🧩",
+  "description": "UW's chapter of Product Space, a student-led organization for students interested in product management.",
+  "commitment": {
+   "level": "regular",
+   "hours_per_week": "couldn't confirm",
+   "estimated": true
+  },
+  "dues": "No dues listed (confirm with officers)",
+  "meeting_schedule": "couldn't confirm (see Instagram @uwproductspace)",
+  "join_type": "unknown",
+  "fit_reason": "Students curious about product management who want hands-on product experience.",
+  "wildcard": false,
+  "status": "unverified",
+  "last_active": {
+   "date": "unknown",
+   "source": "https://www.instagram.com/uwproductspace/"
+  },
+  "links": {
+   "huskylink": "",
+   "website": "",
+   "instagram": "https://www.instagram.com/uwproductspace/"
+  },
+  "application": {
+   "deadline": "unknown",
+   "url": "https://www.instagram.com/uwproductspace/",
+   "steps": [
+    "Follow @uwproductspace for recruitment and events"
+   ]
+  },
+  "sources": [
+   {
+    "url": "https://www.instagram.com/uwproductspace/",
+    "checked": "2026-10-18"
+   }
+  ],
+  "interest_areas": [
+   "Academic/professional (pre-med, pre-law, business, engineering, CS)",
+   "Tech/hackathons/building projects"
+  ]
+ },
+ {
+  "club_id": "theta-tau-uw",
+  "name": "Theta Tau (UW chapter)",
+  "category": "Professional Engineering Fraternity",
+  "category_emoji": "⚙️",
+  "description": "UW's chapter of Theta Tau, the oldest and largest professional engineering fraternity; chapters cap at fifty student members and focus on professional development and brotherhood.",
+  "commitment": {
+   "level": "regular",
+   "hours_per_week": "couldn't confirm",
+   "estimated": true
+  },
+  "dues": "couldn't confirm",
+  "meeting_schedule": "couldn't confirm (see Instagram @uwthetatau)",
+  "join_type": "unknown",
+  "fit_reason": "Engineering students who want a professional fraternity with close-knit community.",
+  "wildcard": false,
+  "status": "unverified",
+  "last_active": {
+   "date": "unknown",
+   "source": "https://www.instagram.com/uwthetatau/"
+  },
+  "links": {
+   "huskylink": "",
+   "website": "",
+   "instagram": "https://www.instagram.com/uwthetatau/"
+  },
+  "application": {
+   "deadline": "unknown",
+   "url": "https://www.instagram.com/uwthetatau/",
+   "steps": [
+    "Follow @uwthetatau for rush dates"
+   ]
+  },
+  "sources": [
+   {
+    "url": "https://www.instagram.com/uwthetatau/",
+    "checked": "2026-10-18"
+   },
+   {
+    "url": "https://thetatau.org/",
+    "checked": "2026-10-18"
+   }
+  ],
+  "interest_areas": [
+   "Academic/professional (pre-med, pre-law, business, engineering, CS)",
+   "Tech/hackathons/building projects",
+   "Social/Greek life"
+  ]
+ }
+]

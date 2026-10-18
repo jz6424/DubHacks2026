@@ -85,6 +85,10 @@ GOOD_HINT = re.compile(r"team|event|member|build|robot|competition|group|meeting
 SUBPAGE = re.compile(r"galler|photo|event|about|team|project|our[-_ ]?work|media|who[-_ ]?we[-_ ]?are|members|"
                      r"officers|history|past", re.I)
 
+# Clubs whose pages are full of content images, not photos of the club (article photos for publications, anime
+# key art for a screening club): logo only. Keys are catalog.norm(name).
+LOGO_ONLY = {"daily", "offleashnews", "animediscoveryproject"}
+
 SCHEMA = """
 CREATE TABLE IF NOT EXISTS club_media (
     campus TEXT NOT NULL, key TEXT NOT NULL, photos TEXT NOT NULL, logo TEXT NOT NULL, fetched_at REAL NOT NULL,
@@ -558,7 +562,7 @@ def ensure(campus: str, card: dict, refetch: bool = False) -> dict:
         with _slots:
             found_photos, found_logo = collect(card, taken)
         sha8 = lambda item: hashlib.sha256(item["jpeg"]).hexdigest()[:8]  # noqa: E731 - matches _store's file name
-        found_photos = [p for p in found_photos if sha8(p) not in shared]
+        found_photos = [p for p in found_photos if sha8(p) not in shared and key not in LOGO_ONLY]
         if found_logo and sha8(found_logo) in shared:
             found_logo = {}
         photos = [_store(campus, key, p) for p in found_photos]

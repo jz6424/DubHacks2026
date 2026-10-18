@@ -1,0 +1,910 @@
+[
+ {
+  "club_id": "husky-moot-court",
+  "name": "Husky Moot Court",
+  "category": "Moot court / pre-law competition",
+  "category_emoji": "⚖️",
+  "description": "An undergraduate moot court team, started in 2024 and affiliated with the American Moot Court Association, where competitors act as appellate attorneys, write briefs, and argue before panels of lawyers and judges.",
+  "commitment": {
+   "level": "regular",
+   "hours_per_week": "couldn't confirm",
+   "estimated": false
+  },
+  "dues": "No dues listed (confirm with officers)",
+  "meeting_schedule": "couldn't confirm",
+  "join_type": "unknown",
+  "fit_reason": "Students of any major who want to build legal writing and oral argument skills.",
+  "wildcard": false,
+  "status": "active",
+  "last_active": {
+   "date": "2026-09-30",
+   "source": "https://dawgdaze.uw.edu/event/virtual-husky-moot-court-information-session-2/"
+  },
+  "links": {
+   "huskylink": "",
+   "website": "https://huskymootcourt.carrd.co/",
+   "instagram": "https://www.instagram.com/huskymootcourt/"
+  },
+  "application": {
+   "deadline": "unknown",
+   "url": "https://huskymootcourt.carrd.co/",
+   "steps": [
+    "Follow @huskymootcourt for updates",
+    "Application listed as 'Coming Soon' on the club site",
+    "Contact huskymootcourt@gmail.com with questions"
+   ]
+  },
+  "sources": [
+   {
+    "url": "https://huskymootcourt.carrd.co/",
+    "checked": "2026-10-18"
+   },
+   {
+    "url": "https://dawgdaze.uw.edu/event/virtual-husky-moot-court-information-session/",
+    "checked": "2026-10-18"
+   },
+   {
+    "url": "https://nwsidebar.wsba.org/2025/09/02/uw-students-launch-new-moot-court-for-undergrads/",
+    "checked": "2026-10-18"
+   }
+  ],
+  "interest_areas": [
+   "Research/competitive teams (robotics, case competitions, Model UN)",
+   "Academic/professional (pre-med, pre-law, business, engineering, CS)"
+  ]
+ },
+ {
+  "club_id": "cru-at-uw",
+  "name": "Cru at UW",
+  "category": "Christian fellowship",
+  "category_emoji": "✝️",
+  "description": "A Christian campus ministry offering mentoring, Bible studies and fellowship, \"a community of imperfect people from all walks of life who follow Jesus together,\" for people exploring faith or growing in it.",
+  "commitment": {
+   "level": "casual",
+   "hours_per_week": "couldn't confirm",
+   "estimated": false
+  },
+  "dues": "No dues listed (confirm with officers)",
+  "meeting_schedule": "couldn't confirm",
+  "join_type": "open",
+  "fit_reason": "Students curious about Christianity or wanting Bible study and mentoring.",
+  "wildcard": false,
+  "status": "active",
+  "last_active": {
+   "date": "2026-10-01",
+   "source": "https://dawgdaze.uw.edu/event/new-2-cru/"
+  },
+  "links": {
+   "huskylink": "",
+   "website": "https://campus.cru.org/college/washington/",
+   "instagram": "https://www.instagram.com/uwcru/"
+  },
+  "application": {
+   "deadline": "unknown",
+   "url": "",
+   "steps": []
+  },
+  "sources": [
+   {
+    "url": "https://campus.cru.org/college/washington/",
+    "checked": "2026-10-18"
+   },
+   {
+    "url": "https://dawgdaze.uw.edu/event/new-2-cru/",
+    "checked": "2026-10-18"
+   },
+   {
+    "url": "https://luma.com/8024dm0t",
+    "checked": "2026-10-18"
+   }
+  ],
+  "interest_areas": [
+   "Faith/spiritual"
+  ]
+ },
+ {
+  "club_id": "msa-uw",
+  "name": "Muslim Student Association at UW (MSA UW)",
+  "category": "Muslim community",
+  "category_emoji": "☪️",
+  "description": "MSA UW builds a welcoming Muslim community at UW with events and programming, supporting Islamic House, the campus mosque and community space; it also co-hosts interfaith events like the Neighbors of Faith Dinner with Cru.",
+  "commitment": {
+   "level": "casual",
+   "hours_per_week": "couldn't confirm",
+   "estimated": false
+  },
+  "dues": "No dues listed (confirm with officers)",
+  "meeting_schedule": "couldn't confirm",
+  "join_type": "open",
+  "fit_reason": "Muslim students seeking faith, friendship and a campus mosque community.",
+  "wildcard": false,
+  "status": "active",
+  "last_active": {
+   "date": "2026-10-10",
+   "source": "https://luma.com/0ogtfoq0"
+  },
+  "links": {
+   "huskylink": "",
+   "website": "",
+   "instagram": ""
+  },
+  "application": {
+   "deadline": "unknown",
+   "url": "",
+   "steps": []
+  },
+  "sources": [
+   {
+    "url": "https://luma.com/0ogtfoq0",
+    "checked": "2026-10-18"
+   },
+   {
+    "url": "https://luma.com/8024dm0t",
+    "checked": "2026-10-18"
+   }
+  ],
+  "interest_areas": [
+   "Faith/spiritual",
+   "Cultural/identity-based communities"
+  ]
+ },
+ {
+  "club_id": "hindu-yuva-uw",
+  "name": "Hindu YUVA",
+  "category": "Hindu community",
+  "category_emoji": "🪔",
+  "description": "The UW chapter of Hindu YUVA ran welcome events like rangoli coloring with chai and a sports day, saying \"everyone is welcome!\"",
+  "commitment": {
+   "level": "casual",
+   "hours_per_week": "couldn't confirm",
+   "estimated": false
+  },
+  "dues": "No dues listed (confirm with officers)",
+  "meeting_schedule": "couldn't confirm",
+  "join_type": "open",
+  "fit_reason": "Students who want Hindu community, culture and casual social events.",
+  "wildcard": false,
+  "status": "active",
+  "last_active": {
+   "date": "2026-09-26",
+   "source": "https://dawgdaze.uw.edu/event/hindu-yuva-sports-day/"
+  },
+  "links": {
+   "huskylink": "",
+   "website": "",
+   "instagram": ""
+  },
+  "application": {
+   "deadline": "unknown",
+   "url": "",
+   "steps": []
+  },
+  "sources": [
+   {
+    "url": "https://dawgdaze.uw.edu/event/hindu-yuva-rangolis-and-chai/",
+    "checked": "2026-10-18"
+   },
+   {
+    "url": "https://dawgdaze.uw.edu/event/hindu-yuva-sports-day/",
+    "checked": "2026-10-18"
+   }
+  ],
+  "interest_areas": [
+   "Faith/spiritual",
+   "Cultural/identity-based communities"
+  ]
+ },
+ {
+  "club_id": "asian-american-intervarsity-uw",
+  "name": "Asian American InterVarsity (AAIV)",
+  "category": "Christian fellowship",
+  "category_emoji": "✝️",
+  "description": "\"Asian American InterVarsity (AAIV) is a Christian fellowship at the University of Washington\" that seeks to empower Asian Americans to further God's kingdom on campus; its fall events said everyone is welcome.",
+  "commitment": {
+   "level": "casual",
+   "hours_per_week": "couldn't confirm",
+   "estimated": false
+  },
+  "dues": "No dues listed (confirm with officers)",
+  "meeting_schedule": "couldn't confirm",
+  "join_type": "open",
+  "fit_reason": "Asian American students, and friends, wanting Christian fellowship and community.",
+  "wildcard": false,
+  "status": "active",
+  "last_active": {
+   "date": "2026-10-02",
+   "source": "https://dawgdaze.uw.edu/event/asian-american-intervarsity-aaiv-listening-gathering-music-refreshments-and-community/"
+  },
+  "links": {
+   "huskylink": "",
+   "website": "http://aaivuw.com",
+   "instagram": "https://www.instagram.com/aaivuw/"
+  },
+  "application": {
+   "deadline": "unknown",
+   "url": "",
+   "steps": []
+  },
+  "sources": [
+   {
+    "url": "http://aaivuw.com",
+    "checked": "2026-10-18"
+   },
+   {
+    "url": "https://dawgdaze.uw.edu/event/asian-american-intervarsity-aaiv-listening-gathering-music-refreshments-and-community/",
+    "checked": "2026-10-18"
+   },
+   {
+    "url": "https://nwasianweekly.com/2014/10/keeping-faith-asian-americans-christianity",
+    "checked": "2026-10-18"
+   }
+  ],
+  "interest_areas": [
+   "Faith/spiritual",
+   "Cultural/identity-based communities"
+  ]
+ },
+ {
+  "club_id": "acts2fellowship-uw",
+  "name": "Acts2Fellowship (a2f @ UW)",
+  "category": "Christian fellowship",
+  "category_emoji": "✝️",
+  "description": "Resound Church's college fellowship for Huskies, part of the Acts2 network; its women's group explores faith and college life and welcomes those \"just curious about Christianity.\"",
+  "commitment": {
+   "level": "casual",
+   "hours_per_week": "couldn't confirm",
+   "estimated": false
+  },
+  "dues": "No dues listed (confirm with officers)",
+  "meeting_schedule": "couldn't confirm a weekly a2f meeting (affiliated Resound Church gathers Sundays 1 PM at 4507 University Way NE)",
+  "join_type": "open",
+  "fit_reason": "Students wanting a social, church-connected Christian community with small groups.",
+  "wildcard": false,
+  "status": "active",
+  "last_active": {
+   "date": "2026-09-29",
+   "source": "https://dawgdaze.uw.edu/event/acts2fellowship-womens-group-kickoff/"
+  },
+  "links": {
+   "huskylink": "",
+   "website": "https://www.resoundseattle.org/",
+   "instagram": "https://www.instagram.com/a2f.uw/"
+  },
+  "application": {
+   "deadline": "unknown",
+   "url": "",
+   "steps": []
+  },
+  "sources": [
+   {
+    "url": "https://www.resoundseattle.org/",
+    "checked": "2026-10-18"
+   },
+   {
+    "url": "https://dawgdaze.uw.edu/event/acts2fellowship-womens-group-kickoff/",
+    "checked": "2026-10-18"
+   },
+   {
+    "url": "https://dawgdaze.uw.edu/event/spark-were-not-really-strangers-with-acts2fellowship/",
+    "checked": "2026-10-18"
+   }
+  ],
+  "interest_areas": [
+   "Faith/spiritual"
+  ]
+ },
+ {
+  "club_id": "first-love-at-uw",
+  "name": "First Love at UW",
+  "category": "Christian fellowship",
+  "category_emoji": "✝️",
+  "description": "A Christian registered student organization hosting Bible study and fellowship; \"Come as you are; all are welcome,\" including newcomers to the faith and the curious.",
+  "commitment": {
+   "level": "casual",
+   "hours_per_week": "couldn't confirm",
+   "estimated": false
+  },
+  "dues": "No dues listed (confirm with officers)",
+  "meeting_schedule": "couldn't confirm",
+  "join_type": "open",
+  "fit_reason": "Students wanting casual Bible study and a welcoming church community.",
+  "wildcard": false,
+  "status": "active",
+  "last_active": {
+   "date": "2026-09-27",
+   "source": "https://dawgdaze.uw.edu/event/come-find-your-people-church-this-sunday-with-first-love-uw/"
+  },
+  "links": {
+   "huskylink": "",
+   "website": "",
+   "instagram": "https://www.instagram.com/firstloveseattle_/"
+  },
+  "application": {
+   "deadline": "unknown",
+   "url": "",
+   "steps": []
+  },
+  "sources": [
+   {
+    "url": "https://dawgdaze.uw.edu/event/bible-study-first-love-seattle-all-are-welcome/",
+    "checked": "2026-10-18"
+   },
+   {
+    "url": "https://dawgdaze.uw.edu/event/come-find-your-people-church-this-sunday-with-first-love-uw/",
+    "checked": "2026-10-18"
+   }
+  ],
+  "interest_areas": [
+   "Faith/spiritual"
+  ]
+ },
+ {
+  "wildcard": false,
+  "club_id": "analog-club-uw",
+  "name": "Analog Club",
+  "category": "Film photography",
+  "category_emoji": "📷",
+  "description": "A student RSO for film photographers that curates DARKROOM, a yearly photo magazine, and hosts photo walks and film camera workshops.",
+  "commitment": {
+   "level": "casual",
+   "hours_per_week": "couldn't confirm",
+   "estimated": true
+  },
+  "dues": "No dues listed (confirm with officers)",
+  "meeting_schedule": "couldn't confirm",
+  "join_type": "unknown",
+  "fit_reason": "Film photographers, from beginners to darkroom regulars, who want to get published.",
+  "status": "active",
+  "last_active": {
+   "date": "2026-09-28",
+   "source": "https://dawgdaze.uw.edu/event/analog-club-campus-photowalk-on-film/"
+  },
+  "links": {
+   "huskylink": "",
+   "website": "https://analogclubuw.org/",
+   "instagram": "https://www.instagram.com/analogclubuw"
+  },
+  "application": {
+   "deadline": "unknown",
+   "url": "",
+   "steps": [
+    "Attend a photo walk or event",
+    "Ask officers how to get involved"
+   ]
+  },
+  "sources": [
+   {
+    "url": "https://dawgdaze.uw.edu/event/analog-club-campus-photowalk-on-film/",
+    "checked": "2026-10-18"
+   },
+   {
+    "url": "https://analogclubuw.org/",
+    "checked": "2026-10-18"
+   },
+   {
+    "url": "https://www.washington.edu/boundless/uw-student-publications/",
+    "checked": "2026-10-18"
+   }
+  ],
+  "interest_areas": [
+   "Media/writing/publications",
+   "Arts/music/dance/theater/film"
+  ]
+ },
+ {
+  "wildcard": false,
+  "club_id": "the-basement-uw",
+  "name": "the BASEMENT",
+  "category": "Art publication",
+  "category_emoji": "🎨",
+  "description": "An online, student-run art gallery publication in the UW School of Art + Art History + Design that showcases student work across disciplines through its website and in-person shows.",
+  "commitment": {
+   "level": "casual",
+   "hours_per_week": "couldn't confirm",
+   "estimated": true
+  },
+  "dues": "No dues listed (confirm with officers)",
+  "meeting_schedule": "couldn't confirm",
+  "join_type": "unknown",
+  "fit_reason": "Student artists and curators who want to publish and exhibit work.",
+  "status": "active",
+  "last_active": {
+   "date": "2026-09-25",
+   "source": "https://dawgdaze.uw.edu/event/collage-and-cookies-with-the-basement/"
+  },
+  "links": {
+   "huskylink": "",
+   "website": "https://thebasement.cargo.site/",
+   "instagram": "https://www.instagram.com/thebasementuw"
+  },
+  "application": {
+   "deadline": "unknown",
+   "url": "",
+   "steps": [
+    "Submit art to the current gallery theme",
+    "Contact the team about joining"
+   ]
+  },
+  "sources": [
+   {
+    "url": "https://dawgdaze.uw.edu/event/collage-and-cookies-with-the-basement/",
+    "checked": "2026-10-18"
+   },
+   {
+    "url": "https://thebasement.cargo.site/",
+    "checked": "2026-10-18"
+   },
+   {
+    "url": "https://thebasement.cargo.site/About-Us",
+    "checked": "2026-10-18"
+   }
+  ],
+  "interest_areas": [
+   "Media/writing/publications",
+   "Arts/music/dance/theater/film"
+  ]
+ },
+ {
+  "wildcard": false,
+  "club_id": "uw-journal-of-political-science",
+  "name": "The UW Journal of Political Science",
+  "category": "Academic journal",
+  "category_emoji": "🏛️",
+  "description": "An undergraduate student-led journal established in 2024 that publishes three issues per academic year of student political science work and staff editorials.",
+  "commitment": {
+   "level": "regular",
+   "hours_per_week": "couldn't confirm",
+   "estimated": true
+  },
+  "dues": "No dues listed (confirm with officers)",
+  "meeting_schedule": "couldn't confirm",
+  "join_type": "application",
+  "fit_reason": "Politics-minded writers who want to get published or edit academic work.",
+  "status": "active",
+  "last_active": {
+   "date": "2026-09-24",
+   "source": "https://dawgdaze.uw.edu/event/how-to-get-published-101-with-uw-journal-of-political-science/"
+  },
+  "links": {
+   "huskylink": "",
+   "website": "https://www.uwjps.com",
+   "instagram": ""
+  },
+  "application": {
+   "deadline": "unknown (last team applications were due May 15)",
+   "url": "https://www.uwjps.com/join-our-team",
+   "steps": [
+    "Submit undergraduate work via the Submit page during an open window",
+    "Or apply for a staff role on Join our Team"
+   ]
+  },
+  "sources": [
+   {
+    "url": "https://www.uwjps.com",
+    "checked": "2026-10-18"
+   },
+   {
+    "url": "https://www.uwjps.com/join-our-team",
+    "checked": "2026-10-18"
+   },
+   {
+    "url": "https://dawgdaze.uw.edu/event/how-to-get-published-101-with-uw-journal-of-political-science/",
+    "checked": "2026-10-18"
+   },
+   {
+    "url": "https://www.polisci.washington.edu/news/2026/02/05/uw-journal-political-science-call-submissions-deadline-friday-feb-20",
+    "checked": "2026-10-18"
+   }
+  ],
+  "interest_areas": [
+   "Media/writing/publications",
+   "Academic/professional (pre-med, pre-law, business, engineering, CS)"
+  ]
+ },
+ {
+  "wildcard": false,
+  "club_id": "undergraduate-law-review-uw",
+  "name": "The Undergraduate Law Review at the University of Washington",
+  "category": "Law journal",
+  "category_emoji": "⚖️",
+  "description": "A revived interdisciplinary student journal where students from any background explore and publish law-related work; it was preparing its inaugural Spring 2026 edition.",
+  "commitment": {
+   "level": "regular",
+   "hours_per_week": "couldn't confirm",
+   "estimated": true
+  },
+  "dues": "No dues listed (confirm with officers)",
+  "meeting_schedule": "couldn't confirm",
+  "join_type": "unknown",
+  "fit_reason": "Pre-law and STEM students curious about writing on law and policy.",
+  "status": "active",
+  "last_active": {
+   "date": "2026-05-06",
+   "source": "https://honors.uw.edu/?p=20109"
+  },
+  "links": {
+   "huskylink": "https://huskylink.washington.edu/organization/theundergraduatelawreview",
+   "website": "",
+   "instagram": "https://www.instagram.com/uwuglawreview"
+  },
+  "application": {
+   "deadline": "unknown",
+   "url": "",
+   "steps": [
+    "Follow @uwuglawreview or email ulawreview@uw.edu for openings"
+   ]
+  },
+  "sources": [
+   {
+    "url": "https://honors.uw.edu/?p=20109",
+    "checked": "2026-10-18"
+   },
+   {
+    "url": "https://huskylink.washington.edu/organization/theundergraduatelawreview",
+    "checked": "2026-10-18"
+   }
+  ],
+  "interest_areas": [
+   "Media/writing/publications",
+   "Academic/professional (pre-med, pre-law, business, engineering, CS)"
+  ]
+ },
+ {
+  "wildcard": false,
+  "club_id": "off-leash-news",
+  "name": "Off Leash News",
+  "category": "Satire publication",
+  "category_emoji": "🐶",
+  "description": "UW's student humor publication, posting satirical news articles, opinions, cartoons and videos about campus life.",
+  "commitment": {
+   "level": "casual",
+   "hours_per_week": "couldn't confirm",
+   "estimated": true
+  },
+  "dues": "No dues listed (confirm with officers)",
+  "meeting_schedule": "couldn't confirm",
+  "join_type": "application",
+  "fit_reason": "Funny writers and cartoonists who want to roast campus life in print.",
+  "status": "active",
+  "last_active": {
+   "date": "2026-10-15",
+   "source": "https://www.offleashnews.com/"
+  },
+  "links": {
+   "huskylink": "",
+   "website": "https://www.offleashnews.com/",
+   "instagram": "https://www.instagram.com/offleashnews"
+  },
+  "application": {
+   "deadline": "unknown",
+   "url": "",
+   "steps": [
+    "Apply to join as a writer (ask via Instagram or the website)"
+   ]
+  },
+  "sources": [
+   {
+    "url": "https://www.offleashnews.com/",
+    "checked": "2026-10-18"
+   },
+   {
+    "url": "https://www.offleashnews.com/about",
+    "checked": "2026-10-18"
+   },
+   {
+    "url": "https://dawgdaze.uw.edu/event/free-comedy-on-campus-with-uw-comedy-club-and-off-leash-news/",
+    "checked": "2026-10-18"
+   }
+  ],
+  "interest_areas": [
+   "Media/writing/publications",
+   "Arts/music/dance/theater/film"
+  ]
+ },
+ {
+  "wildcard": false,
+  "club_id": "homeroom-uw",
+  "name": "HOMEROOM",
+  "category": "Asian American magazine",
+  "category_emoji": "🏫",
+  "description": "A creative collective for young people of Asian descent that produces a glossy annual magazine and an online blog, plus community events; it grew out of Asian Americans in Media (2015).",
+  "commitment": {
+   "level": "casual",
+   "hours_per_week": "couldn't confirm",
+   "estimated": true
+  },
+  "dues": "No dues listed (confirm with officers)",
+  "meeting_schedule": "couldn't confirm",
+  "join_type": "unknown",
+  "fit_reason": "Asian American writers, designers and artists who want to tell community stories.",
+  "status": "active",
+  "last_active": {
+   "date": "2026-05-13",
+   "source": "https://homeroomuw.com/blog"
+  },
+  "links": {
+   "huskylink": "",
+   "website": "https://homeroomuw.com",
+   "instagram": "https://www.instagram.com/homeroomuw"
+  },
+  "application": {
+   "deadline": "unknown",
+   "url": "",
+   "steps": [
+    "Submit work to the magazine",
+    "Attend events or ask about joining a committee"
+   ]
+  },
+  "sources": [
+   {
+    "url": "https://homeroomuw.com/about",
+    "checked": "2026-10-18"
+   },
+   {
+    "url": "https://homeroomuw.com/blog",
+    "checked": "2026-10-18"
+   },
+   {
+    "url": "https://www.washington.edu/boundless/uw-student-publications/",
+    "checked": "2026-10-18"
+   }
+  ],
+  "interest_areas": [
+   "Media/writing/publications",
+   "Cultural/identity-based communities",
+   "Arts/music/dance/theater/film"
+  ]
+ },
+ {
+  "wildcard": false,
+  "club_id": "film-club-at-uw",
+  "name": "Film Club at UW",
+  "category": "Film club",
+  "category_emoji": "🎬",
+  "description": "A hub for film culture at UW for cinephiles; it hosts events such as Film Jeopardy and shares film resources around Seattle.",
+  "commitment": {
+   "level": "casual",
+   "hours_per_week": "couldn't confirm",
+   "estimated": true
+  },
+  "dues": "No dues listed (confirm with officers)",
+  "meeting_schedule": "couldn't confirm",
+  "join_type": "open",
+  "fit_reason": "Cinephiles who want to watch, discuss and talk about movies with others.",
+  "status": "active",
+  "last_active": {
+   "date": "2026-09-29",
+   "source": "https://dawgdaze.uw.edu/event/film-club-at-uw-2/"
+  },
+  "links": {
+   "huskylink": "",
+   "website": "https://sites.uw.edu/film/",
+   "instagram": ""
+  },
+  "application": {
+   "deadline": "unknown",
+   "url": "https://sites.uw.edu/film/",
+   "steps": [
+    "Come to an event",
+    "Reach out through the website contact form"
+   ]
+  },
+  "sources": [
+   {
+    "url": "https://sites.uw.edu/film/",
+    "checked": "2026-10-18"
+   },
+   {
+    "url": "https://dawgdaze.uw.edu/event/film-club-at-uw/",
+    "checked": "2026-10-18"
+   },
+   {
+    "url": "https://dawgdaze.uw.edu/event/film-club-at-uw-2/",
+    "checked": "2026-10-18"
+   }
+  ],
+  "interest_areas": [
+   "Media/writing/publications",
+   "Arts/music/dance/theater/film"
+  ]
+ },
+ {
+  "club_id": "husky-baking-club",
+  "name": "Husky Baking Club",
+  "category": "Baking",
+  "category_emoji": "🧁",
+  "description": "A baking club whose events include sourdough-starter classes, cake-tasting campus walks and field trips to Seattle bakeries.",
+  "commitment": {
+   "level": "casual",
+   "hours_per_week": "couldn't confirm",
+   "estimated": false
+  },
+  "dues": "No dues listed (confirm with officers)",
+  "meeting_schedule": "couldn't confirm",
+  "join_type": "unknown",
+  "fit_reason": "Bakers and dessert lovers who want hands-on classes and food outings.",
+  "wildcard": false,
+  "status": "active",
+  "last_active": {
+   "date": "2026-09-29",
+   "source": "https://dawgdaze.uw.edu/event/cake-walk-learn-the-uw-campus-with-husky-baking-club/"
+  },
+  "links": {
+   "huskylink": "",
+   "website": "",
+   "instagram": ""
+  },
+  "application": {
+   "deadline": "unknown",
+   "url": "",
+   "steps": [
+    "Email huskybakingclub@uw.edu"
+   ]
+  },
+  "sources": [
+   {
+    "url": "https://dawgdaze.uw.edu/event/seattle-bakery-tour-with-husky-baking-club/",
+    "checked": "2026-10-18"
+   },
+   {
+    "url": "https://dawgdaze.uw.edu/event/make-your-own-sourdough-starter-with-husky-baking-club/",
+    "checked": "2026-10-18"
+   },
+   {
+    "url": "https://dawgdaze.uw.edu/event/cake-walk-learn-the-uw-campus-with-husky-baking-club/",
+    "checked": "2026-10-18"
+   }
+  ],
+  "interest_areas": [
+   "Gaming/hobbies/special interests"
+  ]
+ },
+ {
+  "club_id": "bird-club-uw",
+  "name": "Bird Club at UW",
+  "category": "Birding",
+  "category_emoji": "🐦",
+  "description": "A space for exploring local birds, open to all experience levels; meetings include guest speakers and bird-themed activities, plus group birding excursions.",
+  "commitment": {
+   "level": "casual",
+   "hours_per_week": "couldn't confirm",
+   "estimated": false
+  },
+  "dues": "No dues listed; Discord is free to join (confirm with officers)",
+  "meeting_schedule": "couldn't confirm",
+  "join_type": "open",
+  "fit_reason": "Nature lovers who want birding outings and bird-themed meetings, beginners welcome.",
+  "wildcard": false,
+  "status": "active",
+  "last_active": {
+   "date": "2026-09-27",
+   "source": "https://dawgdaze.uw.edu/event/birding-with-bird-club-at-union-bay-natural-area/"
+  },
+  "links": {
+   "huskylink": "",
+   "website": "",
+   "instagram": "https://www.instagram.com/birdclubuw"
+  },
+  "application": {
+   "deadline": "unknown",
+   "url": "https://discord.gg/uQTZZawv3",
+   "steps": [
+    "Join the Discord via linktr.ee/birdclubatuw",
+    "Come on a group birding outing"
+   ]
+  },
+  "sources": [
+   {
+    "url": "https://dawgdaze.uw.edu/event/birding-with-bird-club-at-union-bay-natural-area/",
+    "checked": "2026-10-18"
+   },
+   {
+    "url": "https://dawgdaze.uw.edu/event/game-night-with-bird-club-at-uw/",
+    "checked": "2026-10-18"
+   },
+   {
+    "url": "https://linktr.ee/birdclubatuw",
+    "checked": "2026-10-18"
+   }
+  ],
+  "interest_areas": [
+   "Gaming/hobbies/special interests",
+   "Sports/outdoor/recreation"
+  ]
+ },
+ {
+  "club_id": "fgc-uw",
+  "name": "Fighting Game Club (FGC) @ UW",
+  "category": "Fighting games",
+  "category_emoji": "🕹️",
+  "description": "A fighting-game RSO running casual meetups and beginner tournaments for games like Marvel Tokon, Tekken 8, Street Fighter 6 and Guilty Gear: Strive; no controller needed.",
+  "commitment": {
+   "level": "casual",
+   "hours_per_week": "couldn't confirm",
+   "estimated": false
+  },
+  "dues": "No dues listed (confirm with officers)",
+  "meeting_schedule": "couldn't confirm",
+  "join_type": "open",
+  "fit_reason": "Fighting-game players and curious beginners who want casual sets and friendly brackets.",
+  "wildcard": false,
+  "status": "active",
+  "last_active": {
+   "date": "2026-09-28",
+   "source": "https://dawgdaze.uw.edu/event/fgc-uw-casual-meeting/"
+  },
+  "links": {
+   "huskylink": "",
+   "website": "",
+   "instagram": ""
+  },
+  "application": {
+   "deadline": "unknown",
+   "url": "",
+   "steps": [
+    "Email fgc.wga@gmail.com",
+    "Drop in to a casual meeting"
+   ]
+  },
+  "sources": [
+   {
+    "url": "https://dawgdaze.uw.edu/event/fgc-uw-casual-meeting/",
+    "checked": "2026-10-18"
+   },
+   {
+    "url": "https://dawgdaze.uw.edu/event/fgc-uw-beginner-event/",
+    "checked": "2026-10-18"
+   }
+  ],
+  "interest_areas": [
+   "Gaming/hobbies/special interests"
+  ]
+ },
+ {
+  "club_id": "anime-nation-uw",
+  "name": "Anime Nation",
+  "category": "Anime",
+  "category_emoji": "🍥",
+  "description": "An inclusive community for people interested in anime and otaku culture that hosts large events for the UW and Seattle otaku community.",
+  "commitment": {
+   "level": "casual",
+   "hours_per_week": "couldn't confirm",
+   "estimated": false
+  },
+  "dues": "No dues listed (confirm with officers)",
+  "meeting_schedule": "couldn't confirm",
+  "join_type": "unknown",
+  "fit_reason": "Anime and otaku-culture fans who enjoy big community events and trivia.",
+  "wildcard": false,
+  "status": "active",
+  "last_active": {
+   "date": "2026-09-25",
+   "source": "https://dawgdaze.uw.edu/event/anime-jeopardy-with-anime-nation/"
+  },
+  "links": {
+   "huskylink": "",
+   "website": "",
+   "instagram": ""
+  },
+  "application": {
+   "deadline": "unknown",
+   "url": "",
+   "steps": [
+    "Email wnuw@uw.edu or AnimeNationUW@gmail.com"
+   ]
+  },
+  "sources": [
+   {
+    "url": "https://dawgdaze.uw.edu/event/anime-jeopardy-with-anime-nation/",
+    "checked": "2026-10-18"
+   },
+   {
+    "url": "https://docs.google.com/spreadsheets/d/10-Z5OYYwpHZPVR2lUEAwJTnskZtkmw1TGkLvwOzmcbk/edit?gid=0",
+    "checked": "2026-10-18"
+   }
+  ],
+  "interest_areas": [
+   "Gaming/hobbies/special interests"
+  ]
+ }
+]
