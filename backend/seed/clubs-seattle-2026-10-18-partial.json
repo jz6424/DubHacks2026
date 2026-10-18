@@ -1,0 +1,326 @@
+[
+ {
+  "club_id": "husky-sundodgers",
+  "name": "Husky Sundodgers (UW Men's Ultimate Frisbee)",
+  "category": "Club sports",
+  "category_emoji": "🥏",
+  "description": "UW's men's club ultimate frisbee team, described by UW Rec as a highly competitive and spirited squad that competes in regional and national tournaments. The team earned a bid to 2026 D-I college nationals at NW Regionals.",
+  "commitment": {
+   "level": "committed",
+   "hours_per_week": "couldn't confirm",
+   "estimated": true
+  },
+  "dues": "No dues listed (confirm with officers)",
+  "meeting_schedule": "couldn't confirm",
+  "join_type": "unknown",
+  "fit_reason": "Competitive ultimate players who want to chase a national-level college season.",
+  "wildcard": false,
+  "status": "active",
+  "last_active": {
+   "date": "2026-05-12",
+   "source": "https://www.wallyhood.org/2026/05/ballpark-fundraiser-for-lincoln-lynx-alum-athletes-at-uw/"
+  },
+  "links": {
+   "huskylink": "",
+   "website": "",
+   "instagram": "https://www.instagram.com/sundodgers/"
+  },
+  "application": {
+   "deadline": "unknown",
+   "url": "",
+   "steps": [
+    "Follow @sundodgers on Instagram for tryout announcements",
+    "Contact the team through UW Rec club sports"
+   ]
+  },
+  "sources": [
+   {
+    "url": "https://www.washington.edu/ima/rec-clubs/club-offerings/",
+    "checked": "2026-10-18"
+   },
+   {
+    "url": "https://www.wallyhood.org/2026/05/ballpark-fundraiser-for-lincoln-lynx-alum-athletes-at-uw/",
+    "checked": "2026-10-18"
+   }
+  ],
+  "interest_areas": [
+   "Sports/outdoor/recreation"
+  ]
+ },
+ {
+  "club_id": "uw-womens-ice-hockey",
+  "name": "UW Women's Club Hockey",
+  "category": "Club sports",
+  "category_emoji": "🏒",
+  "description": "Women's club ice hockey at UW, with an ACHA travel team plus a House Team for novice players or those wanting a lighter commitment. Practices and home games are at the Kraken Community Iceplex.",
+  "commitment": {
+   "level": "committed",
+   "hours_per_week": "couldn't confirm",
+   "estimated": true
+  },
+  "dues": "No dues listed (confirm with officers)",
+  "meeting_schedule": "Practices and home games at Kraken Community Iceplex (Northgate); times couldn't confirm",
+  "join_type": "unknown",
+  "fit_reason": "Women hockey players, from competitive travel skaters to novices wanting the House Team.",
+  "wildcard": false,
+  "status": "active",
+  "last_active": {
+   "date": "2026-06-27",
+   "source": "https://www.uwwomenshockey.com/event-details/prospect-camp-2026"
+  },
+  "links": {
+   "huskylink": "",
+   "website": "https://www.uwwomenshockey.com",
+   "instagram": "https://www.instagram.com/womenshockeyuw/"
+  },
+  "application": {
+   "deadline": "unknown",
+   "url": "https://forms.gle/XQVFyZoakHjrSEc96",
+   "steps": [
+    "Fill out the prospect interest form on the team site",
+    "Email whockeyuw@uw.edu with questions"
+   ]
+  },
+  "sources": [
+   {
+    "url": "https://www.uwwomenshockey.com",
+    "checked": "2026-10-18"
+   },
+   {
+    "url": "https://www.uwwomenshockey.com/event-details/prospect-camp-2026",
+    "checked": "2026-10-18"
+   },
+   {
+    "url": "https://www.washington.edu/ima/rec-clubs/club-offerings/",
+    "checked": "2026-10-18"
+   }
+  ],
+  "interest_areas": [
+   "Sports/outdoor/recreation"
+  ]
+ },
+ {
+  "club_id": "uw-consulting-association",
+  "name": "University of Washington Consulting Association (UWCA)",
+  "category": "Business/consulting",
+  "category_emoji": "💼",
+  "description": "UW's undergraduate consulting club, offering career skills, consulting experience, and community since 2020, including client engagements with Fortune 500 clients. Open to all majors; no prior consulting experience required.",
+  "commitment": {
+   "level": "regular",
+   "hours_per_week": "couldn't confirm",
+   "estimated": true
+  },
+  "dues": "No dues listed (confirm with officers)",
+  "meeting_schedule": "couldn't confirm",
+  "join_type": "application",
+  "fit_reason": "Students of any major curious about consulting and real client projects.",
+  "wildcard": false,
+  "status": "active",
+  "last_active": {
+   "date": "2026-10-07",
+   "source": "https://www.uwconsulting.org/join"
+  },
+  "links": {
+   "huskylink": "",
+   "website": "https://www.uwconsulting.org/",
+   "instagram": "https://www.instagram.com/uwconsultingassociation/"
+  },
+  "application": {
+   "deadline": "Fall 2026 cycle closed 10/7/2026, 11:59 PM",
+   "url": "https://www.uwconsulting.org/join",
+   "steps": [
+    "Written application: resume, transcript, three short answers",
+    "Behavioral interview with a club officer",
+    "Case presentation"
+   ]
+  },
+  "sources": [
+   {
+    "url": "https://www.uwconsulting.org/",
+    "checked": "2026-10-18"
+   },
+   {
+    "url": "https://www.uwconsulting.org/join",
+    "checked": "2026-10-18"
+   },
+   {
+    "url": "https://umbrex.com/resources/directory-of-consulting-clubs/university-of-washington-consulting-association/",
+    "checked": "2026-10-18"
+   }
+  ],
+  "interest_areas": [
+   "Academic/professional (pre-med, pre-law, business, engineering, CS)",
+   "Research/competitive teams (robotics, case competitions, Model UN)"
+  ]
+ },
+ {
+  "club_id": "washington-solar-car",
+  "name": "Washington Solar Car (UW Solar Vehicle Team)",
+  "category": "Engineering team",
+  "category_emoji": "☀️",
+  "description": "Student team that designs, builds, and races solar-powered cars, with mechanical, electrical, and business subteams. Its car Sakura finished 4th in the single-occupant class at the 2026 American Solar Challenge, the top American team.",
+  "commitment": {
+   "level": "regular",
+   "hours_per_week": "couldn't confirm",
+   "estimated": true
+  },
+  "dues": "No dues listed (confirm with officers)",
+  "meeting_schedule": "couldn't confirm",
+  "join_type": "unknown",
+  "fit_reason": "Builders in engineering or business who want hands-on work on a real race car.",
+  "wildcard": false,
+  "status": "active",
+  "last_active": {
+   "date": "2026-08-01",
+   "source": "https://www.svtuw.com/"
+  },
+  "links": {
+   "huskylink": "",
+   "website": "https://www.svtuw.com/",
+   "instagram": "https://www.instagram.com/solarvehicleteamuw/"
+  },
+  "application": {
+   "deadline": "unknown",
+   "url": "https://www.svtuw.com/apply",
+   "steps": [
+    "Start at the Join the Team page (no experience required)",
+    "Choose a subteam: mechanical, electrical, or business",
+    "Email svtuw@uw.edu with questions"
+   ]
+  },
+  "sources": [
+   {
+    "url": "https://www.svtuw.com/",
+    "checked": "2026-10-18"
+   },
+   {
+    "url": "https://www.svtuw.com/apply",
+    "checked": "2026-10-18"
+   },
+   {
+    "url": "https://makeabilitylab.cs.washington.edu/news/new-uw-solar-vehicle-team-crushes-at-american-solar-challenge",
+    "checked": "2026-10-18"
+   },
+   {
+    "url": "https://www.geekwire.com/2026/how-uws-solar-vehicle-team-harnessed-the-sun-and-hard-work-to-shine-on-the-national-stage/",
+    "checked": "2026-10-18"
+   },
+   {
+    "url": "https://electrek.co/2026/07/03/electrek-american-solar-challenge-2026-about-the-race-full-schedule-and-teams-competing/",
+    "checked": "2026-10-18"
+   }
+  ],
+  "interest_areas": [
+   "Tech/hackathons/building projects",
+   "Research/competitive teams (robotics, case competitions, Model UN)",
+   "Academic/professional (pre-med, pre-law, business, engineering, CS)"
+  ]
+ },
+ {
+  "club_id": "delta-sigma-pi-uw",
+  "name": "Delta Sigma Pi - Sigma Upsilon Chapter",
+  "category": "Professional fraternity",
+  "category_emoji": "🤝",
+  "description": "UW Seattle's chapter of Delta Sigma Pi, a professional co-ed fraternity fostering the study of business, with 75+ brothers in Business, Economics, and Informatics. It recruits every Fall and Winter quarter.",
+  "commitment": {
+   "level": "regular",
+   "hours_per_week": "couldn't confirm",
+   "estimated": true
+  },
+  "dues": "No dues listed (confirm with officers)",
+  "meeting_schedule": "couldn't confirm",
+  "join_type": "application",
+  "fit_reason": "Business, Econ, or Informatics students wanting a professional fraternity and close community.",
+  "wildcard": false,
+  "status": "active",
+  "last_active": {
+   "date": "2026-10-06",
+   "source": "https://linktr.ee/dspuw"
+  },
+  "links": {
+   "huskylink": "",
+   "website": "https://dspuw.net",
+   "instagram": "https://www.instagram.com/dspuw/"
+  },
+  "application": {
+   "deadline": "unknown",
+   "url": "https://linktr.ee/dspuw",
+   "steps": [
+    "Be a full-time UW Seattle student majoring or intending Business, Economics, or Informatics with 2.5+ GPA",
+    "Attend at least 2 of the 4 recruitment events",
+    "Submit the recruitment application (linked on Linktree)"
+   ]
+  },
+  "sources": [
+   {
+    "url": "https://dspuw.net",
+    "checked": "2026-10-18"
+   },
+   {
+    "url": "https://dspuw.net/recruitment",
+    "checked": "2026-10-18"
+   },
+   {
+    "url": "https://linktr.ee/dspuw",
+    "checked": "2026-10-18"
+   }
+  ],
+  "interest_areas": [
+   "Academic/professional (pre-med, pre-law, business, engineering, CS)",
+   "Social/Greek life"
+  ]
+ },
+ {
+  "club_id": "uw-ieee",
+  "name": "UW IEEE Student Branch (IEEE-HKN)",
+  "category": "Engineering/professional",
+  "category_emoji": "⚡",
+  "description": "UW's IEEE student branch, run jointly with Eta Kappa Nu, fostering community in Electrical and Computer Engineering through networking and social events with students, faculty, and industry. It co-hosts an annual spring conference with the Bothell and Tacoma branches.",
+  "commitment": {
+   "level": "regular",
+   "hours_per_week": "couldn't confirm",
+   "estimated": true
+  },
+  "dues": "No dues listed (confirm with officers)",
+  "meeting_schedule": "couldn't confirm",
+  "join_type": "unknown",
+  "fit_reason": "ECE students wanting industry networking and social events outside class.",
+  "wildcard": false,
+  "status": "active",
+  "last_active": {
+   "date": "2026-05-23",
+   "source": "https://advisingblog.ece.uw.edu/2026/05/11/uw-ieee-2026-spring-conference-5-23-200-p-m/"
+  },
+  "links": {
+   "huskylink": "",
+   "website": "https://wp.ece.uw.edu/ieeehkn",
+   "instagram": ""
+  },
+  "application": {
+   "deadline": "unknown",
+   "url": "https://wp.ece.uw.edu/ieeehkn/get-involved",
+   "steps": [
+    "Attend branch events",
+    "Optionally apply as an Officer in Training (no interview) via the Get Involved page"
+   ]
+  },
+  "sources": [
+   {
+    "url": "https://wp.ece.uw.edu/ieeehkn",
+    "checked": "2026-10-18"
+   },
+   {
+    "url": "https://wp.ece.uw.edu/ieeehkn/get-involved",
+    "checked": "2026-10-18"
+   },
+   {
+    "url": "https://advisingblog.ece.uw.edu/2026/05/11/uw-ieee-2026-spring-conference-5-23-200-p-m/",
+    "checked": "2026-10-18"
+   }
+  ],
+  "interest_areas": [
+   "Academic/professional (pre-med, pre-law, business, engineering, CS)",
+   "Tech/hackathons/building projects"
+  ]
+ }
+]
