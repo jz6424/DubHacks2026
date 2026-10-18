@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { ClubCard } from "./ClubCard";
-import { MoreSheet } from "./MoreSheet";
 import { SearchSheet } from "./SearchSheet";
 import type { Card, Swipe, SwipeAction } from "./types";
 import { store, unconfirmed } from "./util";
@@ -68,7 +67,6 @@ export function SwipeDeck({ jobId, cards, researching, lastAction, swipes, onSwi
   const [toast, setToast] = useState<string | null>(null);
   const [askWhy, setAskWhy] = useState(false);
   const [checkpoint, setCheckpoint] = useState(false);
-  const [moreFor, setMoreFor] = useState<Card | null>(null);
   // a press on the card: undecided until it moves; sideways becomes a swipe, up/down is left to the card's scroll
   const start = useRef<{ x: number; y: number; id: number; mode: "?" | "drag" | "scroll" } | null>(null);
   const dragged = useRef(false);
@@ -183,11 +181,9 @@ export function SwipeDeck({ jobId, cards, researching, lastAction, swipes, onSwi
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       const t = e.target as HTMLElement;
-      if (t.tagName === "INPUT" || t.tagName === "TEXTAREA" || moreFor || askWhy || checkpoint || searching) return;
+      if (t.tagName === "INPUT" || t.tagName === "TEXTAREA" || askWhy || checkpoint || searching) return;
       if (e.key === "ArrowRight") decide("right");
       else if (e.key === "ArrowLeft") decide("left");
-      else if (e.key === "ArrowUp") decide("super");
-      else if (e.key === "?" || e.key === "m") top && setMoreFor(top);
       else if (e.key === "z" || e.key === "Backspace") undo();
       else if (e.key === "/") setSearching(true);
       else if (e.key === "Enter" || e.key === "ArrowDown") {
@@ -200,7 +196,7 @@ export function SwipeDeck({ jobId, cards, researching, lastAction, swipes, onSwi
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [decide, undo, top, moreFor, askWhy, checkpoint, searching]);
+  }, [decide, undo, top, askWhy, checkpoint, searching]);
 
   // A decision made from search: any club, in any order; deciding again replaces the earlier choice.
   const decideFor = (club_id: string, action: SwipeAction) => {
@@ -332,17 +328,11 @@ export function SwipeDeck({ jobId, cards, researching, lastAction, swipes, onSwi
         <button type="button" className="round pass" onClick={() => decide("left")} disabled={!top} title="Pass (←)" aria-label="Pass">
           ✕
         </button>
-        <button type="button" className="round more" onClick={() => top && setMoreFor(top)} disabled={!top} title="Tell me more (?)" aria-label="Tell me more">
-          ?
-        </button>
-        <button type="button" className="round super" onClick={() => decide("super")} disabled={!top} title="Super-like (↑)" aria-label="Super-like">
-          ★
-        </button>
         <button type="button" className="round join" onClick={() => decide("right")} disabled={!top} title="Join (→)" aria-label="Join">
-          ♥
+          ✓
         </button>
       </div>
-      <p className="keys muted small">← pass · → join · ↑ super · ↓ details · ? more · / search · Z undo</p>
+      <p className="keys muted small">← pass · → join · ↓ details · / search · Z undo</p>
 
       {toast && (
         <div className="toast" role="status">
@@ -397,7 +387,6 @@ export function SwipeDeck({ jobId, cards, researching, lastAction, swipes, onSwi
         />
       )}
 
-      {moreFor && <MoreSheet jobId={jobId} card={moreFor} onClose={() => setMoreFor(null)} onDecide={(a) => { setMoreFor(null); decide(a); }} />}
     </section>
   );
 }

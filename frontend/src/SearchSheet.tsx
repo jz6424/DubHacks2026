@@ -121,11 +121,8 @@ export function SearchSheet({ jobId, campus, cards, swipes, onDecide, onAdded, o
             <button type="button" className="round pass" onClick={() => decide(open, "left")} disabled={adding} aria-label="Pass">
               ✕
             </button>
-            <button type="button" className="round super" onClick={() => decide(open, "super")} disabled={adding} aria-label="Super-like">
-              ★
-            </button>
             <button type="button" className="round join" onClick={() => decide(open, "right")} disabled={adding} aria-label="Join">
-              ♥
+              ✓
             </button>
           </div>
         </div>

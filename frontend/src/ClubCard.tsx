@@ -60,7 +60,7 @@ export function ClubCard({ card: c, active }: Props) {
         {c.category}
         {c.wildcard && <span className="pill wild">🎲 Wildcard</span>}
         {limited && (
-          <span className="pill limited" title="Most details couldn't be confirmed from public sources. Tap ❓ to dig deeper.">
+          <span className="pill limited" title="Most details couldn't be confirmed from public sources.">
             Limited info
           </span>
         )}
