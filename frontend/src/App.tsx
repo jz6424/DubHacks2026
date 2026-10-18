@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { ApiError, api } from "./api";
+import logo from "./assets/logo.png";
 import { DemoIntro } from "./DemoIntro";
 import { Matches } from "./Matches";
 import { Onboarding } from "./Onboarding";
@@ -139,7 +140,7 @@ export default function App() {
       </div>
       <header className="topbar">
         <button type="button" className="brand" onClick={() => setScreen(jobId ? "swipe" : "welcome")}>
-          <span aria-hidden>💜</span> Me&amp;UDub
+          <img src={logo} alt="Me&UDub" className="brand-logo" draggable={false} />
         </button>
         {jobId && screen !== "welcome" && (
           <button type="button" className="ghost small" onClick={startOver}>

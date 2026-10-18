@@ -1272,3 +1272,13 @@ h1 .gold {
     display: none;
   }
 }
+.brand-logo {
+  display: block;
+  height: 50px;
+  width: auto;
+}
+@media (max-height: 700px) {
+  .brand-logo {
+    height: 42px;
+  }
+}
