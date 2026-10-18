@@ -5,8 +5,15 @@ catalog has `--per-interest` fresh clubs tagged with it, then fetches club photo
 
     python -m app.seed --dry-run                      show catalog coverage per interest, spend nothing
     python -m app.seed --budget 30 [--per-interest 15] [--campus seattle] [--interest "Sports"...]
+    python -m app.seed import FILE.json [...] [--campus seattle]
+        merge club cards researched elsewhere (same card JSON as add_club_card, a JSON array per file) into the
+        catalog, through the same quality checks; no API calls. Then fetch photos: python -m app.images backfill
+
+Seeded and imported clubs never expire from the catalog.
 """
 import argparse
+import json
+import sys
 import threading
 import traceback
 from concurrent.futures import ThreadPoolExecutor
@@ -57,7 +64,7 @@ def seed(campus: str, interests: list[str], per_interest: int, budget: float) ->
                     if key in seen:
                         return f"Duplicate: {card['name']} is already in the catalog. Pick a different club."
                     seen.add(key)
-                catalog.upsert(campus, card)
+                catalog.upsert(campus, card, seeded=True)
                 pics.submit(images.ensure, campus, card)
                 count[0] += 1
                 return f"Saved ({target - count[0]} more to reach your target)."
@@ -92,7 +99,48 @@ def seed(campus: str, interests: list[str], per_interest: int, budget: float) ->
     print(f"\nSpent about ${spent[0]:.2f} of ${budget:.2f}. Catalog: {catalog.stats()}")
 
 
+REQUIRED = ("club_id", "name", "category", "description", "commitment", "dues", "meeting_schedule", "join_type",
+            "status", "last_active", "links", "application", "sources", "interest_areas")
+
+
+def import_files(paths: list[str], campus: str) -> None:
+    """Merge researched cards into the catalog (seeded: never expire). Skips malformed and thin cards, says why."""
+    added, skipped = 0, []
+    for path in paths:
+        cards = json.load(open(path))
+        if not isinstance(cards, list):
+            sys.exit(f"{path}: expected a JSON array of cards")
+        for raw in cards:
+            name = str(raw.get("name", "?")) if isinstance(raw, dict) else "?"
+            missing = [k for k in REQUIRED if not isinstance(raw, dict) or k not in raw]
+            bad_tags = [t for t in (raw.get("interest_areas") or []) if t not in INTERESTS] if not missing else []
+            if missing or bad_tags or not raw.get("interest_areas"):
+                skipped.append(f"{name}: missing {missing}" if missing else f"{name}: bad interest_areas {bad_tags}")
+                continue
+            card, why = vet_card(raw)
+            if why:
+                skipped.append(f"{name}: {why}")
+                continue
+            catalog.upsert(campus, card, seeded=True)
+            added += 1
+            print(f"  + {card['name']}  [{card['status']}]  {', '.join(t.split(' (')[0] for t in card['interest_areas'])}")
+    print(f"\nImported {added} clubs into {campus}; skipped {len(skipped)}.")
+    for s in skipped:
+        print(f"  - {s[:160]}")
+    print(f"Catalog: {catalog.stats()}. Next: python -m app.images backfill")
+
+
 def main() -> None:
+    if sys.argv[1:2] == ["import"]:
+        args = sys.argv[2:]
+        campus = "seattle"
+        if "--campus" in args:
+            i = args.index("--campus")
+            campus, args = args[i + 1], args[:i] + args[i + 2:]
+        if not args:
+            sys.exit("usage: python -m app.seed import FILE.json [...] [--campus seattle]")
+        import_files(args, campus)
+        return
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--budget", type=float, help="dollars to spend at most (required unless --dry-run)")
     ap.add_argument("--per-interest", type=int, default=15)

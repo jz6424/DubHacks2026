@@ -33,6 +33,8 @@ def _db() -> sqlite3.Connection:
     con = sqlite3.connect(CATALOG_DB, timeout=10)
     con.execute("PRAGMA journal_mode=WAL")
     con.executescript(SCHEMA)
+    if "seeded" not in {r[1] for r in con.execute("PRAGMA table_info(clubs)")}:
+        con.execute("ALTER TABLE clubs ADD COLUMN seeded INTEGER NOT NULL DEFAULT 0")
     return con
 
 
@@ -40,22 +42,24 @@ def campus_of(profile: dict) -> str:
     return profile.get("campus") or "seattle"
 
 
-def upsert(campus: str, card: dict) -> None:
-    """Save (or refresh) one verified club. Interest tags accumulate across runs."""
+def upsert(campus: str, card: dict, seeded: bool = False) -> None:
+    """Save (or refresh) one verified club. Interest tags accumulate across runs. Seeded clubs (researched ahead of
+    time with python -m app.seed) never expire; a later refresh keeps them seeded."""
     key = norm(card["name"])
     if not key:
         return
     facts = {k: v for k, v in card.items() if k not in PER_STUDENT}
     with closing(_db()) as con, con:
-        con.execute("INSERT INTO clubs VALUES (?,?,?,?,?,?) ON CONFLICT (campus, key) DO UPDATE SET "
-                    "club_id=excluded.club_id, name=excluded.name, card=excluded.card, fetched_at=excluded.fetched_at",
-                    (campus, key, card["club_id"], card["name"], json.dumps(facts), time.time()))
+        con.execute("INSERT INTO clubs (campus, key, club_id, name, card, fetched_at, seeded) VALUES (?,?,?,?,?,?,?) "
+                    "ON CONFLICT (campus, key) DO UPDATE SET club_id=excluded.club_id, name=excluded.name, "
+                    "card=excluded.card, fetched_at=excluded.fetched_at, seeded=max(seeded, excluded.seeded)",
+                    (campus, key, card["club_id"], card["name"], json.dumps(facts), time.time(), int(seeded)))
         con.executemany("INSERT OR IGNORE INTO club_interests VALUES (?,?,?)",
                         [(campus, key, i) for i in card.get("interest_areas") or []])
 
 
 def known(campus: str, interests: list[str], identity_ok: bool, limit: int = 40) -> list[dict]:
-    """Fresh catalog clubs tagged with any of these interests, newest first. Each comes back with its interest tags."""
+    """Fresh (or seeded) catalog clubs tagged with any of these interests, newest first, with their interest tags."""
     if not interests:
         return []
     cutoff = time.time() - CATALOG_MAX_AGE_DAYS * 86400
@@ -64,7 +68,7 @@ def known(campus: str, interests: list[str], identity_ok: bool, limit: int = 40)
         rows = con.execute(
             f"SELECT c.key, c.card, (SELECT json_group_array(interest) FROM club_interests t "
             f"  WHERE t.campus = c.campus AND t.key = c.key) "
-            f"FROM clubs c WHERE c.campus = ? AND c.fetched_at > ? AND EXISTS (SELECT 1 FROM club_interests i "
+            f"FROM clubs c WHERE c.campus = ? AND (c.fetched_at > ? OR c.seeded = 1) AND EXISTS (SELECT 1 FROM club_interests i "
             f"  WHERE i.campus = c.campus AND i.key = c.key AND i.interest IN ({marks})) "
             f"ORDER BY c.fetched_at DESC LIMIT ?",
             (campus, cutoff, *interests, limit)).fetchall()
