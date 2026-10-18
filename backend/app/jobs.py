@@ -341,9 +341,14 @@ def public(job: dict) -> dict:
     """What the frontend gets: everything except bulky internals."""
     out = {k: job[k] for k in ("id", "status", "summary", "profile", "cards", "actions", "usage", "error",
                                "researchers")} | {"running": is_running(job["id"]), "created": job.get("created")}
-    pics = images.lookup(catalog.campus_of(job["profile"]), [c["name"] for c in job["cards"]])
-    out["cards"] = [{**c, "status": card_status(c), "image": pics.get(_norm(c["name"]), "")}  # status: also fixes
-                    for c in job["cards"]]                                                  # pre-"unverified" jobs
+    media = images.lookup(catalog.campus_of(job["profile"]), [c["name"] for c in job["cards"]])
+    out["cards"] = []
+    for c in job["cards"]:
+        m = media.get(_norm(c["name"]), {})
+        photos, logo = m.get("photos", []), m.get("logo", "")
+        # status: also fixes pre-"unverified" jobs; image: photos[0] or logo, for older clients
+        out["cards"].append({**c, "status": card_status(c), "photos": photos, "logo": logo,
+                             "image": photos[0] if photos else logo})
     return out
 
 
