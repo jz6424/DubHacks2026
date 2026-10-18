@@ -279,6 +279,9 @@ def hours_estimate(text: str) -> float | None:
     return (lo + hi) / 2
 
 
+RESULTS_VERSION = "v2"  # bump when RESULTS_MODE changes, so results cached under the old prompt are regenerated
+
+
 def results(job_id: str, swipes: list[dict]) -> dict:
     """Phase 4. Matches = right + super swipes (super first). Cached per set of matches."""
     from .profile import COMMITMENT_MAX_HOURS
@@ -288,7 +291,7 @@ def results(job_id: str, swipes: list[dict]) -> dict:
     supers = [s["club_id"] for s in swipes if s["action"] == "super" and s["club_id"] in cards]
     rights = [s["club_id"] for s in swipes if s["action"] == "right" and s["club_id"] in cards and s["club_id"] not in supers]
     order = list(dict.fromkeys(supers + rights))
-    key = ",".join(order)
+    key = RESULTS_VERSION + ":" + ",".join(order)
     if key in job["results"]:
         return job["results"][key]
     matches = [{**cards[i], "super_like": i in supers} for i in order]
