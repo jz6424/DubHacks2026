@@ -66,12 +66,22 @@ export function SwipeDeck({ jobId, cards, researching, lastAction, swipes, onSwi
 
   const swiped = useMemo(() => new Set(swipes.map((s) => s.club_id)), [swipes]);
   // Remaining cards in arrival order, with "show fewer of these" rules pushing matches down the deck.
+  // Clubs with real photos come first, then logo-only, then text-only. The card on top stays pinned while it's unswiped:
+  // photos arrive in the background, and a re-sort mid-drag would pull the card out from under the student's finger.
+  const pinned = useRef<string | null>(null);
   const queue = useMemo(() => {
     const rest = cards.map((c, i) => ({ c, i })).filter(({ c }) => !swiped.has(c.club_id));
     const score = (c: Card) => penalties.filter((p) => matches(p, c)).length;
-    return rest.sort((a, b) => score(a.c) - score(b.c) || a.i - b.i).map(({ c }) => c);
+    const media = (c: Card) => (c.photos?.length ? 0 : c.logo || (c.photos === undefined && c.image) ? 1 : 2);
+    const sorted = rest.sort((a, b) => score(a.c) - score(b.c) || media(a.c) - media(b.c) || a.i - b.i).map(({ c }) => c);
+    const k = sorted.findIndex((c) => c.club_id === pinned.current);
+    if (k > 0) sorted.unshift(...sorted.splice(k, 1));
+    return sorted;
   }, [cards, swiped, penalties]);
   const top = queue[0];
+  useEffect(() => {
+    pinned.current = top?.club_id ?? null;
+  }, [top]);
   const next = queue[1];
   const fly = flying && top && flying.id === top.club_id ? flying.action : null;
 
@@ -116,6 +126,7 @@ export function SwipeDeck({ jobId, cards, researching, lastAction, swipes, onSwi
 
   const undo = useCallback(() => {
     if (!swipes.length || flying) return;
+    pinned.current = swipes[swipes.length - 1].club_id;
     onSwipes(swipes.slice(0, -1));
     say("Undone ↩︎");
   }, [swipes, flying, onSwipes, say]);
@@ -131,6 +142,7 @@ export function SwipeDeck({ jobId, cards, researching, lastAction, swipes, onSwi
           : kind === "category"
             ? { kind, categories: lefts.map(categoryKey) }
             : { kind };
+      pinned.current = null;
       onPenalties([...penalties, p]);
       say(`Got it: ${r.toast}.`);
     }

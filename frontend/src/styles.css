@@ -473,7 +473,8 @@ h3 {
   flex: none;
 }
 .club-card h3 {
-  font-size: 19px;
+  font-size: 23px;
+  font-weight: 800;
   line-height: 1.2;
 }
 .category {
@@ -1217,7 +1218,15 @@ h1 .gold {
   color: #fff;
 }
 .hero .caption h3 {
-  font-size: 23px;
+  font-size: clamp(26px, 8vw, 34px);
+  line-height: 1.1;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  overflow: hidden;
+  overflow-wrap: anywhere;
   text-shadow: 0 1px 6px rgba(0, 0, 0, 0.35);
 }
 .hero .caption .category {
