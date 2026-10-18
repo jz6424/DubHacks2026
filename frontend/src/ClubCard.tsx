@@ -1,4 +1,4 @@
-import type { CSSProperties } from "react";
+import { useState, type CSSProperties } from "react";
 import type { Card } from "./types";
 import { JOIN, TIER, firstUrl, formatDate, hostOf, lastActive, primaryLink, short, sortedSources, STATUS, unconfirmed } from "./util";
 
@@ -25,25 +25,46 @@ export function ClubCard({ card: c, expanded, onToggle }: Props) {
   const link = primaryLink(c);
   const nSources = c.sources.filter((s) => firstUrl(s.url)).length;
   const limited = unknownFacts(c) >= 3;
+  // switch to the photo layout only once the image has loaded, so a missing image never shows an empty frame
+  const [loaded, setLoaded] = useState<string | null>(null);
+  const photo = c.image && c.image === loaded ? c.image : null;
+  const titles = (
+    <div className="titles">
+      <h3>{c.name}</h3>
+      <div className="category">
+        {photo && <span aria-hidden>{c.category_emoji} </span>}
+        {c.category}
+        {c.wildcard && <span className="pill wild">🎲 Wildcard</span>}
+        {limited && (
+          <span className="pill limited" title="Most details couldn't be confirmed from public sources. Tap ❓ to dig deeper.">
+            Limited info
+          </span>
+        )}
+      </div>
+    </div>
+  );
   return (
-    <article className={`club-card status-${c.status}`} aria-label={c.name} style={{ "--h": hueOf(c.category) } as CSSProperties}>
-      <header>
-        <div className="emoji" aria-hidden>
-          {c.category_emoji}
+    <article
+      className={`club-card status-${c.status} ${photo ? "has-photo" : ""}`}
+      aria-label={c.name}
+      style={{ "--h": hueOf(c.category) } as CSSProperties}
+    >
+      {photo ? (
+        <div className="photo">
+          {/* a blurred copy fills the frame, so logos and odd shapes still look like a full photo */}
+          <img className="fill" src={photo} alt="" aria-hidden draggable={false} />
+          <img className="main" src={photo} alt="" draggable={false} />
+          <div className="caption">{titles}</div>
         </div>
-        <div className="titles">
-          <h3>{c.name}</h3>
-          <div className="category">
-            {c.category}
-            {c.wildcard && <span className="pill wild">🎲 Wildcard</span>}
-            {limited && (
-              <span className="pill limited" title="Most details couldn't be confirmed from public sources. Tap ❓ to dig deeper.">
-                Limited info
-              </span>
-            )}
+      ) : (
+        <header>
+          {c.image && <img className="preload" src={c.image} alt="" hidden onLoad={() => setLoaded(c.image!)} />}
+          <div className="emoji" aria-hidden>
+            {c.category_emoji}
           </div>
-        </div>
-      </header>
+          {titles}
+        </header>
+      )}
 
       <p className="desc">{c.description}</p>
 

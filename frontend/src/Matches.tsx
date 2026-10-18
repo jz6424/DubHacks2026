@@ -104,7 +104,7 @@ export function Matches({ jobId, cards, swipes, profile, onKeepSwiping, onStartO
           return (
             <article key={c.club_id} className={`match ${isOpen ? "open" : ""}`}>
               <button type="button" className="match-head" onClick={() => setOpen(isOpen ? null : c.club_id)} aria-expanded={isOpen}>
-                <span className="emoji">{c.category_emoji}</span>
+                <Thumb card={c} />
                 <span className="name">
                   {c.name}
                   {supers.has(c.club_id) && <span className="pill super">⭐</span>}
@@ -170,6 +170,13 @@ function ledgerCost(d: string): string | null {
 }
 
 const known = (s: string | undefined | null) => !!s && !unconfirmed(s) && !/^unknown$/i.test(s.trim());
+
+/** The club's image as a small round thumbnail, or its category emoji when there's none (or it fails to load). */
+function Thumb({ card: c }: { card: Card }) {
+  const [failed, setFailed] = useState(false);
+  if (!c.image || failed) return <span className="emoji">{c.category_emoji}</span>;
+  return <img className="thumb" src={c.image} alt="" onError={() => setFailed(true)} />;
+}
 
 /** One line under the club name: how you join and the deadline, when we know them. */
 function glance(c: Card): string {

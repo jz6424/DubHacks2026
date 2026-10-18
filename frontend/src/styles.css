@@ -1153,3 +1153,74 @@ h1 .gold {
 .hours-line.over {
   color: var(--warn);
 }
+
+/* Tinder-style photo at the top of a card (club logo or photo from its website), name over a dark fade */
+.club-card.has-photo {
+  padding-top: 0;
+}
+.club-card .photo {
+  position: relative;
+  flex: none;
+  margin: 0 -16px;
+  height: clamp(150px, 30dvh, 270px);
+  overflow: hidden;
+  background: hsl(calc(var(--h) + 25) 85% 92%);
+}
+.club-card .photo img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  user-select: none;
+}
+.club-card .photo .fill {
+  object-fit: cover;
+  filter: blur(22px) saturate(1.2);
+  transform: scale(1.2);
+  opacity: 0.6;
+}
+.club-card .photo .main {
+  object-fit: contain;
+  padding: 10px 10px 54px;
+}
+.club-card .photo .caption {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 36px 16px 10px;
+  background: linear-gradient(transparent, rgba(20, 10, 40, 0.78));
+  color: #fff;
+}
+.club-card .photo .caption .category {
+  color: rgba(255, 255, 255, 0.85);
+}
+.club-card .photo .caption h3 {
+  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.35);
+}
+.club-card .desc {
+  min-height: 1.45em;
+}
+@media (max-height: 700px) {
+  .club-card .photo {
+    height: 130px;
+  }
+  .club-card .photo .main {
+    padding-bottom: 46px;
+  }
+}
+/* with a photo there's room for two clean lines of description */
+.card-slot:not(.expanded) .has-photo .desc {
+  -webkit-line-clamp: 2;
+  flex: none;
+}
+.match-head .thumb {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex: none;
+  background: var(--card2);
+  border: 1px solid var(--line);
+}

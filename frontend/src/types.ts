@@ -45,6 +45,7 @@ export interface Card {
   application: { deadline: string; url: string; steps: string[] };
   sources: { url: string; checked: string }[];
   interest_areas?: string[];
+  image?: string; // same-origin URL of the club's photo/logo from the shared catalog; absent or "" when none
 }
 
 export interface Job {
