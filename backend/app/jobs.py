@@ -74,12 +74,27 @@ def save(job: dict) -> None:
     tmp.replace(_path(job["id"]))
 
 
-def find_by_profile(key: str) -> dict | None:
+def job_files() -> list:
+    """Job files, newest first. Skips macOS "._" metadata files and anything unreadable, so a stray file in the
+    folder can't break starting jobs."""
     if not JOBS.exists():
-        return None
-    for p in sorted(JOBS.glob("*.json"), key=lambda p: p.stat().st_mtime, reverse=True):
+        return []
+    return sorted((p for p in JOBS.glob("*.json") if not p.name.startswith(".")),
+                  key=lambda p: p.stat().st_mtime, reverse=True)
+
+
+def read_job(p) -> dict | None:
+    try:
         job = json.loads(p.read_text())
-        if job.get("profile_key") == key and job["status"] in ("done", "researching"):
+        return job if isinstance(job, dict) and "profile" in job else None
+    except (OSError, UnicodeDecodeError, ValueError):
+        return None
+
+
+def find_by_profile(key: str) -> dict | None:
+    for p in job_files():
+        job = read_job(p)
+        if job and job.get("profile_key") == key and job.get("status") in ("done", "researching"):
             return job
     return None
 

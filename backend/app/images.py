@@ -304,9 +304,13 @@ def backfill(job_ids: list[str]) -> None:
     from .catalog import _db as catalog_db  # noqa: PLC0415
     with closing(catalog_db()) as con:
         clubs = [(campus, json.loads(card)) for campus, card in con.execute("SELECT campus, card FROM clubs")]
-    paths = [JOBS / f"{j}.json" for j in job_ids] if job_ids else sorted(JOBS.glob("*.json"))
+    from .jobs import job_files, read_job  # noqa: PLC0415
+    paths = [JOBS / f"{j}.json" for j in job_ids] if job_ids else job_files()
     for p in paths:
-        job = json.loads(p.read_text())
+        job = read_job(p)
+        if not job:
+            print(f"skipped {p.name}: not a readable job file")
+            continue
         campus = job["profile"].get("campus") or "seattle"
         clubs += [(campus, c) for c in job["cards"]]
     seen = set()
