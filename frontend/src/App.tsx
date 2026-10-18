@@ -114,6 +114,7 @@ export default function App() {
     if (jobId) {
       store.del(`hm.swipes.${jobId}`);
       store.del(`hm.penalties.${jobId}`);
+      store.del(`hm.nowhy.${jobId}`);
     }
     setJobId(null);
     setJob(null);

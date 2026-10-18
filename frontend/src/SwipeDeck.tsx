@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { ClubCard } from "./ClubCard";
 import { MoreSheet } from "./MoreSheet";
 import type { Card, Swipe, SwipeAction } from "./types";
+import { store } from "./util";
 
 interface Props {
   jobId: string;
@@ -25,6 +26,7 @@ export interface Penalty {
 const LEVEL_ORDER = ["casual", "regular", "committed", "all_in"];
 const THRESHOLD = 110;
 const CHECKPOINT = 10;
+const WHY_AFTER = 5; // passes in a row before asking what's off
 
 const matches = (p: Penalty, c: Card): boolean => {
   switch (p.kind) {
@@ -116,12 +118,14 @@ export function SwipeDeck({ jobId, cards, researching, lastAction, swipes, onSwi
         setDrag(null);
         if (action === "right") say("Matched! 💜");
         if (action === "super") say("Super-liked! ⭐ Top of your matches");
-        const tail = all.slice(-3);
-        if (action === "left" && tail.length === 3 && tail.every((s) => s.action === "left")) setAskWhy(true);
+        // ask once per run of passes (exactly the 5th in a row), and never again once they've closed the question
+        let streak = 0;
+        while (streak < all.length && all[all.length - 1 - streak].action === "left") streak++;
+        if (action === "left" && streak === WHY_AFTER && !store.get(`hm.nowhy.${jobId}`, false)) setAskWhy(true);
         else if (all.length % CHECKPOINT === 0) setCheckpoint(true);
       }, 220);
     },
-    [top, flying, swipes, onSwipes, say],
+    [top, flying, swipes, onSwipes, say, jobId],
   );
 
   const undo = useCallback(() => {
@@ -131,9 +135,14 @@ export function SwipeDeck({ jobId, cards, researching, lastAction, swipes, onSwi
     say("Undone ↩︎");
   }, [swipes, flying, onSwipes, say]);
 
+  const dismissWhy = () => {
+    setAskWhy(false);
+    store.set(`hm.nowhy.${jobId}`, true);
+  };
+
   const chooseReason = (kind: Penalty["kind"] | "other") => {
     setAskWhy(false);
-    const lefts = swipes.slice(-3).map((s) => cards.find((c) => c.club_id === s.club_id)).filter((c): c is Card => !!c);
+    const lefts = swipes.slice(-WHY_AFTER).map((s) => cards.find((c) => c.club_id === s.club_id)).filter((c): c is Card => !!c);
     const r = REASONS.find((x) => x.kind === kind)!;
     if (kind !== "other") {
       const p: Penalty =
@@ -307,9 +316,9 @@ export function SwipeDeck({ jobId, cards, researching, lastAction, swipes, onSwi
       )}
 
       {askWhy && (
-        <div className="sheet-backdrop" onClick={() => setAskWhy(false)}>
+        <div className="sheet-backdrop" onClick={dismissWhy}>
           <div className="sheet" role="dialog" aria-label="Why not?" onClick={(e) => e.stopPropagation()}>
-            <h3>Three passes in a row. What's off?</h3>
+            <h3>Five passes in a row. What's off?</h3>
             <p className="muted">We'll reshuffle the rest of your deck.</p>
             <div className="chips">
               {REASONS.map((r) => (
