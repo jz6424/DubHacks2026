@@ -1,0 +1,26 @@
+# Caddy gets and renews HTTPS certificates for these names automatically.
+findhuskies.club {
+	encode zstd gzip
+
+	# API: the single uvicorn worker (research jobs are tracked in its memory)
+	handle /api/* {
+		reverse_proxy 127.0.0.1:8000
+	}
+
+	# Frontend: the Vite build; unknown paths fall back to the app
+	handle {
+		root * /opt/huskymatch/frontend/dist
+		try_files {path} /index.html
+		file_server
+	}
+
+	header {
+		Strict-Transport-Security "max-age=31536000"
+		X-Content-Type-Options nosniff
+		Referrer-Policy strict-origin-when-cross-origin
+	}
+}
+
+www.findhuskies.club {
+	redir https://findhuskies.club{uri} permanent
+}

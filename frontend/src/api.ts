@@ -1,5 +1,15 @@
 import type { Job, More, Options, Profile, Results, Swipe } from "./types";
 
+/** An API error that keeps the HTTP status, so the UI can treat limits (429) differently from failures. */
+export class ApiError extends Error {
+  constructor(
+    message: string,
+    public status: number,
+  ) {
+    super(message);
+  }
+}
+
 async function json<T>(res: Response): Promise<T> {
   if (!res.ok) {
     let detail = await res.text();
@@ -8,7 +18,7 @@ async function json<T>(res: Response): Promise<T> {
     } catch {
       /* not JSON */
     }
-    throw new Error(typeof detail === "string" ? detail : `Request failed (${res.status})`);
+    throw new ApiError(typeof detail === "string" ? detail : `Request failed (${res.status})`, res.status);
   }
   return res.json() as Promise<T>;
 }

@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import { api } from "./api";
+import { ApiError, api } from "./api";
 import { Matches } from "./Matches";
 import { Onboarding } from "./Onboarding";
 import { SwipeDeck, type Penalty } from "./SwipeDeck";
@@ -32,6 +32,7 @@ export default function App() {
   const [swipes, setSwipesState] = useState<Swipe[]>([]);
   const [penalties, setPenaltiesState] = useState<Penalty[]>([]);
   const [error, setError] = useState<string | null>(null);
+  const [limited, setLimited] = useState<string | null>(null); // server refused a new search (daily limits)
 
   useEffect(() => store.set("hm.screen", screen), [screen]);
   useEffect(() => store.set("hm.profile", profile), [profile]);
@@ -96,8 +97,15 @@ export default function App() {
       setJobId(j.id);
       setScreen(j.status === "done" && j.cards.length ? "swipe" : "research");
     } catch (e) {
-      setError(String((e as Error).message ?? e));
+      if (e instanceof ApiError && e.status === 429) setLimited(e.message);
+      else setError(String((e as Error).message ?? e));
     }
+  };
+
+  const tryDemo = () => {
+    setLimited(null);
+    setJobId(DEMO_JOB);
+    setScreen("swipe");
   };
 
   const startOver = () => {
@@ -156,14 +164,7 @@ export default function App() {
             <button type="button" className="primary big" onClick={() => setScreen("onboarding")} disabled={!options}>
               Get started
             </button>
-            <button
-              type="button"
-              className="ghost"
-              onClick={() => {
-                setJobId(DEMO_JOB);
-                setScreen("swipe");
-              }}
-            >
+            <button type="button" className="ghost" onClick={tryDemo}>
               Try the demo (CS sophomore)
             </button>
           </section>
@@ -174,6 +175,14 @@ export default function App() {
         )}
 
         {screen === "confirm" && <Confirm profile={profile} onEdit={() => setScreen("onboarding")} onGo={() => startResearch()} />}
+        {screen === "confirm" && limited && (
+          <div className="empty-state">
+            <p>{limited}</p>
+            <button type="button" className="primary" onClick={tryDemo}>
+              Try the demo instead
+            </button>
+          </div>
+        )}
 
         {screen === "research" && (
           <section className="screen research">
