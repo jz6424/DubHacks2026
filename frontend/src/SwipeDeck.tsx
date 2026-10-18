@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { ClubCard } from "./ClubCard";
 import { MoreSheet } from "./MoreSheet";
 import type { Card, Swipe, SwipeAction } from "./types";
-import { store } from "./util";
+import { store, unconfirmed } from "./util";
 
 interface Props {
   jobId: string;
@@ -51,6 +51,10 @@ const REASONS: { kind: Penalty["kind"] | "other"; label: string; toast: string }
   { kind: "other", label: "🤷 Just not feeling them", toast: "" },
 ];
 
+/** "full" when dues, hours and meeting times are all confirmed; the backend sends it, older cards are worked out here. */
+const detailOf = (c: Card): "full" | "partial" =>
+  c.detail ?? ([c.dues, c.commitment.hours_per_week, c.meeting_schedule].some((f) => !f?.trim() || unconfirmed(f)) ? "partial" : "full");
+
 const categoryKey = (c: Card) => c.category.toLowerCase().split(/[\/&,–-]/)[0].trim();
 
 export function SwipeDeck({ jobId, cards, researching, lastAction, swipes, onSwipes, penalties, onPenalties, onSeeMatches }: Props) {
@@ -74,8 +78,21 @@ export function SwipeDeck({ jobId, cards, researching, lastAction, swipes, onSwi
   const queue = useMemo(() => {
     const rest = cards.map((c, i) => ({ c, i })).filter(({ c }) => !swiped.has(c.club_id));
     const score = (c: Card) => penalties.filter((p) => matches(p, c)).length;
+    // Order: images + full details, images + partial details, then no images (full before partial).
+    // Among cards with images, real photos beat logo-only.
     const media = (c: Card) => (c.photos?.length ? 0 : c.logo || (c.photos === undefined && c.image) ? 1 : 2);
-    const sorted = rest.sort((a, b) => score(a.c) - score(b.c) || media(a.c) - media(b.c) || a.i - b.i).map(({ c }) => c);
+    const hasImage = (c: Card) => (media(c) < 2 ? 0 : 1);
+    const partial = (c: Card) => (detailOf(c) === "full" ? 0 : 1);
+    const sorted = rest
+      .sort(
+        (a, b) =>
+          score(a.c) - score(b.c) ||
+          hasImage(a.c) - hasImage(b.c) ||
+          partial(a.c) - partial(b.c) ||
+          media(a.c) - media(b.c) ||
+          a.i - b.i,
+      )
+      .map(({ c }) => c);
     const k = sorted.findIndex((c) => c.club_id === pinned.current);
     if (k > 0) sorted.unshift(...sorted.splice(k, 1));
     return sorted;
