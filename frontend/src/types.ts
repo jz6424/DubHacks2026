@@ -57,6 +57,7 @@ export interface Job {
   usage: Record<string, number>;
   error: string | null;
   running: boolean;
+  created?: number; // seconds since epoch; optional until the backend sends it
 }
 
 export type SwipeAction = "right" | "left" | "super";

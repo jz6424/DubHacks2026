@@ -67,6 +67,17 @@ export function Matches({ jobId, cards, swipes, profile, onKeepSwiping, onStartO
       </section>
     );
 
+  if (!results.order.length)
+    return (
+      <section className="screen matches center">
+        <h2>No matches yet</h2>
+        <p className="muted">Swipe right (or ⭐) on clubs you'd like to join and they'll show up here.</p>
+        <button type="button" className="primary" onClick={onKeepSwiping}>
+          Back to swiping
+        </button>
+      </section>
+    );
+
   const judged = new Map(results.judged.clubs.map((c) => [c.club_id, c]));
   const matched = results.order.map((id) => byId.get(id)).filter((c): c is Card => !!c);
   const h = results.hours;

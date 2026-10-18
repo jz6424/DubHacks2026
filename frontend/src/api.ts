@@ -23,7 +23,7 @@ const post = (url: string, body?: unknown) =>
 export const api = {
   options: () => fetch("/api/options").then((r) => json<Options>(r)),
   summary: (p: Profile) => post("/api/summary", p).then((r) => json<{ summary: string; key: string }>(r)),
-  startJob: (p: Profile) => post("/api/jobs", p).then((r) => json<Job>(r)),
+  startJob: (p: Profile, fresh = false) => post(`/api/jobs${fresh ? "?fresh=true" : ""}`, p).then((r) => json<Job>(r)),
   job: (id: string) => fetch(`/api/jobs/${id}`).then((r) => json<Job>(r)),
   more: (job: string, club: string) => post(`/api/jobs/${job}/cards/${club}/more`).then((r) => json<More>(r)),
   results: (job: string, swipes: Swipe[]) => post(`/api/jobs/${job}/results`, { swipes }).then((r) => json<Results>(r)),

@@ -71,6 +71,10 @@ export function SwipeDeck({ jobId, cards, researching, lastAction, swipes, onSwi
   }, [cards, swiped, penalties]);
   const top = queue[0];
   const next = queue[1];
+  const fly = flying && top && flying.id === top.club_id ? flying.action : null;
+
+  // Research may still be running while the student swipes: say when new clubs land in the deck.
+  const seen = useRef(cards.length);
 
   const say = useCallback((text: string) => {
     setToast(text);
@@ -78,9 +82,20 @@ export function SwipeDeck({ jobId, cards, researching, lastAction, swipes, onSwi
     toastTimer.current = window.setTimeout(() => setToast(null), 1800);
   }, []);
 
+  useEffect(() => {
+    const added = cards.length - seen.current;
+    seen.current = cards.length;
+    if (added > 0 && swipes.length > 0) say(`+${added} new club${added === 1 ? "" : "s"} added to your deck`);
+  }, [cards.length, swipes.length, say]);
+
   const decide = useCallback(
     (action: SwipeAction) => {
       if (!top || flying) return;
+      try {
+        navigator.vibrate?.(action === "super" ? [12, 40, 12] : 12);
+      } catch {
+        /* no haptics */
+      }
       setFlying({ id: top.club_id, action });
       setExpanded(false);
       window.setTimeout(() => {
@@ -157,7 +172,6 @@ export function SwipeDeck({ jobId, cards, researching, lastAction, swipes, onSwi
     else setDrag(null);
   };
 
-  const fly = flying && top && flying.id === top.club_id ? flying.action : null;
   const dx = fly === "right" ? 600 : fly === "left" ? -600 : drag?.x ?? 0;
   const dy = fly === "super" ? -800 : drag?.y ?? 0;
   const style = {
@@ -182,7 +196,7 @@ export function SwipeDeck({ jobId, cards, researching, lastAction, swipes, onSwi
 
       <div className="deck">
         {next && (
-          <div className="card-slot behind" aria-hidden>
+          <div className={`card-slot behind ${fly ? "rising" : ""}`} aria-hidden>
             <ClubCard card={next} expanded={false} onToggle={() => {}} />
           </div>
         )}

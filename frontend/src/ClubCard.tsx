@@ -8,8 +8,15 @@ interface Props {
 }
 
 /** One club as a swipe card. Front reads in ~10 s; tapping expands the full text and the sources. */
+/** How many of the card's key facts the researchers couldn't confirm. */
+export function unknownFacts(c: Card): number {
+  return [c.commitment.hours_per_week, c.dues, c.meeting_schedule].filter(unconfirmed).length + (c.join_type === "unknown" ? 1 : 0);
+}
+
 export function ClubCard({ card: c, expanded, onToggle }: Props) {
   const lastSrc = firstUrl(c.last_active.source);
+  const nSources = c.sources.filter((s) => firstUrl(s.url)).length;
+  const limited = unknownFacts(c) >= 3;
   return (
     <article className={`club-card status-${c.status}`} aria-label={c.name}>
       <header>
@@ -21,6 +28,11 @@ export function ClubCard({ card: c, expanded, onToggle }: Props) {
           <div className="category">
             {c.category}
             {c.wildcard && <span className="pill wild">🎲 Wildcard</span>}
+            {limited && (
+              <span className="pill limited" title="Most details couldn't be confirmed from public sources. Tap ❓ to dig deeper.">
+                Limited info
+              </span>
+            )}
           </div>
         </div>
       </header>
@@ -69,7 +81,7 @@ export function ClubCard({ card: c, expanded, onToggle }: Props) {
           )}
         </span>
         <button type="button" className="link" onPointerDown={(e) => e.stopPropagation()} onClick={onToggle}>
-          {expanded ? "Less" : "More details"}
+          {expanded ? "Less" : `More details · ${nSources} source${nSources === 1 ? "" : "s"}`}
         </button>
       </footer>
 

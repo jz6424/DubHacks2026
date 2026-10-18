@@ -353,7 +353,8 @@ h3 {
 .deck {
   position: relative;
   flex: 1;
-  min-height: 470px;
+  /* fits an iPhone SE (667px tall) with the controls still on screen */
+  min-height: clamp(380px, calc(100dvh - 300px), 620px);
 }
 .card-slot {
   position: absolute;
@@ -365,6 +366,11 @@ h3 {
   transform: scale(0.95) translateY(12px);
   opacity: 0.55;
   pointer-events: none;
+  transition: transform 220ms ease-out, opacity 220ms ease-out;
+}
+.card-slot.behind.rising {
+  transform: none;
+  opacity: 1;
 }
 .card-slot.top {
   cursor: grab;
@@ -772,4 +778,92 @@ h3 {
 }
 .draft {
   min-height: 170px;
+}
+
+.pill.limited {
+  background: #2c2a33;
+  color: var(--muted);
+  border: 1px dashed var(--line);
+}
+.empty-state {
+  background: var(--bg2);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.empty-state p {
+  margin: 0;
+}
+.elapsed {
+  margin: -4px 0 0;
+  font-variant-numeric: tabular-nums;
+}
+.sticky-cta {
+  position: sticky;
+  bottom: 12px;
+  z-index: 5;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
+}
+@media (max-height: 700px) {
+  .club-card {
+    padding: 12px;
+    gap: 7px;
+  }
+  .club-card .emoji {
+    width: 44px;
+    height: 44px;
+    font-size: 28px;
+  }
+  .round {
+    width: 46px;
+    height: 46px;
+  }
+  .round.join,
+  .round.pass {
+    width: 54px;
+    height: 54px;
+  }
+  .fit p {
+    font-size: 13px;
+  }
+}
+
+/* Collapsed cards: clamp the long fields so the footer (activity + "More details") always stays on screen. */
+.card-slot:not(.expanded) .desc,
+.card-slot:not(.expanded) .fit p {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 4;
+  overflow: hidden;
+}
+.card-slot:not(.expanded) .facts dd {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+}
+.club-card footer {
+  flex: none;
+}
+.deck-top .ghost {
+  white-space: nowrap;
+  flex: none;
+}
+@media (max-height: 760px) {
+  .card-slot:not(.expanded) .desc,
+  .card-slot:not(.expanded) .fit p {
+    -webkit-line-clamp: 2;
+  }
+  .card-slot:not(.expanded) .facts dd {
+    -webkit-line-clamp: 1;
+  }
+  .facts {
+    gap: 6px;
+  }
+  .facts div {
+    padding: 5px 8px;
+  }
 }

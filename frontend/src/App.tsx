@@ -87,10 +87,11 @@ export default function App() {
     };
   }, [jobId]);
 
-  const startResearch = async () => {
+  const startResearch = async (fresh = false) => {
     setError(null);
     try {
-      const j = await api.startJob(profile);
+      const j = await api.startJob(profile, fresh);
+      if (!store.get(`hm.started.${j.id}`, null)) store.set(`hm.started.${j.id}`, Date.now() / 1000);
       setJob(j);
       setJobId(j.id);
       setScreen(j.status === "done" && j.cards.length ? "swipe" : "research");
@@ -100,6 +101,11 @@ export default function App() {
   };
 
   const startOver = () => {
+    if (swipes.length && !window.confirm("Start over? Your swipes on this list will be cleared.")) return;
+    if (jobId) {
+      store.del(`hm.swipes.${jobId}`);
+      store.del(`hm.penalties.${jobId}`);
+    }
     setJobId(null);
     setJob(null);
     setSwipesState([]);
@@ -167,7 +173,7 @@ export default function App() {
           <Onboarding options={options} profile={profile} onChange={setProfile} onDone={() => setScreen("confirm")} onBack={() => setScreen("welcome")} />
         )}
 
-        {screen === "confirm" && <Confirm profile={profile} onEdit={() => setScreen("onboarding")} onGo={startResearch} />}
+        {screen === "confirm" && <Confirm profile={profile} onEdit={() => setScreen("onboarding")} onGo={() => startResearch()} />}
 
         {screen === "research" && (
           <section className="screen research">
@@ -178,7 +184,29 @@ export default function App() {
                 This takes a few minutes: we only show clubs we could verify. You can start swiping once a few are ready.
               </p>
             )}
-            {job?.status === "error" && <p className="error-text">{job.error}</p>}
+            {researching && job && <Elapsed since={job.created ?? store.get(`hm.started.${job.id}`, Date.now() / 1000)} />}
+            {job?.status === "error" && (
+              <div className="empty-state">
+                <p className="error-text">Research hit a problem: {job.error}</p>
+                <div className="nav">
+                  <button type="button" className="ghost" onClick={() => setScreen("onboarding")}>
+                    ← Edit answers
+                  </button>
+                  <button type="button" className="primary" onClick={() => startResearch(true)}>
+                    Try again
+                  </button>
+                </div>
+              </div>
+            )}
+            {job?.status === "done" && !researching && cards.length === 0 && (
+              <div className="empty-state">
+                <p>We couldn't verify any active clubs for this exact combination.</p>
+                <p className="muted small">Try adding an interest, or relaxing dues or time limits.</p>
+                <button type="button" className="primary" onClick={() => setScreen("onboarding")}>
+                  Adjust my answers
+                </button>
+              </div>
+            )}
             <div className="found">
               <div className="found-count">
                 <strong>{cards.length}</strong> club{cards.length === 1 ? "" : "s"} found
@@ -201,7 +229,7 @@ export default function App() {
             </ul>
             <button
               type="button"
-              className="primary big"
+              className="primary big sticky-cta"
               disabled={cards.length < Math.min(READY_AT, researching ? READY_AT : 1)}
               onClick={() => setScreen("swipe")}
             >
@@ -250,6 +278,21 @@ export default function App() {
 
       <footer className="foot">Student project · Not affiliated with or endorsed by the University of Washington · Info may be out of date: confirm with each club.</footer>
     </div>
+  );
+}
+
+/** "1:42 · usually 2–4 minutes" while research runs. */
+function Elapsed({ since }: { since: number }) {
+  const [now, setNow] = useState(Date.now());
+  useEffect(() => {
+    const t = window.setInterval(() => setNow(Date.now()), 1000);
+    return () => window.clearInterval(t);
+  }, []);
+  const s = Math.max(0, Math.round(now / 1000 - since));
+  return (
+    <p className="elapsed muted small">
+      ⏱ {Math.floor(s / 60)}:{String(s % 60).padStart(2, "0")} · usually 2–4 minutes
+    </p>
   );
 }
 
