@@ -42,7 +42,10 @@ class FromCatalog(BaseModel):
 def card_from_catalog(job_id: str, body: FromCatalog) -> dict:
     """Add a searched catalog club to this job's deck (no model calls), or return the card it already has."""
     _job(job_id)
-    card = jobs.add_from_catalog(job_id, body.club_id)
+    try:
+        card = jobs.add_from_catalog(job_id, body.club_id)
+    except jobs.TooManyAdded as e:
+        raise HTTPException(429, str(e))
     if not card:
         raise HTTPException(404, "no such club in the catalog")
     return card

@@ -389,6 +389,13 @@ def search_catalog(campus: str, q: str, limit: int = 20) -> list[dict]:
     return present(campus, [{**c, "fit_reason": "", "wildcard": False} for c in catalog.search(campus, q, limit)])
 
 
+MAX_FROM_SEARCH = 150  # per job; jobs are shared (the demo by everyone), and growth is already bounded by the catalog
+
+
+class TooManyAdded(Exception):
+    pass
+
+
 def add_from_catalog(job_id: str, club_id: str) -> dict | None:
     """Put a searched catalog club into the job's deck (no model calls), or return the job's existing card for it.
     None if the club isn't in the catalog for the job's campus."""
@@ -404,6 +411,8 @@ def add_from_catalog(job_id: str, club_id: str) -> dict | None:
         if same:
             result["card"] = same
             return
+        if sum(1 for c in j["cards"] if c.get("from_search")) >= MAX_FROM_SEARCH:
+            return  # result stays empty: too many
         card = {**club, "fit_reason": "", "wildcard": False, "from_search": True}
         if any(c["club_id"] == card["club_id"] for c in j["cards"]):
             card["club_id"] += f"-{len(j['cards'])}"
@@ -412,6 +421,8 @@ def add_from_catalog(job_id: str, club_id: str) -> dict | None:
         result["card"] = card
 
     _update(job_id, put)
+    if "card" not in result:
+        raise TooManyAdded("This deck can't take more clubs from search. Start a new search to add more.")
     images.ensure_async(campus, result["card"])  # no-op if it already has media
     return present(campus, [result["card"]])[0]
 
