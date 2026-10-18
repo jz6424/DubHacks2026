@@ -129,6 +129,13 @@ export default function App() {
 
   return (
     <div className="app">
+      <div className="backdrop" aria-hidden>
+        <i />
+        <i />
+        <i />
+        <i />
+        <i />
+      </div>
       <header className="topbar">
         <button type="button" className="brand" onClick={() => setScreen(jobId ? "swipe" : "welcome")}>
           <span aria-hidden>💜</span> HuskyMatch

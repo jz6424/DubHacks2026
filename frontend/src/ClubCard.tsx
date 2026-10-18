@@ -1,3 +1,4 @@
+import type { CSSProperties } from "react";
 import type { Card } from "./types";
 import { JOIN, TIER, firstUrl, formatDate, hostOf, lastActive, short, STATUS, unconfirmed } from "./util";
 
@@ -13,12 +14,19 @@ export function unknownFacts(c: Card): number {
   return [c.commitment.hours_per_week, c.dues, c.meeting_schedule].filter(unconfirmed).length + (c.join_type === "unknown" ? 1 : 0);
 }
 
+/** A stable pastel hue per category, so each kind of club gets its own colour band. */
+function hueOf(s: string): number {
+  let h = 0;
+  for (const ch of s.toLowerCase()) h = (h * 31 + ch.charCodeAt(0)) % 360;
+  return h;
+}
+
 export function ClubCard({ card: c, expanded, onToggle }: Props) {
   const lastSrc = firstUrl(c.last_active.source);
   const nSources = c.sources.filter((s) => firstUrl(s.url)).length;
   const limited = unknownFacts(c) >= 3;
   return (
-    <article className={`club-card status-${c.status}`} aria-label={c.name}>
+    <article className={`club-card status-${c.status}`} aria-label={c.name} style={{ "--h": hueOf(c.category) } as CSSProperties}>
       <header>
         <div className="emoji" aria-hidden>
           {c.category_emoji}
