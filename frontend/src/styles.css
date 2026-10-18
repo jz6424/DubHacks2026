@@ -1094,3 +1094,87 @@ h1 .gold {
     flex: none;
   }
 }
+
+/* matches: big, separate blocks per club; extra detail tucked behind "More info" */
+.match-head .glance {
+  display: block;
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--muted);
+}
+.match-head .glance:empty {
+  display: none;
+}
+.match-head .pill.super {
+  margin-left: 6px;
+}
+.match-body {
+  display: grid;
+  gap: 10px;
+}
+.match-body .block {
+  background: var(--card2);
+  border-radius: 14px;
+  padding: 12px 14px;
+}
+.match-body .block h4 {
+  margin: 0 0 4px;
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--gold);
+}
+.match-body .big-line {
+  font-size: 17px;
+  font-weight: 650;
+  margin: 0;
+}
+.match-body .block .btn-link.apply {
+  margin-top: 8px;
+  display: inline-block;
+  background: var(--grad);
+  color: #fff;
+  border: 0;
+}
+.match-body .ledger {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+}
+.match-body .ledger h4 {
+  margin: 0;
+  flex: none;
+}
+.match-body .ledger span {
+  text-align: right;
+  font-weight: 600;
+}
+.match-body .more-toggle {
+  justify-self: start;
+  font-size: 14px;
+  font-weight: 650;
+}
+.more-info {
+  border-top: 1px dashed var(--line);
+  padding-top: 8px;
+  font-size: 14px;
+}
+.more-info h5 {
+  margin: 10px 0 4px;
+  font-size: 13px;
+  color: var(--muted);
+}
+.more-info p {
+  margin: 0;
+}
+.more-info .ghost {
+  margin-top: 12px;
+}
+.hours-line {
+  margin: 4px 2px 0;
+  color: var(--muted);
+}
+.hours-line.over {
+  color: var(--warn);
+}

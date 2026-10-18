@@ -3,7 +3,7 @@ import { api } from "./api";
 import { Md } from "./Md";
 import { Links, Sources } from "./ClubCard";
 import type { Card, Profile, Results, Swipe } from "./types";
-import { JOIN, TIER, unconfirmed } from "./util";
+import { JOIN, TIER, firstUrl, short, unconfirmed } from "./util";
 
 interface Props {
   jobId: string;
@@ -26,6 +26,15 @@ export function Matches({ jobId, cards, swipes, profile, onKeepSwiping, onStartO
   const [error, setError] = useState<string | null>(null);
   const [open, setOpen] = useState<string | null>(null);
   const [draftFor, setDraftFor] = useState<Card | null>(null);
+  const [more, setMore] = useState<Set<string>>(new Set());
+  const [showPlan, setShowPlan] = useState(false);
+  const toggleMore = (id: string) =>
+    setMore((m) => {
+      const n = new Set(m);
+      if (n.has(id)) n.delete(id);
+      else n.add(id);
+      return n;
+    });
   const byId = useMemo(() => new Map(cards.map((c) => [c.club_id, c])), [cards]);
   const matchSwipes = useMemo(() => swipes.filter((s) => s.action !== "left"), [swipes]);
   const supers = useMemo(() => new Set(swipes.filter((s) => s.action === "super").map((s) => s.club_id)), [swipes]);
@@ -63,7 +72,7 @@ export function Matches({ jobId, cards, swipes, profile, onKeepSwiping, onStartO
       <section className="screen matches center">
         <div className="spinner big" aria-hidden />
         <h2>Putting your plan together…</h2>
-        <p className="muted">Checking deadlines, time and your availability for {matchSwipes.length} clubs.</p>
+        <p className="muted">Checking deadlines and application links for {matchSwipes.length} clubs.</p>
       </section>
     );
 
@@ -81,6 +90,7 @@ export function Matches({ jobId, cards, swipes, profile, onKeepSwiping, onStartO
   const judged = new Map(results.judged.clubs.map((c) => [c.club_id, c]));
   const matched = results.order.map((id) => byId.get(id)).filter((c): c is Card => !!c);
   const h = results.hours;
+  const plan = results.judged.action_plan;
 
   return (
     <section className="screen matches">
@@ -90,7 +100,6 @@ export function Matches({ jobId, cards, swipes, profile, onKeepSwiping, onStartO
 
       <div className="match-list">
         {matched.map((c) => {
-          const j = judged.get(c.club_id);
           const isOpen = open === c.club_id;
           return (
             <article key={c.club_id} className={`match ${isOpen ? "open" : ""}`}>
@@ -98,93 +107,47 @@ export function Matches({ jobId, cards, swipes, profile, onKeepSwiping, onStartO
                 <span className="emoji">{c.category_emoji}</span>
                 <span className="name">
                   {c.name}
-                  {supers.has(c.club_id) && <span className="pill super">⭐ Super-like</span>}
+                  {supers.has(c.club_id) && <span className="pill super">⭐</span>}
+                  <span className="glance">{glance(c)}</span>
                 </span>
                 <span className="chev">{isOpen ? "▾" : "▸"}</span>
               </button>
               {isOpen && (
-                <div className="match-body">
-                  <h4>🚪 How to join</h4>
-                  <p>
-                    {JOIN[c.join_type]} · Deadline:{" "}
-                    <span className={unconfirmed(c.application.deadline) ? "dim" : ""}>{c.application.deadline || "unknown"}</span>
-                  </p>
-                  {c.application.steps.length > 0 && (
-                    <ol>
-                      {c.application.steps.map((s, i) => (
-                        <li key={i}>{s}</li>
-                      ))}
-                    </ol>
-                  )}
-
-                  <h4>⏱️ Time</h4>
-                  <p>
-                    {TIER[c.commitment.level]} · {c.commitment.hours_per_week}
-                    {c.commitment.estimated && <span className="est"> (estimated)</span>}
-                  </p>
-                  <p className={unconfirmed(c.meeting_schedule) ? "dim" : ""}>📅 {c.meeting_schedule}</p>
-                  {j && j.availability_conflicts && !/^none\.?$/i.test(j.availability_conflicts.trim()) && (
-                    <p className="warn-text">⚠️ {j.availability_conflicts}</p>
-                  )}
-
-                  <h4>💵 Cost</h4>
-                  <p className={unconfirmed(c.dues) ? "dim" : ""}>{c.dues}</p>
-
-                  <h4>📇 Contact</h4>
-                  <Links card={c} />
-
-                  {j && j.good_to_know.length > 0 && (
-                    <>
-                      <h4>💡 Good to know</h4>
-                      <ul>
-                        {j.good_to_know.map((g, i) => (
-                          <li key={i}>
-                            <Md text={g} />
-                          </li>
-                        ))}
-                      </ul>
-                    </>
-                  )}
-
-                  <Sources card={c} />
-                  <button type="button" className="ghost" onClick={() => setDraftFor(c)}>
-                    ✉️ Draft a message to them
-                  </button>
-                </div>
+                <MatchBody
+                  card={c}
+                  tips={judged.get(c.club_id)?.good_to_know ?? []}
+                  more={more.has(c.club_id)}
+                  onMore={() => toggleMore(c.club_id)}
+                  onDraft={() => setDraftFor(c)}
+                />
               )}
             </article>
           );
         })}
       </div>
 
-      {results.judged.action_plan.length > 0 && (
+      {plan.length > 0 && (
         <div className="plan">
-          <h3>Your action plan</h3>
+          <h3>Next steps</h3>
           <ol>
-            {results.judged.action_plan.map((a, i) => (
+            {(showPlan ? plan : plan.slice(0, 3)).map((a, i) => (
               <li key={i}>
                 <span className="when">{a.when}</span> <Md text={a.step} />
-                {byId.get(a.club_id) && <span className="muted"> · {byId.get(a.club_id)!.name}</span>}
               </li>
             ))}
           </ol>
-          <p className="small muted">Deadlines change. Confirm them with each club directly.</p>
+          {plan.length > 3 && (
+            <button type="button" className="link" onClick={() => setShowPlan(!showPlan)}>
+              {showPlan ? "Show less" : `Show all ${plan.length} steps`}
+            </button>
+          )}
         </div>
       )}
 
-      <div className={`hours ${h.over ? "over" : ""}`}>
-        <div>
-          <strong>~{h.total} hrs/wk</strong> across your matches
-          {h.unknown > 0 && <span className="muted"> (+{h.unknown} with unknown hours)</span>}
-        </div>
-        {h.limit !== null && profile.commitment && (
-          <div className="small">
-            {h.over
-              ? `⚠️ That's more than your ${TIER[profile.commitment]} target (${COMMIT_LABEL[profile.commitment]}). Consider starting with your top 1–2.`
-              : `✓ Within your ${TIER[profile.commitment]} target (${COMMIT_LABEL[profile.commitment]}).`}
-          </div>
-        )}
-      </div>
+      <p className={`hours-line small ${h.over ? "over" : ""}`}>
+        ⏱️ ~{h.total} hrs/wk total{h.unknown > 0 && ` (+${h.unknown} unknown)`}
+        {h.limit !== null && profile.commitment && (h.over ? ` · over your ${COMMIT_LABEL[profile.commitment]} target` : " · within your target ✓")}
+      </p>
 
       <div className="end-actions">
         <button type="button" className="ghost" onClick={onKeepSwiping}>
@@ -197,6 +160,111 @@ export function Matches({ jobId, cards, swipes, profile, onKeepSwiping, onStartO
 
       {draftFor && <DraftSheet jobId={jobId} card={draftFor} onClose={() => setDraftFor(null)} />}
     </section>
+  );
+}
+
+/** The cost as one ledger line: the leading fact, before any notes in brackets or after a semicolon. */
+function ledgerCost(d: string): string | null {
+  if (!d || /^\s*(couldn.?t confirm|unknown|not listed)/i.test(d)) return null;
+  return short(d.split(/\s*[(;]/)[0].replace(/[.,]\s*$/, ""), 48);
+}
+
+const known = (s: string | undefined | null) => !!s && !unconfirmed(s) && !/^unknown$/i.test(s.trim());
+
+/** One line under the club name: how you join and the deadline, when we know them. */
+function glance(c: Card): string {
+  const parts = [];
+  if (c.join_type !== "unknown") parts.push(JOIN[c.join_type]);
+  if (known(c.application.deadline)) parts.push(`due ${c.application.deadline}`);
+  return parts.join(" · ");
+}
+
+function MatchBody({ card: c, tips, more, onMore, onDraft }: { card: Card; tips: string[]; more: boolean; onMore: () => void; onDraft: () => void }) {
+  const site = firstUrl(c.links.website) ?? firstUrl(c.links.instagram) ?? firstUrl(c.links.huskylink);
+  const apply = firstUrl(c.application.url);
+  const joinKnown = c.join_type !== "unknown" || c.application.steps.length > 0 || !!apply;
+  const deadline = known(c.application.deadline) ? c.application.deadline : null;
+  const cost = ledgerCost(c.dues);
+  return (
+    <div className="match-body">
+      <div className="block">
+        <h4>🚪 How to join</h4>
+        {joinKnown ? (
+          <>
+            <p className="big-line">{c.join_type !== "unknown" ? JOIN[c.join_type] : "Ask the club how to join"}</p>
+            <p className="small">{deadline ? <strong>Deadline: {deadline}</strong> : <span className="muted">No deadline posted</span>}</p>
+          </>
+        ) : (
+          <p className="muted">Couldn't confirm. Check their website for how to join.</p>
+        )}
+        {(apply || (!joinKnown && site)) && (
+          <a className="btn-link apply" href={apply ?? site!} target="_blank" rel="noreferrer">
+            {apply ? "Apply ↗" : "Visit their site ↗"}
+          </a>
+        )}
+      </div>
+
+      <div className="block">
+        <h4>⏱️ Time commitment</h4>
+        <p className="big-line">
+          {TIER[c.commitment.level]}
+          {known(c.commitment.hours_per_week) && <span className="muted"> · {short(c.commitment.hours_per_week, 30)}</span>}
+        </p>
+      </div>
+
+      <div className="block ledger">
+        <h4>💵 Cost</h4>
+        <span className={cost ? "" : "muted"}>{cost ?? "Not listed"}</span>
+      </div>
+
+      <Links card={c} apply={false} />
+
+      <button type="button" className="link more-toggle" onClick={onMore} aria-expanded={more}>
+        {more ? "Hide more info ▴" : "More info ▾"}
+      </button>
+      {more && (
+        <div className="more-info">
+          {c.application.steps.length > 0 && (
+            <>
+              <h5>Steps</h5>
+              <ol>
+                {c.application.steps.map((s, i) => (
+                  <li key={i}>{s}</li>
+                ))}
+              </ol>
+            </>
+          )}
+          {known(c.meeting_schedule) && (
+            <>
+              <h5>Meets</h5>
+              <p>{c.meeting_schedule}</p>
+            </>
+          )}
+          {c.dues && c.dues !== cost && !/^couldn.?t confirm$/i.test(c.dues.trim()) && (
+            <>
+              <h5>Cost details</h5>
+              <p>{c.dues}</p>
+            </>
+          )}
+          {tips.length > 0 && (
+            <>
+              <h5>Good to know</h5>
+              <ul>
+                {tips.map((g, i) => (
+                  <li key={i}>
+                    <Md text={g} />
+                  </li>
+                ))}
+              </ul>
+            </>
+          )}
+          <Sources card={c} />
+          <button type="button" className="ghost small" onClick={onDraft}>
+            ✉️ Draft a message to them
+          </button>
+        </div>
+      )}
+    </div>
   );
 }
 

@@ -116,12 +116,12 @@ export function ClubCard({ card: c, expanded, onToggle }: Props) {
   );
 }
 
-export function Links({ card: c }: { card: Card }) {
+export function Links({ card: c, apply = true }: { card: Card; apply?: boolean }) {
   const items = [
     ["Website", firstUrl(c.links.website)],
     ["Instagram", firstUrl(c.links.instagram)],
     ["HuskyLink", firstUrl(c.links.huskylink)],
-    ["Apply", firstUrl(c.application.url)],
+    ["Apply", apply ? firstUrl(c.application.url) : null],
   ].filter((x): x is [string, string] => !!x[1]);
   if (!items.length) return null;
   return (

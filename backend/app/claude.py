@@ -85,9 +85,11 @@ RESULTS_MODE = """
 
 ## App mode: match results (Phase 4)
 The app shows each matched club's card details itself (join steps, dues, links, sources). Return only what needs
-judgment, as JSON: for each match, any conflicts with the student's availability and the "good to know" tips; then an
-action plan ordered by urgency (earliest deadlines and first steps this week). Use only the card data provided: no new
-facts, and say "unknown" rather than guess deadlines. Remind them to confirm deadlines with the club directly.
+judgment, as JSON, and keep it short. Focus on applying: application deadlines and where to apply. Don't analyze time
+or availability: set availability_conflicts to "none". good_to_know: at most 2 tips per club, each under 15 words, only
+if useful. action_plan: at most 5 steps ordered by urgency (earliest application deadlines first), each under 15 words;
+for a club whose join process or deadline is unknown, the step is to check its website. Use only the card data
+provided: no new facts, and say "unknown" rather than guess deadlines.
 """
 
 DRAFT_MODE = """
