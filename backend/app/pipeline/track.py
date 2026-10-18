@@ -40,7 +40,13 @@ def _diag(a: np.ndarray) -> float:
     return float(np.hypot(a[2] - a[0], a[3] - a[1]))
 
 
+MAX_SIZE_STEP = 2.0  # a vehicle's box can't change size by more than this between frames 0.25 s apart
+
+
 def _match_cost(pred: np.ndarray, det: np.ndarray) -> float:
+    ratio = _diag(det) / max(_diag(pred), 1e-6)
+    if not (1 / MAX_SIZE_STEP <= ratio <= MAX_SIZE_STEP):
+        return 9.0  # a speck and a nearby truck can share a centre; they're not the same vehicle
     iou = _iou(pred, det)
     if iou > 0.1:
         return 1.0 - iou
@@ -185,12 +191,14 @@ def run(clip: Clip, progress: Callable[[float, str], None]) -> dict:
                     w = (j - a) / (b - a)
                     samples.append({"i": j, "t": t_of.get(j, j / 4), "box": _norm(box * (1 - w) + nb * w, W, H),
                                     "interp": True})
+        first = samples[0]
         out.append({"id": f"{p}{counters[p]}", "cls": cls, "group": t["group"], "samples": samples,
-                    "manual": False, "label": None})
+                    "manual": False, "label": None, "sig": {"i": first["i"], "box": first["box"]}})
 
+    sigs = {a["id"]: a["sig"] for a in out}  # every automatic track, before user corrections
     overrides = load_overrides(clip)
     applied = apply_overrides(out, overrides)
-    return {"actors": out, "raw_tracks": raw_count, "auto_merges": len(merges), "overrides": applied,
+    return {"actors": out, "sigs": sigs, "raw_tracks": raw_count, "auto_merges": len(merges), "overrides": applied,
             "summary": f"{len(out)} actors ({raw_count} raw tracks, {len(merges)} gap repairs, {len(applied)} user corrections)"}
 
 
@@ -211,8 +219,44 @@ def load_overrides(clip: Clip) -> dict:
     return ov
 
 
+def _sig_match(sig: dict, actors: list[dict]) -> str | None:
+    """Find the current track that starts where a saved one did (same first frame +-1, overlapping first box)."""
+    best, best_iou = None, 0.5
+    for a in actors:
+        s = a.get("sig")
+        if s and abs(s["i"] - sig["i"]) <= 1:
+            iou = _iou(np.array(s["box"]), np.array(sig["box"]))
+            if iou > best_iou:
+                best, best_iou = a["id"], iou
+    return best
+
+
+def remap_ids(ov: dict, actors: list[dict]) -> tuple[dict, list[str]]:
+    """Corrections name tracks by ID, but IDs can be renumbered when tracking changes. Each saved ID carries the
+    signature it had when saved; map it to whichever current track has that signature."""
+    sigs = ov.get("sigs", {})
+    if not sigs:
+        return ov, []
+    mapping, lost = {}, []
+    for old, sig in sigs.items():
+        new = _sig_match(sig, actors)
+        if new:
+            mapping[old] = new
+        else:
+            lost.append(old)
+    m = lambda x: mapping.get(x, x if x not in sigs else None)  # noqa: E731
+    out = {
+        "merge": [[m(k), m(a)] for k, a in ov["merge"] if m(k) and m(a)],
+        "tier": {m(k): v for k, v in ov["tier"].items() if m(k)},
+        "labels": {m(k): v for k, v in ov["labels"].items() if m(k)},
+        "rejected_links": [[m(k), m(a)] for k, a in ov.get("rejected_links", []) if m(k) and m(a)],
+    }
+    return out, lost
+
+
 def apply_overrides(actors: list[dict], ov: dict) -> list[str]:
     """Apply merges (chains resolve through aliases), tiers and labels in place. Returns what was applied."""
+    ov, lost = remap_ids(ov, actors)
     by_id = {a["id"]: a for a in actors}
     alias: dict[str, str] = {}
 
@@ -244,6 +288,7 @@ def apply_overrides(actors: list[dict], ov: dict) -> list[str]:
         a = by_id.get(resolve(aid))
         if a and label:
             a["label"] = str(label)[:60]
+    applied += [f"could not re-apply corrections for {x} (its track changed)" for x in lost]
     return applied
 
 

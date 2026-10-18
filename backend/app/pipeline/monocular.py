@@ -25,13 +25,81 @@ HEIGHT_PRIOR_M = {"car": (1.55, 0.2), "truck": (3.5, 0.5), "bus": (3.2, 0.2), "m
                   "bicycle": (1.7, 0.15)}
 # Box width/height at most this when seen from behind or in front; wider boxes are side-on and width means length.
 MAX_END_ON_ASPECT = {"car": 1.9, "truck": 1.1, "bus": 1.1, "motorcycle": 0.8, "bicycle": 0.8}
+MIN_UPRIGHT_ASPECT = {"car": 0.85, "truck": 0.45, "bus": 0.5}
 IN_PATH_M = 1.8  # time-to-contact is only meaningful for objects roughly in the camera's path
 PERSON_HEIGHT_M = (1.7, 0.1)
 EDGE = 0.01
+GATE_SIGMA = 4.0  # measurements further than this from the prediction are physically implausible jumps: ignored
 
 
 def _touches(box: list[float]) -> dict[str, bool]:
     return {"l": box[0] < EDGE, "r": box[2] > 1 - EDGE, "t": box[1] < EDGE, "b": box[3] > 1 - EDGE}
+
+
+def size_cues(a: dict, s: dict, plate_boxes: list[list[float]], f: float, Wpx: int, Hpx: int,
+              plate_w: float = PLATE_WIDTH_M, occluded: bool = False) -> list[tuple[float, float, float, str]]:
+    """Distance estimates for one detection from objects of known size: [(log Z, sigma of log Z, x centre px, cue)].
+    Never uses a box that touches the frame edge on the measured axis, nor the width of a box partly hidden behind a
+    nearer road user (`occluded`): its visible width is less than the vehicle's."""
+    if s["interp"]:
+        return []
+    box = s["box"]
+    est = []
+    for pb in plate_boxes:
+        w = (pb[2] - pb[0]) * Wpx
+        if w >= 12 and not any(_touches(pb).values()):
+            # +-2 px box error and ~5% for viewing angle / box looseness
+            est.append((float(np.log(f * plate_w / w)), float(np.hypot(2 / w, 0.05)), (pb[0] + pb[2]) / 2 * Wpx, "plate"))
+    tch = _touches(box)
+    w = (box[2] - box[0]) * Wpx
+    h = (box[3] - box[1]) * Hpx
+    xc = (box[0] + box[2]) / 2 * Wpx
+    if a["group"] == "person":
+        if not (tch["t"] or tch["b"]) and h >= 15:
+            Hm, sH = PERSON_HEIGHT_M
+            est.append((float(np.log(f * Hm / h)), float(np.hypot(3 / h, sH / Hm)), xc, "height"))
+        return est
+    cls = a["cls"] if a["cls"] in WIDTH_PRIOR_M else "car"
+    aspect = w / h if h > 0 else 0.0
+    # A car box much taller than wide is not an upright car (rolling over, or a bad box): its size says nothing.
+    upright = aspect >= MIN_UPRIGHT_ASPECT.get(cls, 0.0)
+    if upright and not occluded and not (tch["l"] or tch["r"]) and w >= 10 and aspect <= MAX_END_ON_ASPECT[cls]:
+        W, sW = WIDTH_PRIOR_M[cls]
+        est.append((float(np.log(f * W / w)), float(np.hypot(3 / w, sW / W)), xc, "width"))
+    if upright and not (tch["t"] or tch["b"]) and h >= 10:
+        Hm, sH = HEIGHT_PRIOR_M[cls]
+        est.append((float(np.log(f * Hm / h)), float(np.hypot(3 / h, sH / Hm)), xc, "height"))
+    return est
+
+
+def occluded_by_nearer(a_id: str, box: list[float], frame_boxes: list[tuple[str, list[float]]]) -> bool:
+    """True if another road user's box covers >10% of this box and its bottom edge is lower (nearer the camera)."""
+    area = max((box[2] - box[0]) * (box[3] - box[1]), 1e-9)
+    for oid, ob in frame_boxes:
+        if oid == a_id or ob[3] <= box[3] + 0.005:
+            continue
+        ix = max(0.0, min(box[2], ob[2]) - max(box[0], ob[0]))
+        iy = max(0.0, min(box[3], ob[3]) - max(box[1], ob[1]))
+        if ix * iy > 0.1 * area:
+            return True
+    return False
+
+
+def boxes_by_frame(actors: list[dict]) -> dict[int, list[tuple[str, list[float]]]]:
+    out: dict[int, list[tuple[str, list[float]]]] = {}
+    for a in actors:
+        for s in a["samples"]:
+            if not s["interp"]:
+                out.setdefault(s["i"], []).append((a["id"], s["box"]))
+    return out
+
+
+def fuse(est: list[tuple[float, float, float, str]]) -> tuple[float, float, float, str]:
+    """Inverse-variance fusion in log distance: (Z, sigma of log Z, x centre px, dominant cue)."""
+    wts = np.array([1 / e[1] ** 2 for e in est])
+    lz = float(np.sum(wts * np.array([e[0] for e in est])) / wts.sum())
+    xc = float(np.sum(wts * np.array([e[2] for e in est])) / wts.sum())
+    return float(np.exp(lz)), float(1 / np.sqrt(wts.sum())), xc, min(est, key=lambda e: e[1])[3]
 
 
 def _rts_1d_pos_vel(ts: np.ndarray, z: np.ndarray, r: np.ndarray, sigma_a: float):
@@ -41,6 +109,7 @@ def _rts_1d_pos_vel(ts: np.ndarray, z: np.ndarray, r: np.ndarray, sigma_a: float
     x = np.array([z[first], 0.0])
     P = np.diag([r[first] ** 2, 4.0 ** 2])
     xs, Ps, xp, Pp, Fs = np.zeros((n, 2)), np.zeros((n, 2, 2)), np.zeros((n, 2)), np.zeros((n, 2, 2)), []
+    gated = 0
     for k in range(n):
         dt = ts[k] - ts[k - 1] if k else 0.0
         F = np.array([[1, dt], [0, 1]])
@@ -49,7 +118,13 @@ def _rts_1d_pos_vel(ts: np.ndarray, z: np.ndarray, r: np.ndarray, sigma_a: float
             x, P = F @ x, F @ P @ F.T + Q
         Fs.append(F)
         xp[k], Pp[k] = x, P
-        if not np.isnan(z[k]):
+        jump = not np.isnan(z[k]) and k > first and (z[k] - x[0]) ** 2 > GATE_SIGMA ** 2 * (P[0, 0] + r[k] ** 2)
+        if jump and gated < 1:
+            gated += 1  # a one-off jump no vehicle can make (detection briefly on another object): ignore it
+        elif not np.isnan(z[k]):
+            if jump:
+                P = P + np.diag([r[k] ** 2, 25.0])  # persistent disagreement: the prediction is wrong, re-anchor
+            gated = 0
             S = P[0, 0] + r[k] ** 2
             g = P[:, 0] / S
             x = x + g * (z[k] - x[0])
@@ -88,6 +163,7 @@ def range_actors(actors: list[dict], plates: list[dict], Wpx: int, Hpx: int, met
             plates_by.setdefault((p["actor"], p["i"]), []).append(p["box"])
 
     out: dict[str, list[dict]] = {}
+    frames = boxes_by_frame(actors)
     cue_counts = {"plate": 0, "width": 0, "height": 0}
     quality: list[dict] = []
     for a in actors:
@@ -95,39 +171,15 @@ def range_actors(actors: list[dict], plates: list[dict], Wpx: int, Hpx: int, met
         for s in a["samples"]:
             box = s["box"]
             ts.append(s["t"])
-            est = []  # (log Z, sigma of log Z, x_centre_px, cue)
-            if not s["interp"]:
-                for pb in plates_by.get((a["id"], s["i"]), []):
-                    w = (pb[2] - pb[0]) * Wpx
-                    if w >= 12 and not any(_touches(pb).values()):
-                        # +-2 px box error and ~5% for viewing angle / box looseness
-                        est.append((np.log(f * plate_w / w), float(np.hypot(2 / w, 0.05)), (pb[0] + pb[2]) / 2 * Wpx, "plate"))
-                tch = _touches(box)
-                w = (box[2] - box[0]) * Wpx
-                h = (box[3] - box[1]) * Hpx
-                cls = a["cls"] if a["cls"] in WIDTH_PRIOR_M else "car"
-                end_on = h > 0 and w / h <= MAX_END_ON_ASPECT[cls]
-                if a["group"] != "person" and not (tch["l"] or tch["r"]) and w >= 10 and end_on:
-                    W, sW = WIDTH_PRIOR_M[cls]
-                    est.append((np.log(f * W / w), float(np.hypot(3 / w, sW / W)), (box[0] + box[2]) / 2 * Wpx, "width"))
-                if a["group"] != "person" and not (tch["t"] or tch["b"]) and h >= 10:
-                    Hm, sH = HEIGHT_PRIOR_M[cls]
-                    est.append((np.log(f * Hm / h), float(np.hypot(3 / h, sH / Hm)), (box[0] + box[2]) / 2 * Wpx, "height"))
-                if a["group"] == "person" and not (tch["t"] or tch["b"]) and h >= 15:
-                    Hm, sH = PERSON_HEIGHT_M
-                    est.append((np.log(f * Hm / h), float(np.hypot(3 / h, sH / Hm)), (box[0] + box[2]) / 2 * Wpx, "height"))
+            est = size_cues(a, s, plates_by.get((a["id"], s["i"]), []), f, Wpx, Hpx, plate_w,
+                            occluded_by_nearer(a["id"], s["box"], frames.get(s["i"], [])))
             if not est:
                 zs.append(np.nan); zr.append(np.nan); xs.append(np.nan); xr.append(np.nan); cues.append(None)
                 continue
-            wts = np.array([1 / e[1] ** 2 for e in est])
-            lz = float(np.sum(wts * np.array([e[0] for e in est])) / wts.sum())
-            slz = float(1 / np.sqrt(wts.sum()))
-            Z = float(np.exp(lz))
-            xc = float(np.sum(wts * np.array([e[2] for e in est])) / wts.sum())
+            Z, slz, xc, best = fuse(est)
             X = (xc - cx) * Z / f
             zs.append(Z); zr.append(Z * slz)
             xs.append(X); xr.append(float(np.hypot(abs(X) * slz, 3 * Z / f)))
-            best = min(est, key=lambda e: e[1])[3]
             cues.append(best)
             cue_counts[best] += 1
         ts, zs, zr, xs, xr = map(np.array, (ts, zs, zr, xs, xr))

@@ -17,7 +17,7 @@ from ..config import MODEL_CONCURRENCY
 from ..model import same_vehicle
 from .relevance import auto_tier, signals
 from .store import Clip
-from .track import load_overrides
+from .track import load_overrides, remap_ids
 
 MAX_GAP_S = 6.0
 MAX_CHECKS = 15
@@ -102,7 +102,7 @@ def run(clip: Clip, progress: Callable[[float, str], None]) -> dict:
             chosen.append(c)
 
     out_dir = clip.cache_dir / "reid"
-    rejected = {tuple(x) for x in load_overrides(clip).get("rejected_links", [])}
+    rejected = {tuple(x) for x in remap_ids(load_overrides(clip), clip.stage("track")["actors"])[0].get("rejected_links", [])}
     chosen = [c for c in chosen if (c[1]["id"], c[3]["id"]) not in rejected]
 
     def check(c):

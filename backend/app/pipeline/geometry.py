@@ -23,6 +23,8 @@ DASH_PERIOD_M = 12.19  # US: 10 ft dash + 30 ft gap
 DASH_LENGTH_M = 3.05
 MIN_LANE_SLOPE = 0.55  # |a| = |X|/h: a lane boundary is at least ~0.75 m from the camera
 Z_MAX = 120.0
+HORIZON_SIGMA_PX = 10.0  # horizon/pitch/slope uncertainty for the road-contact cue
+OFF_GROUND_LOG = float(np.log(1.5))  # road contact suddenly says >50% further than size does: not on the road
 
 
 # ----------------------------------------------------------------------------- lane detection (per video frame)
@@ -154,6 +156,74 @@ def _fill(x: np.ndarray, max_gap: int) -> np.ndarray:
     nearest_dist = np.abs(idx[:, None] - idx[ok][None, :]).min(axis=1)
     x[nearest_dist <= max_gap] = filled[nearest_dist <= max_gap]
     return x
+
+
+FOOTPRINT_M = {"car": (1.8, 4.5), "truck": (2.6, 12.0), "bus": (2.6, 12.0), "motorcycle": (0.8, 2.2),
+               "bicycle": (0.6, 1.8), "person": (0.6, 0.6)}
+
+
+def resolve_overlaps(out_actors: dict[str, list[dict]], actors: list[dict], iterations: int = 4) -> list[dict]:
+    """Make the top-down physically possible: two road users can't occupy the same patch of road.
+
+    Where footprints overlap at a moment, push the pair apart just enough to touch, along whichever axis (along or
+    across the road) costs least relative to their uncertainty, moving the less certain one more and keeping their
+    order. That is the most likely layout consistent with physics. If the push needed exceeds 2 sigma, the two
+    measurements genuinely contradict each other, and we say so instead of hiding it. Vehicles flagged as off the
+    road (airborne) are exempt: they can pass over others.
+    """
+    cls = {a["id"]: a["cls"] for a in actors}
+    by_t: dict[float, list[dict]] = {}
+    for aid, rows in out_actors.items():
+        for r in rows:
+            if r.get("on_ground") is not False:
+                r["_id"] = aid
+                by_t.setdefault(r["t"], []).append(r)
+    conflicts: dict[tuple[str, str], list[float]] = {}
+    for t, rows in by_t.items():
+        for _ in range(iterations):
+            moved = False
+            for i in range(len(rows)):
+                for j in range(i + 1, len(rows)):
+                    A, B = rows[i], rows[j]
+                    wa, la = FOOTPRINT_M.get(cls[A["_id"]], FOOTPRINT_M["car"])
+                    wb, lb = FOOTPRINT_M.get(cls[B["_id"]], FOOTPRINT_M["car"])
+                    ca, cb = A["s"] + la / 2, B["s"] + lb / 2  # s is the face nearest the camera
+                    need_s = (la + lb) / 2 - abs(ca - cb)
+                    need_d = (wa + wb) / 2 - abs(A["d"] - B["d"])
+                    if need_s <= 0 or need_d <= 0:
+                        continue
+                    vs = A["s_sigma"] ** 2 + B["s_sigma"] ** 2 + 1e-6
+                    vd = A["d_sigma"] ** 2 + B["d_sigma"] ** 2 + 1e-6
+                    if need_s / np.sqrt(vs) <= need_d / np.sqrt(vd):
+                        key, need, var, sign = "s", need_s, vs, (1 if ca >= cb else -1)
+                    else:
+                        key, need, var, sign = "d", need_d, vd, (1 if A["d"] >= B["d"] else -1)
+                    if need > 2 * np.sqrt(var):
+                        pair = tuple(sorted((A["_id"], B["_id"])))
+                        conflicts.setdefault(pair, [])
+                        if t not in conflicts[pair]:
+                            conflicts[pair].append(t)
+                    sa2 = A[f"{key}_sigma"] ** 2 + 1e-6
+                    sb2 = B[f"{key}_sigma"] ** 2 + 1e-6
+                    A[key] = round(A[key] + sign * need * sa2 / (sa2 + sb2), 2)
+                    B[key] = round(B[key] - sign * need * sb2 / (sa2 + sb2), 2)
+                    for R, sh in ((A, need * sa2 / (sa2 + sb2)), (B, need * sb2 / (sa2 + sb2))):
+                        R["adjusted_m"] = round(R.get("adjusted_m", 0.0) + sh, 2)
+                    moved = True
+            if not moved:
+                break
+    for rows in by_t.values():
+        for r in rows:
+            r.pop("_id", None)
+    notes = []
+    for (a, b), ts in conflicts.items():
+        if len(ts) >= 2:  # a single frame is within noise
+            ts.sort()
+            notes.append({"level": "warn", "code": "overlap", "actor": a, "other": b, "times": ts,
+                          "message": f"{a} and {b} are measured on the same patch of road at {ts[0]:.1f}–{ts[-1]:.1f} s, "
+                                     "which is physically impossible: at least one of their positions is wrong there. "
+                                     "They are drawn just touching."})
+    return notes
 
 
 def remap_plates(plates: list[dict], actors: list[dict]) -> list[dict]:
@@ -331,6 +401,7 @@ def _rts(ts: np.ndarray, z: np.ndarray, r: np.ndarray, sigma_a: float, v0: float
     x = np.array([z[first], v0])
     P = np.diag([r[first] ** 2, v0_sigma ** 2])
     xs, Ps, xps, Pps, Fs = np.zeros((n, 2)), np.zeros((n, 2, 2)), np.zeros((n, 2)), np.zeros((n, 2, 2)), []
+    gated = 0
     for k in range(n):
         dt = ts[k] - ts[k - 1] if k else 0.0
         F = np.array([[1, dt], [0, 1]])
@@ -339,7 +410,13 @@ def _rts(ts: np.ndarray, z: np.ndarray, r: np.ndarray, sigma_a: float, v0: float
             x, P = F @ x, F @ P @ F.T + Q
         Fs.append(F)
         xps[k], Pps[k] = x, P
-        if not np.isnan(z[k]):
+        if not np.isnan(z[k]) and k > first and gated < 1 and \
+                (z[k] - x[0]) ** 2 > monocular.GATE_SIGMA ** 2 * (P[0, 0] + r[k] ** 2):
+            gated += 1  # a one-off jump no vehicle can make (detection briefly on another car): ignore it
+        elif not np.isnan(z[k]):
+            if gated and (z[k] - x[0]) ** 2 > monocular.GATE_SIGMA ** 2 * (P[0, 0] + r[k] ** 2):
+                P = P + np.diag([r[k] ** 2, 25.0])  # persistent disagreement: the prediction is wrong, re-anchor
+            gated = 0
             S = P[0, 0] + r[k] ** 2
             Kg = P[:, 0] / S
             x = x + Kg * (z[k] - x[0])
@@ -597,31 +674,74 @@ def run(clip: Clip, progress: Callable[[float, str], None]) -> dict:
     if K and h:
         progress(0.9, "projecting actors")
         k_rel = result["K_rel_sigma"]
+        f_px = K / h
+        frame_boxes = monocular.boxes_by_frame(actors)
+        plates_all = remap_plates((clip.stage("plates") or {}).get("plates", []), actors)
+        plates_by: dict = {}
+        for p in plates_all:
+            if p.get("actor"):
+                plates_by.setdefault((p["actor"], p["i"]), []).append(p["box"])
         for a in actors:
-            ts, zs, zr, xs, xr = [], [], [], [], []
+            ts, zs, zr, xs, xr, on_ground = [], [], [], [], [], []
             large = a["cls"] in ("truck", "bus")
+            # Pass 1: cues per detection. Road contact: Z = K / (y_bottom - y0); its error grows with distance and
+            # HORIZON_SIGMA_PX covers horizon/pitch error and gentle slopes, which dominate far away.
+            cues = []
             for s in a["samples"]:
-                t = s["t"]
-                b = s["box"]
+                t, b = s["t"], s["box"]
                 y0, x0 = at(y0s, t), at(x0s, t)
+                if s["interp"] or np.isnan(y0):
+                    cues.append(None)
+                    continue
                 yb, xb = b[3] * Hpx, (b[0] + b[2]) / 2 * Wpx
-                bh, bw = (b[3] - b[1]) * Hpx, (b[2] - b[0]) * Wpx
+                bh = (b[3] - b[1]) * Hpx
+                size_est = monocular.size_cues(a, s, plates_by.get((a["id"], s["i"]), []), f_px, Wpx, Hpx,
+                                               occluded=monocular.occluded_by_nearer(a["id"], s["box"], frame_boxes.get(s["i"], [])))
+                size = monocular.fuse(size_est) if size_est else None
+                ground = None
+                if b[3] < 0.97 and yb - y0 > 6:
+                    Zg = K / (yb - y0)
+                    sg = float(np.hypot(2 + 0.02 * bh, HORIZON_SIGMA_PX) / (yb - y0)) + (2.0 / Zg if large else 0.0)
+                    ground = (float(np.log(Zg)), sg, xb, "ground")
+                # log(road-contact distance / size distance) and its spread; None if not comparable
+                ratio = None
+                if size is not None and ground is not None:
+                    ratio = (ground[0] - float(np.log(size[0])), float(np.hypot(ground[1], size[1])))
+                near_by_size = size is not None and size[0] < 40
+                cues.append((size_est, ground, ratio, y0, x0, yb, near_by_size))
+            # Size priors and horizon bias make road-contact and size disagree by a roughly constant *ratio* per
+            # vehicle (a pickup is ~20% bigger than a generic car). Lift-off is a sudden, large jump in that ratio.
+            rs = [c[2][0] for c in cues if c and c[2] is not None]
+            typical = float(np.median(rs)) if len(rs) >= 4 else 0.0
+            # Pass 2: decide road contact, fuse, place.
+            for s, c in zip(a["samples"], cues):
+                t, b = s["t"], s["box"]
                 ts.append(t)
-                usable = (not s["interp"] and b[3] < 0.97 and yb - y0 > 6 and not np.isnan(y0))
-                if not usable:
-                    zs.append(np.nan); zr.append(np.nan); xs.append(np.nan); xr.append(np.nan)
+                if c is None:
+                    zs.append(np.nan); zr.append(np.nan); xs.append(np.nan); xr.append(np.nan); on_ground.append(None)
                     continue
-                Z = K / (yb - y0)
+                size_est, ground, ratio, y0, x0, yb, near_by_size = c
+                grounded = None
+                if near_by_size and yb - y0 <= 6:
+                    grounded = False  # bottom at/above the horizon yet close by size: certainly not on the road
+                elif ratio is not None:
+                    jump = ratio[0] - typical
+                    grounded = not (jump > OFF_GROUND_LOG and jump > 3 * ratio[1])
+                est = list(size_est) + ([ground] if ground and grounded is not False else [])
+                if not est:
+                    zs.append(np.nan); zr.append(np.nan); xs.append(np.nan); xr.append(np.nan); on_ground.append(grounded)
+                    continue
+                Z, slz, xc, _ = monocular.fuse(est)
                 if Z > Z_MAX:
-                    zs.append(np.nan); zr.append(np.nan); xs.append(np.nan); xr.append(np.nan)
+                    zs.append(np.nan); zr.append(np.nan); xs.append(np.nan); xr.append(np.nan); on_ground.append(grounded)
                     continue
-                X = h * (xb - x0) / (yb - y0)
-                sy = 2 + 0.02 * bh
+                bw = (b[2] - b[0]) * Wpx
+                X = (xc - x0) * Z / f_px
                 sx = (2 + 0.1 * bw) * (4 if (b[0] < 0.005 or b[2] > 0.995) else 1)
-                sZ = Z * Z * sy / K + (2.0 if large else 0.0)
-                sX = float(np.hypot(sx * Z * h / K, abs(X) / Z * sZ))
-                zs.append(at(s_ego_video, t) + Z); zr.append(sZ)
-                xs.append(at(d_cam, t) + X if not np.isnan(at(d_cam, t)) else X); xr.append(sX)
+                zs.append(at(s_ego_video, t) + Z); zr.append(Z * slz)
+                xs.append(at(d_cam, t) + X if not np.isnan(at(d_cam, t)) else X)
+                xr.append(float(np.hypot(sx * Z / f_px, abs(X) * slz)))
+                on_ground.append(grounded)
             ts, zs, zr, xs, xr = map(np.array, (ts, zs, zr, xs, xr))
             if (~np.isnan(zs)).sum() < 3:
                 continue
@@ -645,7 +765,7 @@ def run(clip: Clip, progress: Callable[[float, str], None]) -> dict:
                              "v_hi": round(v + 1.96 * sig, 2) if ego_src != "none" else None,
                              "v_rel": round(float(vs - (evs[k] if ego_src != "none" else 0.0)), 2) if ego_src != "none" else round(float(vs), 2),
                              "heading_deg": round(float(np.degrees(np.arctan2(vd, vs))), 1) if v > 2 else None,
-                             "measured": measured,
+                             "measured": measured, "on_ground": on_ground[k],
                              "dist_m": round(float(zs[k] - at(s_ego_video, t)), 1) if measured else None})
             out_actors[a["id"]] = rows
             if large:
@@ -679,6 +799,7 @@ def run(clip: Clip, progress: Callable[[float, str], None]) -> dict:
                                    f"{' (US freeway standard)' if (lane_w, period) == (LANE_WIDTH_M, DASH_PERIOD_M) else ' (set for this clip)'}. "
                                    "Positions are along/across the road, not GPS."})
     result["mode"] = mode
+    quality.extend(resolve_overlaps(out_actors, actors))
     if mode == "monocular":  # lane-mode failures are no longer the last word: say what we fell back to
         for q in quality:
             if q["code"] in ("no_lanes", "no_dashes", "implausible_height"):

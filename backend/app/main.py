@@ -125,7 +125,14 @@ def put_overrides(clip_id: str, ov: Overrides) -> dict:
     bad = {k: v for k, v in ov.tier.items() if v not in TIERS or not ident.fullmatch(k)}
     if bad:
         raise HTTPException(400, f"bad tiers {bad}")
-    clip._write(clip.dir / "overrides.json", ov.model_dump())
+    data = ov.model_dump()
+    # remember where each mentioned track starts, so corrections survive renumbering if tracking changes
+    current = (clip.stage("track") or {}).get("sigs", {})
+    ids = {x for pair in ov.merge + ov.rejected_links for x in pair} | set(ov.tier) | set(ov.labels)
+    old_sigs = load_overrides(clip).get("sigs", {})
+    data["sigs"] = {i: current.get(i) or old_sigs.get(i) for i in ids}
+    data["sigs"] = {k: v for k, v in data["sigs"].items() if v}
+    clip._write(clip.dir / "overrides.json", data)
     start_background(clip, rerun=IDENTITY_STAGES)
     return _summary(clip)
 
