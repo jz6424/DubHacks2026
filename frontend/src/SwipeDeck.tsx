@@ -52,14 +52,16 @@ const REASONS: { kind: Penalty["kind"] | "other"; label: string; toast: string }
 const categoryKey = (c: Card) => c.category.toLowerCase().split(/[\/&,–-]/)[0].trim();
 
 export function SwipeDeck({ jobId, cards, researching, lastAction, swipes, onSwipes, penalties, onPenalties, onSeeMatches }: Props) {
-  const [expanded, setExpanded] = useState(false);
   const [drag, setDrag] = useState<{ x: number; y: number } | null>(null);
   const [flying, setFlying] = useState<{ id: string; action: SwipeAction } | null>(null);
   const [toast, setToast] = useState<string | null>(null);
   const [askWhy, setAskWhy] = useState(false);
   const [checkpoint, setCheckpoint] = useState(false);
   const [moreFor, setMoreFor] = useState<Card | null>(null);
-  const start = useRef<{ x: number; y: number; id: number } | null>(null);
+  // a press on the card: undecided until it moves; sideways becomes a swipe, up/down is left to the card's scroll
+  const start = useRef<{ x: number; y: number; id: number; mode: "?" | "drag" | "scroll" } | null>(null);
+  const dragged = useRef(false);
+  const slot = useRef<HTMLDivElement>(null);
   const toastTimer = useRef<number | undefined>();
 
   const swiped = useMemo(() => new Set(swipes.map((s) => s.club_id)), [swipes]);
@@ -97,7 +99,6 @@ export function SwipeDeck({ jobId, cards, researching, lastAction, swipes, onSwi
         /* no haptics */
       }
       setFlying({ id: top.club_id, action });
-      setExpanded(false);
       window.setTimeout(() => {
         const all = [...swipes, { club_id: top.club_id, action }];
         onSwipes(all);
@@ -144,7 +145,11 @@ export function SwipeDeck({ jobId, cards, researching, lastAction, swipes, onSwi
       else if (e.key === "ArrowUp") decide("super");
       else if (e.key === "?" || e.key === "m") top && setMoreFor(top);
       else if (e.key === "z" || e.key === "Backspace") undo();
-      else if (e.key === "Enter") setExpanded((x) => !x);
+      else if (e.key === "Enter" || e.key === "ArrowDown") {
+        // jump between the photos and the details
+        const el = slot.current?.querySelector(".club-card");
+        if (el) el.scrollTo({ top: el.scrollTop > 0 ? 0 : el.clientHeight * 0.85, behavior: "smooth" });
+      }
       else return;
       e.preventDefault();
     };
@@ -152,22 +157,34 @@ export function SwipeDeck({ jobId, cards, researching, lastAction, swipes, onSwi
     return () => window.removeEventListener("keydown", onKey);
   }, [decide, undo, top, moreFor, askWhy, checkpoint]);
 
-  // --- dragging (disabled while the card is expanded so its text can scroll)
+  // --- dragging: sideways moves swipe the card; vertical moves scroll the profile (touch-action: pan-y)
   const onPointerDown = (e: React.PointerEvent) => {
-    if (expanded || flying) return;
-    start.current = { x: e.clientX, y: e.clientY, id: e.pointerId };
-    (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
+    if (flying || (e.target as HTMLElement).closest("a, button")) return;
+    start.current = { x: e.clientX, y: e.clientY, id: e.pointerId, mode: "?" };
+    dragged.current = false;
   };
   const onPointerMove = (e: React.PointerEvent) => {
-    if (!start.current || start.current.id !== e.pointerId) return;
-    setDrag({ x: e.clientX - start.current.x, y: e.clientY - start.current.y });
+    const st = start.current;
+    if (!st || st.id !== e.pointerId || st.mode === "scroll") return;
+    const x = e.clientX - st.x;
+    const y = e.clientY - st.y;
+    if (st.mode === "?") {
+      if (Math.hypot(x, y) < 8) return;
+      if (Math.abs(x) < Math.abs(y)) {
+        st.mode = "scroll";
+        return;
+      }
+      st.mode = "drag";
+      dragged.current = true;
+      (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
+    }
+    setDrag({ x, y: y / 4 });
   };
   const onPointerUp = () => {
-    if (!start.current) return;
+    const st = start.current;
     start.current = null;
-    if (!drag) return;
-    if (drag.y < -THRESHOLD && Math.abs(drag.y) > Math.abs(drag.x)) decide("super");
-    else if (drag.x > THRESHOLD) decide("right");
+    if (!st || st.mode !== "drag" || !drag) return;
+    if (drag.x > THRESHOLD) decide("right");
     else if (drag.x < -THRESHOLD) decide("left");
     else setDrag(null);
   };
@@ -197,17 +214,23 @@ export function SwipeDeck({ jobId, cards, researching, lastAction, swipes, onSwi
       <div className="deck">
         {next && (
           <div className={`card-slot behind ${fly ? "rising" : ""}`} aria-hidden>
-            <ClubCard card={next} expanded={false} onToggle={() => {}} />
+            <ClubCard card={next} active={false} />
           </div>
         )}
         {top ? (
           <div
-            className={`card-slot top ${expanded ? "expanded" : ""}`}
+            ref={slot}
+            className="card-slot top"
             style={style}
             onPointerDown={onPointerDown}
             onPointerMove={onPointerMove}
             onPointerUp={onPointerUp}
             onPointerCancel={onPointerUp}
+            // a drag that ends over a photo shouldn't also count as a tap that flips it
+            onClickCapture={(e) => {
+              if (dragged.current) e.stopPropagation();
+              dragged.current = false;
+            }}
             key={top.club_id}
           >
             <span className="stamp join" style={{ opacity: fly === "right" ? 1 : stamp(drag?.x ?? 0) }}>
@@ -216,10 +239,10 @@ export function SwipeDeck({ jobId, cards, researching, lastAction, swipes, onSwi
             <span className="stamp pass" style={{ opacity: fly === "left" ? 1 : stamp(-(drag?.x ?? 0)) }}>
               PASS
             </span>
-            <span className="stamp super" style={{ opacity: fly === "super" ? 1 : stamp(-(drag?.y ?? 0)) }}>
+            <span className="stamp super" style={{ opacity: fly === "super" ? 1 : 0 }}>
               SUPER
             </span>
-            <ClubCard card={top} expanded={expanded} onToggle={() => setExpanded((x) => !x)} />
+            <ClubCard card={top} active />
           </div>
         ) : (
           <div className="deck-empty">
@@ -263,7 +286,7 @@ export function SwipeDeck({ jobId, cards, researching, lastAction, swipes, onSwi
           ♥
         </button>
       </div>
-      <p className="keys muted small">← pass · → join · ↑ super-like · ? more · Z undo</p>
+      <p className="keys muted small">← pass · → join · ↑ super · ↓ details · ? more · Z undo</p>
 
       {toast && (
         <div className="toast" role="status">

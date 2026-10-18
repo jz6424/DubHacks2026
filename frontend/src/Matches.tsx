@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { api } from "./api";
 import { Md } from "./Md";
-import { Links, Sources } from "./ClubCard";
+import { Links, Sources, clubImages } from "./ClubCard";
 import type { Card, Profile, Results, Swipe } from "./types";
 import { JOIN, TIER, firstUrl, short, unconfirmed } from "./util";
 
@@ -174,8 +174,10 @@ const known = (s: string | undefined | null) => !!s && !unconfirmed(s) && !/^unk
 /** The club's image as a small round thumbnail, or its category emoji when there's none (or it fails to load). */
 function Thumb({ card: c }: { card: Card }) {
   const [failed, setFailed] = useState(false);
-  if (!c.image || failed) return <span className="emoji">{c.category_emoji}</span>;
-  return <img className="thumb" src={c.image} alt="" onError={() => setFailed(true)} />;
+  const { photos, logo } = clubImages(c);
+  const src = logo || photos[0];
+  if (!src || failed) return <span className="emoji">{c.category_emoji}</span>;
+  return <img className="thumb" src={src} alt="" onError={() => setFailed(true)} />;
 }
 
 /** One line under the club name: how you join and the deadline, when we know them. */

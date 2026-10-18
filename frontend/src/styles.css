@@ -387,6 +387,10 @@ h3 {
   touch-action: none;
   user-select: none;
 }
+.card-slot.top {
+  /* vertical moves scroll the profile; sideways moves are the swipe */
+  touch-action: pan-y;
+}
 .card-slot.behind {
   transform: scale(0.95) translateY(12px);
   opacity: 0.55;
@@ -404,10 +408,6 @@ h3 {
 .card-slot.top:active {
   cursor: grabbing;
 }
-.card-slot.top.expanded {
-  touch-action: auto;
-  cursor: default;
-}
 .club-card {
   --h: 280;
   height: 100%;
@@ -421,8 +421,32 @@ h3 {
   box-shadow: 0 14px 34px rgba(80, 55, 0, 0.22);
   overflow: hidden;
 }
-.expanded .club-card {
+.club-card.active {
   overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: none;
+}
+.club-card.active::-webkit-scrollbar {
+  display: none;
+}
+.club-card .info {
+  display: grid;
+  gap: 10px;
+}
+.club-card .info h4 {
+  margin: 4px 0 -4px;
+  font-size: 13px;
+  color: var(--gold);
+}
+.club-card .info ol {
+  margin: 0;
+  padding-left: 20px;
+}
+.club-card .info p {
+  margin: 0;
+}
+.club-card .status {
+  font-size: 13px;
 }
 .club-card header {
   display: flex;
@@ -499,14 +523,6 @@ h3 {
   font-size: 13.5px;
   overflow-wrap: anywhere;
 }
-.club-card footer {
-  margin-top: auto;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 8px;
-  font-size: 12.5px;
-}
 .status.good {
   color: var(--good);
 }
@@ -516,14 +532,12 @@ h3 {
 .status.muted {
   color: var(--muted);
 }
-.expanded h4,
 .match-body h4,
 .sources h4 {
   margin: 10px 0 4px;
   font-size: 13px;
   color: var(--gold);
 }
-.expanded ol,
 .match-body ol,
 .match-body ul {
   margin: 0;
@@ -856,33 +870,11 @@ h3 {
   }
 }
 
-/* Collapsed cards: clamp the long fields so the footer (activity + "More details") always stays on screen. */
-.card-slot:not(.expanded) .desc {
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 7;
-  overflow: hidden;
-}
-.card-slot:not(.expanded) .facts dd {
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 3;
-  overflow: hidden;
-}
-.club-card footer {
-  flex: none;
-}
 .deck-top .ghost {
   white-space: nowrap;
   flex: none;
 }
 @media (max-height: 760px) {
-  .card-slot:not(.expanded) .desc {
-    -webkit-line-clamp: 4;
-  }
-  .card-slot:not(.expanded) .facts dd {
-    -webkit-line-clamp: 2;
-  }
   .facts {
     gap: 6px;
   }
@@ -1154,67 +1146,6 @@ h1 .gold {
   color: var(--warn);
 }
 
-/* Tinder-style photo at the top of a card (club logo or photo from its website), name over a dark fade */
-.club-card.has-photo {
-  padding-top: 0;
-}
-.club-card .photo {
-  position: relative;
-  flex: none;
-  margin: 0 -16px;
-  height: clamp(150px, 30dvh, 270px);
-  overflow: hidden;
-  background: hsl(calc(var(--h) + 25) 85% 92%);
-}
-.club-card .photo img {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-  user-select: none;
-}
-.club-card .photo .fill {
-  object-fit: cover;
-  filter: blur(22px) saturate(1.2);
-  transform: scale(1.2);
-  opacity: 0.6;
-}
-.club-card .photo .main {
-  object-fit: contain;
-  padding: 10px 10px 54px;
-}
-.club-card .photo .caption {
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  padding: 36px 16px 10px;
-  background: linear-gradient(transparent, rgba(20, 10, 40, 0.78));
-  color: #fff;
-}
-.club-card .photo .caption .category {
-  color: rgba(255, 255, 255, 0.85);
-}
-.club-card .photo .caption h3 {
-  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.35);
-}
-.club-card .desc {
-  min-height: 1.45em;
-}
-@media (max-height: 700px) {
-  .club-card .photo {
-    height: 130px;
-  }
-  .club-card .photo .main {
-    padding-bottom: 46px;
-  }
-}
-/* with a photo there's room for two clean lines of description */
-.card-slot:not(.expanded) .has-photo .desc {
-  -webkit-line-clamp: 2;
-  flex: none;
-}
 .match-head .thumb {
   width: 36px;
   height: 36px;
@@ -1223,4 +1154,112 @@ h1 .gold {
   flex: none;
   background: var(--card2);
   border: 1px solid var(--line);
+}
+
+/* Tinder-style profile: photos fill the card; scroll up for the details */
+.club-card.has-hero {
+  display: block;
+  padding: 0;
+}
+.club-card.has-hero .info {
+  padding: 16px;
+}
+.hero {
+  position: relative;
+  height: 100%;
+  overflow: hidden;
+  background: hsl(calc(var(--h) + 25) 85% 92%);
+  border-radius: var(--radius) var(--radius) 0 0;
+}
+.hero > img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  pointer-events: none;
+  user-select: none;
+}
+.hero .fill {
+  filter: blur(24px) saturate(1.2);
+  transform: scale(1.2);
+  opacity: 0.6;
+}
+.hero.logo-only .main {
+  object-fit: contain;
+  padding: 28px 28px 120px;
+}
+.hero .bars {
+  position: absolute;
+  top: 8px;
+  left: 10px;
+  right: 10px;
+  display: flex;
+  gap: 4px;
+}
+.hero .bars span {
+  flex: 1;
+  height: 3px;
+  border-radius: 2px;
+  background: rgba(255, 255, 255, 0.45);
+  box-shadow: 0 0 3px rgba(0, 0, 0, 0.25);
+}
+.hero .bars span.on {
+  background: #fff;
+}
+.hero .caption {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 60px 16px 12px;
+  background: linear-gradient(transparent, rgba(20, 10, 40, 0.82));
+  color: #fff;
+}
+.hero .caption h3 {
+  font-size: 23px;
+  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.35);
+}
+.hero .caption .category {
+  color: rgba(255, 255, 255, 0.88);
+}
+.hero .badge {
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  object-fit: contain;
+  background: #fff;
+  border: 2px solid #fff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  margin-bottom: 8px;
+  display: block;
+}
+.hero .peek {
+  margin-top: 8px;
+  font-size: 12px;
+  font-weight: 650;
+  opacity: 0.8;
+  text-align: center;
+  animation: nudge 2.4s ease-in-out infinite;
+}
+@keyframes nudge {
+  0%,
+  70%,
+  100% {
+    transform: none;
+  }
+  80% {
+    transform: translateY(-4px);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero .peek {
+    animation: none;
+  }
+}
+/* keyboard shortcuts mean nothing on a phone */
+@media (pointer: coarse) {
+  .keys {
+    display: none;
+  }
 }
