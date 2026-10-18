@@ -244,9 +244,17 @@ export default function App() {
               </div>
             )}
             <div className="found">
+              {/* no running count while researching: "0 clubs found" read like a failure */}
               <div className="found-count">
-                <strong>{found.length}</strong> club
-                {found.length === 1 ? "" : "s"} found
+                {researching ? (
+                  <>
+                    <span className="spinner" aria-hidden /> Finding clubs…
+                  </>
+                ) : (
+                  <>
+                    Found <strong>{found.length}</strong> club{found.length === 1 ? "" : "s"}
+                  </>
+                )}
               </div>
               <div className="found-list">
                 {found.map((c) => (
