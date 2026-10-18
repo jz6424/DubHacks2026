@@ -25,3 +25,7 @@ MODEL = os.environ.get("HUSKYMATCH_MODEL", "claude-opus-5-5")
 RESEARCHERS = int(os.environ.get("HUSKYMATCH_RESEARCHERS", "3"))  # parallel research agents per student
 TARGET_CARDS = int(os.environ.get("HUSKYMATCH_TARGET_CARDS", "18"))
 CATALOG_MAX_AGE_DAYS = float(os.environ.get("HUSKYMATCH_CATALOG_DAYS", "14"))  # older catalog entries get re-researched
+LIMITS_DB = DATA / "limits.db"
+MAX_JOBS_PER_IP_PER_DAY = int(os.environ.get("HUSKYMATCH_MAX_JOBS_PER_IP_PER_DAY", "3"))  # new research runs per visitor
+DAILY_BUDGET_USD = float(os.environ.get("HUSKYMATCH_DAILY_BUDGET_USD", "20"))  # across all visitors, per UTC day
+JOB_COST_RESERVE_USD = float(os.environ.get("HUSKYMATCH_JOB_COST_RESERVE_USD", "3"))  # a new run needs this much left

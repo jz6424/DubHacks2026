@@ -2,10 +2,10 @@
 from typing import Literal
 
 import anthropic
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Request
 from pydantic import BaseModel
 
-from . import catalog, jobs
+from . import catalog, jobs, limits
 from .profile import BUDGET_LABEL, COMMITMENT_LABEL, GOALS, INTERESTS, Profile
 
 app = FastAPI(title="HuskyMatch")
@@ -21,7 +21,7 @@ def options() -> dict:
 @app.get("/api/catalog")
 def catalog_stats() -> dict:
     """How many verified clubs are cached per campus."""
-    return {"clubs": catalog.stats()}
+    return {"clubs": catalog.stats(), "spend": limits.status()}
 
 
 @app.post("/api/summary")
@@ -29,9 +29,22 @@ def summary(profile: Profile) -> dict:
     return {"summary": profile.summary(), "key": profile.key()}
 
 
+def client_ip(request: Request) -> str:
+    """The visitor's IP. X-Forwarded-For is only trusted from a proxy on this machine (Caddy), whose first address is
+    the client; anything connecting directly is keyed on its own address, so the header can't be spoofed around."""
+    peer = request.client.host if request.client else "unknown"
+    fwd = request.headers.get("x-forwarded-for", "")
+    if fwd and peer in ("127.0.0.1", "::1"):
+        return fwd.split(",")[0].strip() or peer
+    return peer
+
+
 @app.post("/api/jobs")
-def start_job(profile: Profile, fresh: bool = False) -> dict:
-    return jobs.public(jobs.start(profile, force=fresh))
+def start_job(profile: Profile, request: Request, fresh: bool = False) -> dict:
+    try:
+        return jobs.public(jobs.start(profile, force=fresh, ip=client_ip(request)))
+    except limits.LimitHit as e:
+        raise HTTPException(429, str(e))
 
 
 def _job(job_id: str) -> dict:
@@ -54,6 +67,8 @@ def _card(job: dict, club_id: str) -> None:
 def _call(fn, *args):
     try:
         return fn(*args)
+    except limits.LimitHit as e:
+        raise HTTPException(429, str(e))
     except anthropic.RateLimitError:
         raise HTTPException(429, "HuskyMatch is busy right now; try again in a minute.")
     except anthropic.APIStatusError as e:

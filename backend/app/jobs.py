@@ -11,7 +11,7 @@ from concurrent.futures import ThreadPoolExecutor
 from datetime import date
 from typing import Any
 
-from . import catalog, claude
+from . import catalog, claude, limits
 from .config import JOBS, RESEARCHERS, TARGET_CARDS
 from .profile import IDENTITY_INTEREST, INTERESTS, Profile
 
@@ -93,13 +93,18 @@ def slices(profile: Profile, n: int) -> list[list[str]]:
     return [chosen[i::k] for i in range(k)]
 
 
-def start(profile: Profile, force: bool = False) -> dict:
+def start(profile: Profile, force: bool = False, ip: str | None = None) -> dict:
+    """Reuse research for an identical profile, else start a new run. A new run from a visitor (ip given) must pass
+    the spend limits first: raises limits.LimitHit."""
     key = profile.key()
     if not force:
         existing = find_by_profile(key)
         if existing:
             return existing
-    job = {"id": uuid.uuid4().hex[:12], "profile_key": key, "profile": profile.model_dump(),
+    job_id = uuid.uuid4().hex[:12]
+    if ip is not None:
+        limits.reserve_job(ip, job_id)
+    job = {"id": job_id, "profile_key": key, "profile": profile.model_dump(),
            "summary": profile.summary(), "status": "researching", "created": time.time(), "cards": [],
            "actions": [], "researchers": [], "usage": {}, "more": {}, "results": {}, "drafts": {}, "error": None}
     save(job)
@@ -178,8 +183,15 @@ def _run(job_id: str) -> None:
             _update(job_id, put)
             return result["msg"]
 
-        def on_action(text: str) -> None:
+        def book_cost() -> None:
+            try:
+                limits.set_research_cost(job_id, job["created"], usage.dollars())
+            except Exception:  # noqa: BLE001 - bookkeeping must never break a research run
+                traceback.print_exc()
+
+        def on_action(text: str) -> None:  # called on every search and page read, so spend stays current
             _update(job_id, lambda j: j.__setitem__("actions", (j["actions"] + [text])[-40:]))
+            book_cost()
 
         def use_known(i: int, club_id: str, fit_reason: str, wildcard: bool) -> str:
             club = known[i].get(club_id)
@@ -199,6 +211,7 @@ def _run(job_id: str) -> None:
                 return f"error: {type(e).__name__}: {str(e)[:200]}"
             finally:
                 _update(job_id, lambda j: j.__setitem__("usage", usage.as_dict()))
+                book_cost()
 
         with ThreadPoolExecutor(len(parts)) as ex:
             outcomes = list(ex.map(worker, range(len(parts))))
@@ -230,10 +243,20 @@ def tell_more(job_id: str, club_id: str) -> dict:
     if job["more"].get(club_id, {}).get("sources"):  # an answer cached without sources predates the fallback
         return job["more"][club_id]
     card = next(c for c in job["cards"] if c["club_id"] == club_id)
-    usage = claude.Usage()
-    out = claude.tell_more(job["profile"], card, usage)
-    _update(job_id, lambda j: (j["more"].__setitem__(club_id, out), _add_usage(j, usage)))
+    out = _paid(job_id, "more", lambda usage: claude.tell_more(job["profile"], card, usage))
+    _update(job_id, lambda j: j["more"].__setitem__(club_id, out))
     return out
+
+
+def _paid(job_id: str, kind: str, call):
+    """Run one of the cheap per-card model calls under the daily budget, and book what it cost (even if it fails)."""
+    limits.check_budget()
+    usage = claude.Usage()
+    try:
+        return call(usage)
+    finally:
+        _update(job_id, lambda j: _add_usage(j, usage))
+        limits.add_cost(job_id, kind, usage.dollars())
 
 
 def _add_usage(job: dict, usage: "claude.Usage") -> None:
@@ -269,8 +292,8 @@ def results(job_id: str, swipes: list[dict]) -> dict:
     if key in job["results"]:
         return job["results"][key]
     matches = [{**cards[i], "super_like": i in supers} for i in order]
-    usage = claude.Usage()
-    judged = claude.results(job["profile"], matches, usage) if matches else {"clubs": [], "action_plan": []}
+    judged = _paid(job_id, "results", lambda usage: claude.results(job["profile"], matches, usage)) if matches \
+        else {"clubs": [], "action_plan": []}
     per = [hours_estimate(c["commitment"]["hours_per_week"]) for c in matches]
     known = [h for h in per if h is not None]
     limit = COMMITMENT_MAX_HOURS.get(job["profile"].get("commitment") or "", None)
@@ -281,7 +304,7 @@ def results(job_id: str, swipes: list[dict]) -> dict:
         "hours": {"total": total, "unknown": len(per) - len(known), "limit": limit,
                   "over": bool(limit is not None and total > limit)},
     }
-    _update(job_id, lambda j: (j["results"].__setitem__(key, out), _add_usage(j, usage)))
+    _update(job_id, lambda j: j["results"].__setitem__(key, out))
     return out
 
 
@@ -290,9 +313,8 @@ def draft(job_id: str, club_id: str) -> str:
     if club_id in job["drafts"]:
         return job["drafts"][club_id]
     card = next(c for c in job["cards"] if c["club_id"] == club_id)
-    usage = claude.Usage()
-    text = claude.draft_message(job["profile"], card, usage)
-    _update(job_id, lambda j: (j["drafts"].__setitem__(club_id, text), _add_usage(j, usage)))
+    text = _paid(job_id, "draft", lambda usage: claude.draft_message(job["profile"], card, usage))
+    _update(job_id, lambda j: j["drafts"].__setitem__(club_id, text))
     return text
 
 
