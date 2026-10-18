@@ -30,17 +30,25 @@ def _unconfirmed(text: str) -> bool:
     return not t.strip() or "couldn't confirm" in t or "could not confirm" in t or t.strip() == "unknown"
 
 
-def thin_card(card: dict) -> str | None:
-    """Why a newly researched card is too thin to show, or None. Reused catalog cards passed this when first added."""
+def thin_card(card: dict, allow_partial: bool = False) -> str | None:
+    """Why a newly researched card is too thin to show, or None. Reused catalog cards passed this when first added.
+    allow_partial: only require the 2 sources (for active clubs imported by hand whose pages don't list dues, hours or
+    a schedule; they rank below fully described clubs)."""
     urls = {s.get("url", "").rstrip("/") for s in card.get("sources") or [] if s.get("url")}
     if len(urls) < 2:
         return ("Not added: a card needs at least 2 sources. Read the club's own page (website, sites.uw.edu, "
                 "Linktree, Instagram bio via search) and add it, or pick a better-documented club.")
-    if all(_unconfirmed(x) for x in (card.get("dues"), (card.get("commitment") or {}).get("hours_per_week"),
+    if not allow_partial and all(_unconfirmed(x) for x in (card.get("dues"), (card.get("commitment") or {}).get("hours_per_week"),
                                      card.get("meeting_schedule"))):
         return ("Not added: dues, hours and meeting schedule are all unconfirmed. Find at least one on the club's own "
                 "page (an estimate from a known meeting schedule counts), or pick a better-documented club.")
     return None
+
+
+def detail_level(card: dict) -> str:
+    """"full" when dues, hours and meeting schedule are all confirmed, else "partial" (for deck ordering)."""
+    fields = (card.get("dues"), (card.get("commitment") or {}).get("hours_per_week"), card.get("meeting_schedule"))
+    return "partial" if any(_unconfirmed(x) for x in fields) else "full"
 
 
 def card_status(card: dict, today: date | None = None) -> str:
@@ -56,11 +64,11 @@ def card_status(card: dict, today: date | None = None) -> str:
     return "may_be_inactive" if card.get("status") == "may_be_inactive" else "active"
 
 
-def vet_card(card: dict, check_thin: bool = True) -> tuple[dict, str | None]:
+def vet_card(card: dict, check_thin: bool = True, allow_partial: bool = False) -> tuple[dict, str | None]:
     """Normalize a researched card (club_id slug, status from the date) and say why it's too thin to keep, if it is."""
     card = {**card, "club_id": re.sub(r"[^a-z0-9-]+", "-", card["club_id"].lower()).strip("-") or uuid.uuid4().hex[:8]}
     card["status"] = card_status(card)
-    return card, (thin_card(card) if check_thin else None)
+    return card, (thin_card(card, allow_partial) if check_thin else None)
 
 
 CATALOG_ONLY_MARGIN = 3  # a researcher with this many more known clubs than its share skips web search
@@ -164,7 +172,7 @@ def _run(job_id: str) -> None:
         for part in parts:
             mine = {}
             for c in catalog.known(campus, part, profile.identity_opt_in()):
-                if _norm(c["name"]) not in taken and not thin_card(c):  # thin ones predate the check
+                if _norm(c["name"]) not in taken and not thin_card(c, allow_partial=True):  # 1-source ones predate it
                     taken.add(_norm(c["name"]))
                     mine[c["club_id"]] = c
             known.append(mine)
@@ -174,7 +182,7 @@ def _run(job_id: str) -> None:
         if catalog_only[0]:  # its wildcard then also comes from the catalog: a few clubs from other areas
             others = [x for x in INTERESTS if x not in profile.interests and x != IDENTITY_INTEREST]
             for c in catalog.known(campus, others, False, limit=12):
-                if _norm(c["name"]) not in taken and not thin_card(c) and len(known[0]) < 40 + 6:
+                if _norm(c["name"]) not in taken and not thin_card(c, allow_partial=True) and len(known[0]) < 46:
                     taken.add(_norm(c["name"]))
                     known[0][c["club_id"]] = c
         if taken:
@@ -366,7 +374,7 @@ def public(job: dict) -> dict:
         photos, logo = m.get("photos", []), m.get("logo", "")
         # status: also fixes pre-"unverified" jobs; image: photos[0] or logo, for older clients
         out["cards"].append({**c, "status": card_status(c), "photos": photos, "logo": logo,
-                             "image": photos[0] if photos else logo})
+                             "image": photos[0] if photos else logo, "detail": detail_level(c)})
     return out
 
 
