@@ -1,6 +1,6 @@
 import type { CSSProperties } from "react";
 import type { Card } from "./types";
-import { JOIN, TIER, firstUrl, formatDate, hostOf, lastActive, short, STATUS, unconfirmed } from "./util";
+import { JOIN, TIER, firstUrl, formatDate, hostOf, lastActive, primaryLink, short, sortedSources, STATUS, unconfirmed } from "./util";
 
 interface Props {
   card: Card;
@@ -22,7 +22,7 @@ function hueOf(s: string): number {
 }
 
 export function ClubCard({ card: c, expanded, onToggle }: Props) {
-  const lastSrc = firstUrl(c.last_active.source);
+  const link = primaryLink(c);
   const nSources = c.sources.filter((s) => firstUrl(s.url)).length;
   const limited = unknownFacts(c) >= 3;
   return (
@@ -79,11 +79,11 @@ export function ClubCard({ card: c, expanded, onToggle }: Props) {
       <footer>
         <span className={`status ${STATUS[c.status].tone}`}>
           {lastActive(c)}
-          {lastSrc && (
+          {link && (
             <>
               {" · "}
-              <a href={lastSrc} target="_blank" rel="noreferrer" onPointerDown={(e) => e.stopPropagation()}>
-                {hostOf(lastSrc)}
+              <a href={link.url} target="_blank" rel="noreferrer" onPointerDown={(e) => e.stopPropagation()}>
+                {link.label}
               </a>
             </>
           )}
@@ -119,8 +119,8 @@ export function ClubCard({ card: c, expanded, onToggle }: Props) {
 export function Links({ card: c }: { card: Card }) {
   const items = [
     ["Website", firstUrl(c.links.website)],
-    ["HuskyLink", firstUrl(c.links.huskylink)],
     ["Instagram", firstUrl(c.links.instagram)],
+    ["HuskyLink", firstUrl(c.links.huskylink)],
     ["Apply", firstUrl(c.application.url)],
   ].filter((x): x is [string, string] => !!x[1]);
   if (!items.length) return null;
@@ -136,9 +136,10 @@ export function Links({ card: c }: { card: Card }) {
 }
 
 export function Sources({ card: c }: { card: Card }) {
-  const list = c.sources
-    .map((s) => ({ url: firstUrl(s.url), checked: s.checked }))
-    .filter((s): s is { url: string; checked: string } => !!s.url);
+  const latest = firstUrl(c.last_active.source);
+  const list = sortedSources(c);
+  // the page the "last active" date came from always shows, even if it wasn't listed as a source
+  if (latest && !list.some((s) => s.url === latest)) list.push({ url: latest, checked: "" });
   if (!list.length) return <p className="small dim">No sources recorded.</p>;
   return (
     <div className="sources">
@@ -149,7 +150,10 @@ export function Sources({ card: c }: { card: Card }) {
             <a href={s.url} target="_blank" rel="noreferrer">
               {hostOf(s.url)}
             </a>{" "}
-            <span className="muted">checked {formatDate(s.checked)}</span>
+            {s.checked && <span className="muted">checked {formatDate(s.checked)}</span>}
+            {s.url === latest && c.last_active.date && !/unknown/i.test(c.last_active.date) && (
+              <span className="muted"> · latest activity {formatDate(c.last_active.date)}</span>
+            )}
           </li>
         ))}
       </ul>

@@ -19,10 +19,10 @@ Then summarize the profile in 2–3 lines and confirm before swiping.
 
 ## Phase 2: Research clubs
 Build 15–25 candidates. Sources in order of trust:
-1. HuskyLink (official RSO directory): name, description, category, status, officer contacts, events
-2. Club website: recruitment process, application links, meeting times, dues, projects
-3. Club Instagram (public posts and bio only): recent activity, recruitment posts, flyers, vibe, link-in-bio
-4. Other public sources: Linktree, Discord invite pages, UW Daily, department pages, UW Bothell/Tacoma student life sites, r/udub
+1. Club's official website: recruitment process, application links, meeting times, dues, projects
+2. Club Instagram (public posts and bio only): recent activity, recruitment posts, flyers, vibe, link-in-bio
+3. HuskyLink (official RSO directory): name, description, category, status, officer contacts, events
+4. Other relevant public sources: Linktree, Discord invite pages, UW Daily, department pages, UW Bothell/Tacoma student life sites, r/udub
 Rules:
 - Check that the club is active. If there has been no post, update or event in roughly 6 months, mark it "⚠️ may be inactive" or drop it.
 - Match the student's campus.

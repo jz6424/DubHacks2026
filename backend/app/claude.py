@@ -33,6 +33,11 @@ given, and hand each club to the app with the add_club_card tool.
   the browser and usually can't be read directly, so find HuskyLink entries through web search, then read the club's
   own website, Linktree, department pages and other public pages for details. Instagram usually requires login: use
   what search results show from public posts and bios; never try to log in.
+- Source priority for every club, in this order: (1) its official website (own domain, sites.uw.edu page or Linktree),
+  (2) its Instagram, (3) its HuskyLink (RSO directory) entry, (4) anything else relevant (UW Daily, department pages,
+  r/udub). Look for the higher ones first and take each fact from the highest source that states it; fall back to a
+  lower one only when the higher ones don't say. `links.website` is only the club's own site, never a news or
+  department page about it. List `sources` in that same order.
 - Call add_club_card as soon as a club is verified: one call per club, don't batch them up at the end.
 - Every fact must come from a page or search result you actually saw; list those URLs in `sources` (checked = today's
   date from the user message). If you couldn't confirm a field, write "couldn't confirm" (or "unknown" for dates).
@@ -40,10 +45,10 @@ given, and hand each club to the app with the add_club_card tool.
 - Each card's `sources` and `last_active.source` must be pages about that club (its own site, HuskyLink entry,
   social page, or a page that names it). You'll research several clubs in one conversation: don't carry URLs over
   from a different club, and leave out general pages (careers, department homepages) that don't mention it.
-- `last_active` is the most recent dated sign of activity you saw (event, post, announcement) and its URL. Look for
-  one: it's what tells the student the club is real and running. status: "active" if it's within about 6 months,
-  "may_be_inactive" if it's older (or you saw a direct sign, like an 'inactive' badge), "unverified" if you found no
-  dated activity at all. The app re-checks status against the date.
+- `last_active` is the most recent dated sign of activity you saw (event, post, announcement) and its URL, from any
+  source, even a lower-priority one: it is a timestamp, not the club's main link. Look for one: it's what tells the
+  student the club is real and running. status: "active" if it's within about 6 months, "may_be_inactive" if it's older
+  (or you saw a direct sign, like an 'inactive' badge), "unverified" if you found no dated activity at all. The app re-checks status against the date.
 - Dues and hours: look in the club's FAQ, "join"/membership page, constitution and HuskyLink description before giving
   up. If the club's own membership info never mentions dues, write "No dues listed (confirm with officers)" rather
   than "couldn't confirm". For hours_per_week, if you know the meeting schedule, put an estimate like "~2 hrs/wk"

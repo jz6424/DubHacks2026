@@ -41,6 +41,38 @@ export const TIER: Record<string, string> = {
   all_in: "🔥 All-in",
 };
 
+/** Where a link sits in the preferred order: official website, Instagram, HuskyLink (RSO directory), then the rest. */
+function linkRank(url: string, c: Card): number {
+  const site = firstUrl(c.links.website);
+  const host = hostOf(url);
+  if (site && host === hostOf(site)) return 0;
+  if (/(^|\.)instagram\.com$/.test(host)) return 1;
+  if (/^huskylink\./.test(host)) return 2;
+  return 3;
+}
+
+/** The club's best link for the card front: its website, else Instagram, else HuskyLink, else the best other source. */
+export function primaryLink(c: Card): { label: string; url: string } | null {
+  const site = firstUrl(c.links.website);
+  if (site) return { label: hostOf(site), url: site };
+  const ig = firstUrl(c.links.instagram);
+  if (ig) return { label: "Instagram", url: ig };
+  const hl = firstUrl(c.links.huskylink);
+  if (hl) return { label: "HuskyLink", url: hl };
+  const other = sortedSources(c)[0]?.url ?? firstUrl(c.last_active.source);
+  return other ? { label: hostOf(other), url: other } : null;
+}
+
+/** Sources in the preferred order (stable within each rank). */
+export function sortedSources(c: Card): { url: string; checked: string }[] {
+  return c.sources
+    .map((s) => ({ url: firstUrl(s.url), checked: s.checked }))
+    .filter((s): s is { url: string; checked: string } => !!s.url)
+    .map((s, i) => ({ s, i, r: linkRank(s.url, c) }))
+    .sort((a, b) => a.r - b.r || a.i - b.i)
+    .map((x) => x.s);
+}
+
 /** Short "last active" line for the card front. */
 export function lastActive(c: Card): string {
   const d = c.last_active.date;
