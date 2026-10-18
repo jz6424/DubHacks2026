@@ -82,18 +82,22 @@ export function SwipeDeck({ jobId, cards, researching, lastAction, swipes, onSwi
     // clubs someone else pulled in through search stay out of the deck (students with the same answers share a list)
     const rest = cards.map((c, i) => ({ c, i })).filter(({ c }) => !swiped.has(c.club_id) && !c.from_search);
     const score = (c: Card) => penalties.filter((p) => matches(p, c)).length;
-    // Order: images + full details, images + partial details, then no images (full before partial).
-    // Among cards with images, real photos beat logo-only.
+    // Order: best fit first (Claude's 0-100 score for this student, in 10-point bands), then inside a band
+    // images + full details, images + partial, then no images (full before partial); real photos beat logo-only.
     const media = (c: Card) => (c.photos?.length ? 0 : c.logo || (c.photos === undefined && c.image) ? 1 : 2);
     const hasImage = (c: Card) => (media(c) < 2 ? 0 : 1);
     const partial = (c: Card) => (detailOf(c) === "full" ? 0 : 1);
+    const fit = (c: Card) => (typeof c.fit_score === "number" ? c.fit_score : 50); // unscored (older lists) sit mid-pack
+    const band = (c: Card) => Math.floor(Math.min(fit(c), 99) / 10);
     const sorted = rest
       .sort(
         (a, b) =>
           score(a.c) - score(b.c) ||
+          band(b.c) - band(a.c) ||
           hasImage(a.c) - hasImage(b.c) ||
           partial(a.c) - partial(b.c) ||
           media(a.c) - media(b.c) ||
+          fit(b.c) - fit(a.c) ||
           a.i - b.i,
       )
       .map(({ c }) => c);
