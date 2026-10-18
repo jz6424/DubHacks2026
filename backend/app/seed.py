@@ -5,11 +5,13 @@ catalog has `--per-interest` fresh clubs tagged with it, then fetches club photo
 
     python -m app.seed --dry-run                      show catalog coverage per interest, spend nothing
     python -m app.seed --budget 30 [--per-interest 15] [--campus seattle] [--interest "Sports"...]
-    python -m app.seed import FILE.json [...] [--campus seattle] [--allow-partial]
+    python -m app.seed import FILE.json [...] [--campus seattle] [--allow-partial] [--trust]
         merge club cards researched elsewhere (same card JSON as add_club_card, a JSON array per file) into the
         catalog, through the same quality checks; no API calls. Then fetch photos: python -m app.images backfill
         --allow-partial: also accept cards whose dues, hours and schedule are all unconfirmed (still 2+ sources),
         for clubs known to be active; they rank below fully described cards.
+        --trust: for clubs a person supplied by hand: one source is enough (the 2-source rule guards against
+        model research errors). Implies --allow-partial.
 
 Seeded and imported clubs never expire from the catalog.
 """
@@ -106,7 +108,7 @@ REQUIRED = ("club_id", "name", "category", "description", "commitment", "dues", 
             "status", "last_active", "links", "application", "sources", "interest_areas")
 
 
-def import_files(paths: list[str], campus: str, allow_partial: bool = False) -> None:
+def import_files(paths: list[str], campus: str, allow_partial: bool = False, trust: bool = False) -> None:
     """Merge researched cards into the catalog (seeded: never expire). Skips malformed and thin cards, says why."""
     added, skipped = 0, []
     for path in paths:
@@ -120,7 +122,9 @@ def import_files(paths: list[str], campus: str, allow_partial: bool = False) -> 
             if missing or bad_tags or not raw.get("interest_areas"):
                 skipped.append(f"{name}: missing {missing}" if missing else f"{name}: bad interest_areas {bad_tags}")
                 continue
-            card, why = vet_card(raw, allow_partial=allow_partial)
+            card, why = vet_card(raw, check_thin=not trust, allow_partial=allow_partial)
+            if trust and not any(s.get("url") for s in card.get("sources") or []):
+                why = "needs at least one source URL"
             if why:
                 skipped.append(f"{name}: {why}")
                 continue
@@ -136,14 +140,15 @@ def import_files(paths: list[str], campus: str, allow_partial: bool = False) -> 
 def main() -> None:
     if sys.argv[1:2] == ["import"]:
         args = sys.argv[2:]
-        campus, allow_partial = "seattle", "--allow-partial" in args
-        args = [a for a in args if a != "--allow-partial"]
+        campus, trust = "seattle", "--trust" in args
+        allow_partial = trust or "--allow-partial" in args
+        args = [a for a in args if a not in ("--allow-partial", "--trust")]
         if "--campus" in args:
             i = args.index("--campus")
             campus, args = args[i + 1], args[:i] + args[i + 2:]
         if not args:
             sys.exit("usage: python -m app.seed import FILE.json [...] [--campus seattle]")
-        import_files(args, campus, allow_partial)
+        import_files(args, campus, allow_partial, trust)
         return
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--budget", type=float, help="dollars to spend at most (required unless --dry-run)")

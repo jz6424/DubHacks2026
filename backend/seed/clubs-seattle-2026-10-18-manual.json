@@ -1,0 +1,55 @@
+[
+ {
+  "club_id": "taiwanese-student-association",
+  "name": "Taiwanese Student Association (TSA UW)",
+  "category": "Cultural Association",
+  "category_emoji": "🇹🇼",
+  "description": "Founded in 2001, the largest UW student organization for Taiwanese students and culture, open to anyone interested in Taiwan; it runs UW Night Market, the biggest night market in Seattle.",
+  "commitment": {
+   "level": "casual",
+   "hours_per_week": "couldn't confirm",
+   "estimated": true
+  },
+  "dues": "No dues listed (confirm with officers)",
+  "meeting_schedule": "Event-based: general meetings each quarter (Fall Gen, Winter Gen) plus socials; times and rooms are posted on Instagram @tsauw",
+  "join_type": "open",
+  "fit_reason": "Anyone curious about Taiwanese culture who wants big events, food and friends.",
+  "wildcard": false,
+  "status": "active",
+  "last_active": {
+   "date": "2026-10-06",
+   "source": "https://tsauw.com/events"
+  },
+  "links": {
+   "huskylink": "",
+   "website": "https://tsauw.com/",
+   "instagram": "https://www.instagram.com/tsauw/"
+  },
+  "application": {
+   "deadline": "Fall 2026 recruitment: social days Oct 5-6, interviews Oct 8-12 (invite only)",
+   "url": "https://tsauw.com/events",
+   "steps": [
+    "Come to events (all welcome)",
+    "For the fall recruitment track: orientation and social days, then invite-only group and individual interviews"
+   ]
+  },
+  "sources": [
+   {
+    "url": "https://tsauw.com/",
+    "checked": "2026-10-18"
+   },
+   {
+    "url": "https://tsauw.com/events",
+    "checked": "2026-10-18"
+   },
+   {
+    "url": "https://www.instagram.com/tsauw/",
+    "checked": "2026-10-18"
+   }
+  ],
+  "interest_areas": [
+   "Cultural/identity-based communities",
+   "Social/Greek life"
+  ]
+ }
+]

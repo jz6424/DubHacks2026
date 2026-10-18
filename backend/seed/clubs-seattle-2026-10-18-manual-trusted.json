@@ -1,0 +1,91 @@
+[
+ {
+  "club_id": "uw-black-student-union",
+  "name": "UW Black Student Union (BSU)",
+  "category": "Cultural Community",
+  "category_emoji": "✊🏾",
+  "description": "The Black Student Union at UW Seattle, a community for Black students that meets weekly.",
+  "commitment": {
+   "level": "casual",
+   "hours_per_week": "~1 hr/wk",
+   "estimated": true
+  },
+  "dues": "No dues listed (confirm with officers)",
+  "meeting_schedule": "Weekly on Wednesdays at 6 pm (location on Instagram @uwseattlebsu)",
+  "join_type": "open",
+  "fit_reason": "Black students looking for community, culture and a weekly place to connect.",
+  "wildcard": false,
+  "status": "unverified",
+  "last_active": {
+   "date": "unknown",
+   "source": "https://www.instagram.com/uwseattlebsu/"
+  },
+  "links": {
+   "huskylink": "",
+   "website": "",
+   "instagram": "https://www.instagram.com/uwseattlebsu/"
+  },
+  "application": {
+   "deadline": "none listed",
+   "url": "https://www.instagram.com/uwseattlebsu/",
+   "steps": [
+    "Come to a Wednesday 6 pm meeting",
+    "Follow @uwseattlebsu for locations and events"
+   ]
+  },
+  "sources": [
+   {
+    "url": "https://www.instagram.com/uwseattlebsu/",
+    "checked": "2026-10-18"
+   }
+  ],
+  "interest_areas": [
+   "Cultural/identity-based communities",
+   "Social/Greek life"
+  ]
+ },
+ {
+  "club_id": "uw-korean-student-association",
+  "name": "Korean Student Association (KSA UW)",
+  "category": "Cultural Association",
+  "category_emoji": "🇰🇷",
+  "description": "UW Seattle's Korean Student Association, a community for Korean students and anyone interested in Korean culture.",
+  "commitment": {
+   "level": "casual",
+   "hours_per_week": "couldn't confirm",
+   "estimated": true
+  },
+  "dues": "No dues listed (confirm with officers)",
+  "meeting_schedule": "couldn't confirm (events posted on Instagram @ksa_uw)",
+  "join_type": "unknown",
+  "fit_reason": "Students who want Korean culture, community and social events at UW.",
+  "wildcard": false,
+  "status": "unverified",
+  "last_active": {
+   "date": "unknown",
+   "source": "https://www.instagram.com/ksa_uw/"
+  },
+  "links": {
+   "huskylink": "",
+   "website": "",
+   "instagram": "https://www.instagram.com/ksa_uw/"
+  },
+  "application": {
+   "deadline": "unknown",
+   "url": "https://www.instagram.com/ksa_uw/",
+   "steps": [
+    "Follow @ksa_uw for events and how to join"
+   ]
+  },
+  "sources": [
+   {
+    "url": "https://www.instagram.com/ksa_uw/",
+    "checked": "2026-10-18"
+   }
+  ],
+  "interest_areas": [
+   "Cultural/identity-based communities",
+   "Social/Greek life"
+  ]
+ }
+]
