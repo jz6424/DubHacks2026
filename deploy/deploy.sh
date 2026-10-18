@@ -4,6 +4,7 @@
 # the server's data alone, so visitors' research, the live catalog and the spend ledger are never overwritten.
 # The repo is private, so the code travels from this machine: a `git archive` of what is committed (no local edits).
 set -euo pipefail
+export COPYFILE_DISABLE=1  # no macOS ._ metadata files in the tarballs
 VM=${VM:-huskymatch}
 ZONE=${ZONE:-us-west1-b}
 SYNC_DATA=${SYNC_DATA:-0}
@@ -33,6 +34,7 @@ gcloud compute scp --quiet --zone "$ZONE" "$tmp/code.tgz" "$tmp/dist.tgz" "$tmp/
 echo "== updating the VM"
 gcloud compute ssh --quiet "$VM" --zone "$ZONE" --command "sudo SYNC_DATA=$SYNC_DATA bash -s" <<'REMOTE'
 set -euo pipefail
+export COPYFILE_DISABLE=1  # no macOS ._ metadata files in the tarballs
 APP=/opt/huskymatch
 if ! command -v caddy >/dev/null || [ ! -x $APP/.venv/bin/python ]; then bash /tmp/setup-vm.sh; fi
 cd $APP
