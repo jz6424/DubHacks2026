@@ -1,12 +1,13 @@
 import { useCallback, useEffect, useState } from "react";
 import { ApiError, api } from "./api";
+import { DemoIntro } from "./DemoIntro";
 import { Matches } from "./Matches";
 import { Onboarding } from "./Onboarding";
 import { SwipeDeck, type Penalty } from "./SwipeDeck";
 import type { Job, Options, Profile, Swipe } from "./types";
 import { store } from "./util";
 
-type Screen = "welcome" | "onboarding" | "confirm" | "research" | "swipe" | "matches";
+type Screen = "welcome" | "onboarding" | "confirm" | "research" | "demo" | "swipe" | "matches";
 
 const EMPTY: Profile = {
   campus: null,
@@ -105,7 +106,7 @@ export default function App() {
   const tryDemo = () => {
     setLimited(null);
     setJobId(DEMO_JOB);
-    setScreen("swipe");
+    setScreen("demo");
   };
 
   const startOver = () => {
@@ -249,6 +250,16 @@ export default function App() {
                 : "Start swiping"}
             </button>
           </section>
+        )}
+
+        {screen === "demo" && (
+          <DemoIntro
+            profile={job?.id === DEMO_JOB ? job.profile : null}
+            options={options}
+            cardCount={job?.id === DEMO_JOB ? cards.length : 0}
+            onStart={() => setScreen("swipe")}
+            onBack={() => setScreen("welcome")}
+          />
         )}
 
         {screen === "swipe" && jobId && (
