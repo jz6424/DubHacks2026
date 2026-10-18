@@ -81,7 +81,8 @@ export function SwipeDeck({ jobId, cards, researching, lastAction, swipes, onSwi
   // photos arrive in the background, and a re-sort mid-drag would pull the card out from under the student's finger.
   const pinned = useRef<string | null>(null);
   const queue = useMemo(() => {
-    const rest = cards.map((c, i) => ({ c, i })).filter(({ c }) => !swiped.has(c.club_id));
+    // clubs someone else pulled in through search stay out of the deck (students with the same answers share a list)
+    const rest = cards.map((c, i) => ({ c, i })).filter(({ c }) => !swiped.has(c.club_id) && !c.from_search);
     const score = (c: Card) => penalties.filter((p) => matches(p, c)).length;
     // Order: images + full details, images + partial details, then no images (full before partial).
     // Among cards with images, real photos beat logo-only.

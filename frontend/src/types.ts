@@ -49,6 +49,7 @@ export interface Card {
   photos?: string[]; // same-origin URLs of event / people / project photos from the club's own site, best first
   logo?: string; // same-origin URL of the club's logo, or ""
   detail?: "full" | "partial"; // full = dues, hours and meeting times all confirmed
+  from_search?: boolean; // added by a student through search; lists can be shared, so never dealt into the deck
 }
 
 export interface Job {

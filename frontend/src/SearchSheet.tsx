@@ -16,6 +16,13 @@ interface Props {
 }
 
 const norm = (s: string) => s.toLowerCase().normalize("NFKD").replace(/[^a-z0-9 ]+/g, " ").replace(/\s+/g, " ").trim();
+/** Same club-name key as the backend catalog, so "Advanced Robotics at UW (ARUW)" and "…at the University of Washington (ARUW)" match. */
+const clubKey = (name: string) =>
+  name
+    .toLowerCase()
+    .replace(/\(.*?\)/g, " ")
+    .replace(/\b(uw|university of washington|the|club|association|society|at)\b/g, " ")
+    .replace(/[^a-z0-9]+/g, "");
 const LABEL: Record<SwipeAction, string> = { right: "💜 Liked", super: "⭐ Super-liked", left: "Passed" };
 
 /** Rank a club against the query: name start, then a word in the name, then anywhere in name/category/description. */
@@ -74,8 +81,8 @@ export function SearchSheet({ jobId, campus, cards, swipes, onDecide, onAdded, o
     };
   }, [nq, q, campus]);
 
-  const inList = useMemo(() => new Set(cards.flatMap((c) => [c.club_id, norm(c.name)])), [cards]);
-  const others = remote.filter((c) => !inList.has(c.club_id) && !inList.has(norm(c.name)));
+  const inList = useMemo(() => new Set(cards.flatMap((c) => [c.club_id, clubKey(c.name)])), [cards]);
+  const others = remote.filter((c) => !inList.has(c.club_id) && !inList.has(clubKey(c.name)));
 
   const decide = async (c: Card, action: SwipeAction) => {
     setError(null);
@@ -138,7 +145,7 @@ export function SearchSheet({ jobId, campus, cards, swipes, onDecide, onAdded, o
             {c.name}
             <span className="glance">{c.category}</span>
           </span>
-          <span className="tag-state">{state ? LABEL[state] : where === "mine" ? "In your deck" : "New"}</span>
+          <span className="tag-state">{state ? LABEL[state] : where === "mine" && !c.from_search ? "In your deck" : "New"}</span>
         </button>
       </li>
     );

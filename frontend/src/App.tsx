@@ -127,6 +127,7 @@ export default function App() {
 
   const researching = !!job && (job.status === "researching" || job.running);
   const cards = job?.cards ?? [];
+  const found = cards.filter((c) => !c.from_search); // research results, without clubs pulled in through search
   const lastAction = job?.actions.length ? job.actions[job.actions.length - 1] : null;
 
   return (
@@ -217,7 +218,7 @@ export default function App() {
                 </div>
               </div>
             )}
-            {job?.status === "done" && !researching && cards.length === 0 && (
+            {job?.status === "done" && !researching && found.length === 0 && (
               <div className="empty-state">
                 <p>We couldn't verify any active clubs for this exact combination.</p>
                 <p className="muted small">Try adding an interest, or relaxing dues or time limits.</p>
@@ -228,10 +229,10 @@ export default function App() {
             )}
             <div className="found">
               <div className="found-count">
-                <strong>{cards.length}</strong> club{cards.length === 1 ? "" : "s"} found
+                <strong>{found.length}</strong> club{found.length === 1 ? "" : "s"} found
               </div>
               <div className="found-list">
-                {cards.map((c) => (
+                {found.map((c) => (
                   <span key={c.club_id} className="found-chip">
                     {c.category_emoji} {c.name}
                   </span>
@@ -249,13 +250,13 @@ export default function App() {
             <button
               type="button"
               className="primary big sticky-cta"
-              disabled={cards.length < Math.min(READY_AT, researching ? READY_AT : 1)}
+              disabled={found.length < Math.min(READY_AT, researching ? READY_AT : 1)}
               onClick={() => setScreen("swipe")}
             >
               {researching
-                ? cards.length >= READY_AT
-                  ? `Start swiping (${cards.length} ready)`
-                  : `Start swiping (${cards.length}/${READY_AT} ready)`
+                ? found.length >= READY_AT
+                  ? `Start swiping (${found.length} ready)`
+                  : `Start swiping (${found.length}/${READY_AT} ready)`
                 : "Start swiping"}
             </button>
           </section>
@@ -265,7 +266,7 @@ export default function App() {
           <DemoIntro
             profile={job?.id === DEMO_JOB ? job.profile : null}
             options={options}
-            cardCount={job?.id === DEMO_JOB ? cards.length : 0}
+            cardCount={job?.id === DEMO_JOB ? found.length : 0}
             onStart={() => setScreen("swipe")}
             onBack={() => setScreen("welcome")}
           />
