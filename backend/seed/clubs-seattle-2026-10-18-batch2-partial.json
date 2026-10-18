@@ -1,0 +1,747 @@
+[
+ {
+  "club_id": "filipino-american-student-association",
+  "name": "Filipino American Student Association (FASA)",
+  "category": "Cultural",
+  "category_emoji": "🇵🇭",
+  "description": "A Registered Student Organization that helps incoming and returning students connect, learn about FASA, and build community at UW; its Sayaw group has run traditional Filipino folk dance workshops.",
+  "commitment": {
+   "level": "regular",
+   "hours_per_week": "couldn't confirm",
+   "estimated": true
+  },
+  "dues": "No dues listed (confirm with officers)",
+  "meeting_schedule": "couldn't confirm",
+  "join_type": "open",
+  "fit_reason": "Students wanting Filipino American community and cultural events, including folk dance, at UW.",
+  "wildcard": false,
+  "status": "active",
+  "last_active": {
+   "date": "2026-09-28",
+   "source": "https://dawgdaze.uw.edu/event/fasa-new-member-social/"
+  },
+  "links": {
+   "huskylink": "",
+   "website": "https://beacons.ai/sayaw.fasa.uw",
+   "instagram": ""
+  },
+  "application": {
+   "deadline": "unknown",
+   "url": "",
+   "steps": [
+    "Attend a FASA social or event",
+    "Follow FASA's links page for updates"
+   ]
+  },
+  "sources": [
+   {
+    "url": "https://dawgdaze.uw.edu/event/fasa-new-member-social/",
+    "checked": "2026-10-18"
+   },
+   {
+    "url": "https://beacons.ai/sayaw.fasa.uw",
+    "checked": "2026-10-18"
+   },
+   {
+    "url": "https://dawgdaze.uw.edu/event/traditional-filipino-folk-dance-workshop-sayaw-sa-fasa/",
+    "checked": "2026-10-18"
+   },
+   {
+    "url": "https://depts.washington.edu/advis104/2023/04/05/uw-filipino-american-student-association-filipino-night-2023/",
+    "checked": "2026-10-18"
+   }
+  ],
+  "interest_areas": [
+   "Cultural/identity-based communities",
+   "Arts/music/dance/theater/film"
+  ]
+ },
+ {
+  "club_id": "japanese-student-association",
+  "name": "UW Japanese Student Association (JSA)",
+  "category": "Cultural",
+  "category_emoji": "🇯🇵",
+  "description": "A Registered Student Organization open to anyone interested in Japanese culture, language, or food, or who wants to meet new people; its largest annual event is Matsuri, which draws over 1,200 attendees.",
+  "commitment": {
+   "level": "regular",
+   "hours_per_week": "couldn't confirm",
+   "estimated": true
+  },
+  "dues": "No dues listed (confirm with officers)",
+  "meeting_schedule": "couldn't confirm",
+  "join_type": "open",
+  "fit_reason": "Anyone into Japanese culture, language, or food who wants big festivals and socials.",
+  "wildcard": false,
+  "status": "active",
+  "last_active": {
+   "date": "2026-10-02",
+   "source": "https://dawgdaze.uw.edu/event/japanese-student-association-social/"
+  },
+  "links": {
+   "huskylink": "",
+   "website": "https://linktr.ee/jsauw",
+   "instagram": "https://www.instagram.com/jsauw"
+  },
+  "application": {
+   "deadline": "unknown",
+   "url": "https://linktr.ee/jsauw",
+   "steps": [
+    "Come to a JSA social or event",
+    "Check the Linktree for event tickets and officer applications"
+   ]
+  },
+  "sources": [
+   {
+    "url": "https://linktr.ee/jsauw",
+    "checked": "2026-10-18"
+   },
+   {
+    "url": "https://dawgdaze.uw.edu/event/japanese-student-association-social/",
+    "checked": "2026-10-18"
+   },
+   {
+    "url": "https://csf.uw.edu/node/1350",
+    "checked": "2026-10-18"
+   }
+  ],
+  "interest_areas": [
+   "Cultural/identity-based communities"
+  ]
+ },
+ {
+  "club_id": "south-asian-student-association",
+  "name": "South Asian Student Association (SASA)",
+  "category": "Cultural",
+  "category_emoji": "🪔",
+  "description": "A Registered Student Organization describing itself as a community that celebrates the diverse cultures, traditions, and experiences of South Asian students at UW, with social, cultural, and philanthropic events.",
+  "commitment": {
+   "level": "regular",
+   "hours_per_week": "couldn't confirm",
+   "estimated": true
+  },
+  "dues": "No dues listed (confirm with officers)",
+  "meeting_schedule": "couldn't confirm",
+  "join_type": "open",
+  "fit_reason": "South Asian students and friends looking for cultural events and community at UW.",
+  "wildcard": false,
+  "status": "active",
+  "last_active": {
+   "date": "2026-09-29",
+   "source": "https://dawgdaze.uw.edu/event/sasa-south-asian-student-association-jeopardy/"
+  },
+  "links": {
+   "huskylink": "",
+   "website": "",
+   "instagram": ""
+  },
+  "application": {
+   "deadline": "unknown",
+   "url": "",
+   "steps": [
+    "Attend a SASA event",
+    "Ask about Freshman Representative applications"
+   ]
+  },
+  "sources": [
+   {
+    "url": "https://dawgdaze.uw.edu/event/sasa-south-asian-student-association-jeopardy/",
+    "checked": "2026-10-18"
+   },
+   {
+    "url": "https://dawgdaze.fyp.uw.edu/organizer/south-asian-student-association/",
+    "checked": "2026-10-18"
+   },
+   {
+    "url": "http://students.washington.edu/sasauw/",
+    "checked": "2026-10-18"
+   }
+  ],
+  "interest_areas": [
+   "Cultural/identity-based communities"
+  ]
+ },
+ {
+  "club_id": "polynesian-student-alliance",
+  "name": "Polynesian Student Alliance (PSA)",
+  "category": "Cultural",
+  "category_emoji": "🌺",
+  "description": "UW's Polynesian Student Alliance hosts Poly Day, an annual celebration of Pacific Islander culture with performances, workshops, and panels that also reaches out to Pacific Islander high school clubs across the Pacific Northwest.",
+  "commitment": {
+   "level": "regular",
+   "hours_per_week": "couldn't confirm",
+   "estimated": true
+  },
+  "dues": "No dues listed (confirm with officers)",
+  "meeting_schedule": "couldn't confirm",
+  "join_type": "unknown",
+  "fit_reason": "Pacific Islander students and allies wanting culture, performance, and outreach to high schoolers.",
+  "wildcard": false,
+  "status": "active",
+  "last_active": {
+   "date": "unknown",
+   "source": "https://csf.uw.edu/node/1349"
+  },
+  "links": {
+   "huskylink": "",
+   "website": "",
+   "instagram": "https://www.instagram.com/psa_uw/"
+  },
+  "application": {
+   "deadline": "unknown",
+   "url": "",
+   "steps": [
+    "Follow @psa_uw on Instagram",
+    "Contact officers about joining"
+   ]
+  },
+  "sources": [
+   {
+    "url": "https://www.instagram.com/psa_uw/",
+    "checked": "2026-10-18"
+   },
+   {
+    "url": "https://csf.uw.edu/node/1349",
+    "checked": "2026-10-18"
+   },
+   {
+    "url": "https://csf.uw.edu/node/1272",
+    "checked": "2026-10-18"
+   }
+  ],
+  "interest_areas": [
+   "Cultural/identity-based communities",
+   "Service/volunteering/activism"
+  ]
+ },
+ {
+  "club_id": "khmer-student-association",
+  "name": "Khmer Student Association (KhSA)",
+  "category": "Cultural",
+  "category_emoji": "🇰🇭",
+  "description": "UW's Khmer Student Association hosts the annual student-led Khmer New Year Show, which celebrates Khmer culture, resilience, and community with traditional dance, music, fashion, and storytelling for 500+ attendees.",
+  "commitment": {
+   "level": "regular",
+   "hours_per_week": "couldn't confirm",
+   "estimated": true
+  },
+  "dues": "No dues listed (confirm with officers)",
+  "meeting_schedule": "couldn't confirm",
+  "join_type": "unknown",
+  "fit_reason": "Students wanting to celebrate and preserve Khmer culture through performance and community.",
+  "wildcard": false,
+  "status": "active",
+  "last_active": {
+   "date": "unknown",
+   "source": "https://csf.uw.edu/node/1354"
+  },
+  "links": {
+   "huskylink": "",
+   "website": "",
+   "instagram": ""
+  },
+  "application": {
+   "deadline": "unknown",
+   "url": "",
+   "steps": [
+    "Contact KhSA officers about joining"
+   ]
+  },
+  "sources": [
+   {
+    "url": "https://csf.uw.edu/node/1354",
+    "checked": "2026-10-18"
+   },
+   {
+    "url": "https://csf.uw.edu/node/1218",
+    "checked": "2026-10-18"
+   },
+   {
+    "url": "https://hub.washington.edu/21st-annual-khsa-new-year-show/",
+    "checked": "2026-10-18"
+   }
+  ],
+  "interest_areas": [
+   "Cultural/identity-based communities",
+   "Arts/music/dance/theater/film"
+  ]
+ },
+ {
+  "club_id": "dubcity-bhangra",
+  "name": "DubCity Bhangra (Punjabi Cultural Association)",
+  "category": "Dance",
+  "category_emoji": "💃",
+  "description": "The Punjabi Cultural Association's extension into competitive Bhangra, a north Indian dance style performed at collegiate tournaments across the U.S.; the association focuses on Punjabi culture, including pre-colonial Punjab and links between Pakistani and Indian Punjab.",
+  "commitment": {
+   "level": "regular",
+   "hours_per_week": "couldn't confirm",
+   "estimated": true
+  },
+  "dues": "No dues listed (confirm with officers)",
+  "meeting_schedule": "couldn't confirm",
+  "join_type": "tryout",
+  "fit_reason": "Dancers wanting competitive Bhangra and Punjabi cultural community.",
+  "wildcard": false,
+  "status": "active",
+  "last_active": {
+   "date": "2026-10-01",
+   "source": "https://dawgdaze.uw.edu/event/dubcity-bhangra-info-session-and-workshop-punjabi-cultural-association/"
+  },
+  "links": {
+   "huskylink": "https://huskylink.washington.edu/organization/pca",
+   "website": "",
+   "instagram": ""
+  },
+  "application": {
+   "deadline": "unknown",
+   "url": "",
+   "steps": [
+    "Attend an info session to learn tryout choreography",
+    "Audition for the team"
+   ]
+  },
+  "sources": [
+   {
+    "url": "https://dawgdaze.uw.edu/event/dubcity-bhangra-info-session-and-workshop-punjabi-cultural-association/",
+    "checked": "2026-10-18"
+   },
+   {
+    "url": "https://dawgdaze.uw.edu/series/dubcity-bhangra-info-session-and-workshop-punjabi-cultural-association/",
+    "checked": "2026-10-18"
+   },
+   {
+    "url": "https://huskylink.washington.edu/organization/pca",
+    "checked": "2026-10-18"
+   }
+  ],
+  "interest_areas": [
+   "Cultural/identity-based communities",
+   "Arts/music/dance/theater/film"
+  ]
+ },
+ {
+  "club_id": "kappa-delta-chi-uw",
+  "name": "Kappa Delta Chi Sorority, Inc. (Alpha Pi Chapter)",
+  "category": "Greek life",
+  "category_emoji": "🌹",
+  "description": "A Latina-based sorority that is not Latina-exclusive, focused on sisterhood, leadership, academic excellence, and service, welcoming members of all backgrounds who share its values.",
+  "commitment": {
+   "level": "regular",
+   "hours_per_week": "couldn't confirm",
+   "estimated": true
+  },
+  "dues": "No dues listed (confirm with officers)",
+  "meeting_schedule": "couldn't confirm",
+  "join_type": "unknown",
+  "fit_reason": "Students seeking Latina-based sisterhood, leadership, and service open to all backgrounds.",
+  "wildcard": false,
+  "status": "active",
+  "last_active": {
+   "date": "2026-09-25",
+   "source": "https://dawgdaze.uw.edu/event/kdx-game-night/"
+  },
+  "links": {
+   "huskylink": "",
+   "website": "",
+   "instagram": ""
+  },
+  "application": {
+   "deadline": "unknown",
+   "url": "",
+   "steps": [
+    "Attend a KDChi event",
+    "Contact the chapter about recruitment"
+   ]
+  },
+  "sources": [
+   {
+    "url": "https://dawgdaze.uw.edu/event/kdx-game-night/",
+    "checked": "2026-10-18"
+   },
+   {
+    "url": "http://students.washington.edu/kdchi/Kappa_Delta_Chi/History.html",
+    "checked": "2026-10-18"
+   },
+   {
+    "url": "https://dawgdaze.fyp.uw.edu/organizer/kappa-delta-chi-sorority-inc/",
+    "checked": "2026-10-18"
+   }
+  ],
+  "interest_areas": [
+   "Cultural/identity-based communities",
+   "Social/Greek life",
+   "Service/volunteering/activism"
+  ]
+ },
+ {
+  "club_id": "delta-lambda-phi-uw",
+  "name": "Delta Lambda Phi (Psi Chapter)",
+  "category": "Greek life",
+  "category_emoji": "🏳️‍🌈",
+  "description": "Describes itself as UW's only queer Greek life organization; the national fraternity was founded by queer men to open the fraternity experience to all men and nonbinary collegians.",
+  "commitment": {
+   "level": "regular",
+   "hours_per_week": "couldn't confirm",
+   "estimated": true
+  },
+  "dues": "No dues listed (confirm with officers)",
+  "meeting_schedule": "couldn't confirm",
+  "join_type": "unknown",
+  "fit_reason": "LGBTQ+ students wanting a queer-centered fraternity community.",
+  "wildcard": false,
+  "status": "active",
+  "last_active": {
+   "date": "2026-09-28",
+   "source": "https://dawgdaze.uw.edu/event/delta-lambda-phi-info-session-rushing-through-the-decades/"
+  },
+  "links": {
+   "huskylink": "",
+   "website": "",
+   "instagram": ""
+  },
+  "application": {
+   "deadline": "unknown",
+   "url": "",
+   "steps": [
+    "Attend a rush/info session",
+    "Contact the chapter about recruitment"
+   ]
+  },
+  "sources": [
+   {
+    "url": "https://dawgdaze.uw.edu/event/delta-lambda-phi-info-session-rushing-through-the-decades/",
+    "checked": "2026-10-18"
+   },
+   {
+    "url": "https://depts.washington.edu/ischoolq/related.html",
+    "checked": "2026-10-18"
+   },
+   {
+    "url": "https://en.wikipedia.org/wiki/List_of_Delta_Lambda_Phi_chapters",
+    "checked": "2026-10-18"
+   }
+  ],
+  "interest_areas": [
+   "Cultural/identity-based communities",
+   "Social/Greek life"
+  ]
+ },
+ {
+  "club_id": "uw-awaaz",
+  "name": "UW Awaaz",
+  "category": "A cappella",
+  "category_emoji": "🎤",
+  "description": "UW's co-ed South Asian fusion a cappella team, founded in 2009, blending South Asian and Western vocal music and competing on the All-American Awaaz circuit.",
+  "commitment": {
+   "level": "regular",
+   "hours_per_week": "couldn't confirm",
+   "estimated": true
+  },
+  "dues": "No dues listed (confirm with officers)",
+  "meeting_schedule": "couldn't confirm",
+  "join_type": "tryout",
+  "fit_reason": "Singers drawn to South Asian fusion a cappella; no prior experience required to try.",
+  "wildcard": false,
+  "status": "active",
+  "last_active": {
+   "date": "2026-09-28",
+   "source": "https://dawgdaze.uw.edu/event/uw-awaaz-workshop-information-session/"
+  },
+  "links": {
+   "huskylink": "",
+   "website": "https://uwawaaz.mystrikingly.com",
+   "instagram": ""
+  },
+  "application": {
+   "deadline": "unknown",
+   "url": "https://uwawaaz.mystrikingly.com",
+   "steps": [
+    "Attend the workshop/info session",
+    "Audition"
+   ]
+  },
+  "sources": [
+   {
+    "url": "https://uwawaaz.mystrikingly.com",
+    "checked": "2026-10-18"
+   },
+   {
+    "url": "https://dawgdaze.uw.edu/event/uw-awaaz-workshop-information-session/",
+    "checked": "2026-10-18"
+   },
+   {
+    "url": "https://gofundme.com/charity/uw-awaaz",
+    "checked": "2026-10-18"
+   }
+  ],
+  "interest_areas": [
+   "Cultural/identity-based communities",
+   "Arts/music/dance/theater/film"
+  ]
+ },
+ {
+  "club_id": "the-kompany",
+  "name": "THE KOMPANY",
+  "category": "K-pop dance",
+  "category_emoji": "🕺",
+  "description": "UW's first and only K-pop dance cover group: its Dance Team performs covers in videos and shows, the Kreative Team handles styling, editing, photography, and design, and its Community hosts workshops, random play dances, and game nights.",
+  "commitment": {
+   "level": "committed",
+   "hours_per_week": "couldn't confirm",
+   "estimated": true
+  },
+  "dues": "No dues listed (confirm with officers)",
+  "meeting_schedule": "couldn't confirm",
+  "join_type": "tryout",
+  "fit_reason": "K-pop fans who want to dance, film, or design; casual community events too.",
+  "wildcard": false,
+  "status": "active",
+  "last_active": {
+   "date": "2026-10-02",
+   "source": "https://dawgdaze.uw.edu/event/the-kompany-interest-meeting/"
+  },
+  "links": {
+   "huskylink": "",
+   "website": "https://www.thekompanyuw.com",
+   "instagram": "https://instagram.com/thekompanyuw"
+  },
+  "application": {
+   "deadline": "Fall auditions typically early October; Winter auditions also held",
+   "url": "https://www.thekompanyuw.com/join-us",
+   "steps": [
+    "Pick a team (Dance, Kreative, Officer, or Community)",
+    "Register via the fall auditions form",
+    "Audition (Dance) or apply (Kreative, typically October)"
+   ]
+  },
+  "sources": [
+   {
+    "url": "https://www.thekompanyuw.com/join-us",
+    "checked": "2026-10-18"
+   },
+   {
+    "url": "https://instagram.com/thekompanyuw",
+    "checked": "2026-10-18"
+   },
+   {
+    "url": "https://linktr.ee/thekompanyuw",
+    "checked": "2026-10-18"
+   },
+   {
+    "url": "https://dawgdaze.uw.edu/event/the-kompany-interest-meeting/",
+    "checked": "2026-10-18"
+   }
+  ],
+  "interest_areas": [
+   "Arts/music/dance/theater/film"
+  ]
+ },
+ {
+  "club_id": "undergraduate-theatre-society",
+  "name": "Undergraduate Theatre Society (UTS)",
+  "category": "Theater",
+  "category_emoji": "🎭",
+  "description": "UW's student-run theatre group, creating theatre since 1997 and staging its own season in Hutchinson Hall's Cabaret Theatre to give undergraduates artistic and practical opportunities.",
+  "commitment": {
+   "level": "regular",
+   "hours_per_week": "couldn't confirm",
+   "estimated": true
+  },
+  "dues": "No dues listed (confirm with officers)",
+  "meeting_schedule": "couldn't confirm",
+  "join_type": "unknown",
+  "fit_reason": "Undergrads who want to act, direct, or crew on student-run plays.",
+  "wildcard": false,
+  "status": "active",
+  "last_active": {
+   "date": "unknown",
+   "source": "https://undergraduatetheatersociety.wordpress.com/this-season/"
+  },
+  "links": {
+   "huskylink": "",
+   "website": "https://undergraduatetheatersociety.wordpress.com/",
+   "instagram": "https://www.instagram.com/uw_uts/"
+  },
+  "application": {
+   "deadline": "unknown",
+   "url": "",
+   "steps": [
+    "Sign up for the newsletter",
+    "Email uwuts97@gmail.com about auditions or production roles"
+   ]
+  },
+  "sources": [
+   {
+    "url": "https://undergraduatetheatersociety.wordpress.com/",
+    "checked": "2026-10-18"
+   },
+   {
+    "url": "https://undergraduatetheatersociety.wordpress.com/this-season/",
+    "checked": "2026-10-18"
+   },
+   {
+    "url": "https://www.instagram.com/uw_uts/",
+    "checked": "2026-10-18"
+   },
+   {
+    "url": "https://teentix.org/partners/university-of-washington-undergraduate-theatre-society",
+    "checked": "2026-10-18"
+   }
+  ],
+  "interest_areas": [
+   "Arts/music/dance/theater/film"
+  ]
+ },
+ {
+  "club_id": "husky-jam",
+  "name": "Husky Jam",
+  "category": "Music",
+  "category_emoji": "🎸",
+  "description": "A student-run RSO founded in 2022 that produces on-campus concerts for student bands of any genre and hosts jam sessions and open mics.",
+  "commitment": {
+   "level": "regular",
+   "hours_per_week": "couldn't confirm",
+   "estimated": true
+  },
+  "dues": "No dues listed (confirm with officers)",
+  "meeting_schedule": "couldn't confirm",
+  "join_type": "unknown",
+  "fit_reason": "Student musicians and show-goers wanting live band gigs and jam sessions.",
+  "wildcard": false,
+  "status": "active",
+  "last_active": {
+   "date": "2026-09-27",
+   "source": "https://dawgdaze.uw.edu/event/husky-jam-dawg-daze-concert/"
+  },
+  "links": {
+   "huskylink": "",
+   "website": "https://www.huskyjam.org",
+   "instagram": "https://www.instagram.com/uwhuskyjam"
+  },
+  "application": {
+   "deadline": "unknown",
+   "url": "",
+   "steps": [
+    "Join the Husky Jam Discord",
+    "Contact the team via Instagram or email"
+   ]
+  },
+  "sources": [
+   {
+    "url": "https://www.huskyjam.org",
+    "checked": "2026-10-18"
+   },
+   {
+    "url": "https://www.instagram.com/uwhuskyjam",
+    "checked": "2026-10-18"
+   },
+   {
+    "url": "https://dawgdaze.uw.edu/event/husky-jam-dawg-daze-concert/",
+    "checked": "2026-10-18"
+   }
+  ],
+  "interest_areas": [
+   "Arts/music/dance/theater/film"
+  ]
+ },
+ {
+  "club_id": "uw-relay-for-life",
+  "name": "UW Relay for Life (American Cancer Society on Campus)",
+  "category": "Service",
+  "category_emoji": "🎗️",
+  "description": "UW's American Cancer Society RSO supports people affected by cancer through fundraising, awareness, and its annual May Relay for Life event; open to students with or without prior Relay experience.",
+  "commitment": {
+   "level": "regular",
+   "hours_per_week": "couldn't confirm",
+   "estimated": true
+  },
+  "dues": "No dues listed (confirm with officers)",
+  "meeting_schedule": "couldn't confirm",
+  "join_type": "open",
+  "fit_reason": "Students wanting cancer-related volunteering and fundraising, pre-health or not.",
+  "wildcard": false,
+  "status": "active",
+  "last_active": {
+   "date": "2026-09-29",
+   "source": "https://dawgdaze.uw.edu/event/crafts-for-a-cause-with-the-american-cancer-society-on-campus/"
+  },
+  "links": {
+   "huskylink": "",
+   "website": "https://sites.uw.edu/acsuw",
+   "instagram": "https://www.instagram.com/relayforlifeuw"
+  },
+  "application": {
+   "deadline": "unknown",
+   "url": "https://sites.uw.edu/acsuw",
+   "steps": [
+    "Join as an RSO member",
+    "Volunteer at events or join the Relay planning committee",
+    "Questions: acsuw@uw.edu"
+   ]
+  },
+  "sources": [
+   {
+    "url": "https://sites.uw.edu/acsuw",
+    "checked": "2026-10-18"
+   },
+   {
+    "url": "https://dawgdaze.uw.edu/event/crafts-for-a-cause-with-the-american-cancer-society-on-campus/",
+    "checked": "2026-10-18"
+   }
+  ],
+  "interest_areas": [
+   "Service/volunteering/activism"
+  ]
+ },
+ {
+  "club_id": "viable-veganism-uw",
+  "name": "Viable Veganism at UW",
+  "category": "Animal rights",
+  "category_emoji": "🌱",
+  "description": "An animal rights RSO of vegan and nonvegan students focused on expanding veganism on campus through education.",
+  "commitment": {
+   "level": "regular",
+   "hours_per_week": "couldn't confirm",
+   "estimated": true
+  },
+  "dues": "No dues listed (confirm with officers)",
+  "meeting_schedule": "couldn't confirm",
+  "join_type": "open",
+  "fit_reason": "Animal lovers, vegan or not, interested in animal rights and veganism.",
+  "wildcard": false,
+  "status": "active",
+  "last_active": {
+   "date": "2026-09-28",
+   "source": "https://dawgdaze.uw.edu/event/animal-rights-club-opening-event-with-viable-veganism/"
+  },
+  "links": {
+   "huskylink": "",
+   "website": "",
+   "instagram": "https://www.instagram.com/viableveganismuw"
+  },
+  "application": {
+   "deadline": "unknown",
+   "url": "",
+   "steps": [
+    "Follow @viableveganismuw on Instagram",
+    "Come to a club event"
+   ]
+  },
+  "sources": [
+   {
+    "url": "https://www.instagram.com/viableveganismuw",
+    "checked": "2026-10-18"
+   },
+   {
+    "url": "https://dawgdaze.uw.edu/event/animal-rights-club-opening-event-with-viable-veganism/",
+    "checked": "2026-10-18"
+   },
+   {
+    "url": "https://sustainability.uw.edu/node/937",
+    "checked": "2026-10-18"
+   }
+  ],
+  "interest_areas": [
+   "Service/volunteering/activism"
+  ]
+ }
+]

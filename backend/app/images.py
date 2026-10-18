@@ -38,12 +38,15 @@ CLUB_BUDGET_S = 15  # all fetching for one club
 HTML_CAP = 1_500_000
 IMAGE_CAP = 3_000_000
 MAX_PAGES = 4  # homepage + up to 3 linked pages (gallery, events, about, ...)
-MAX_DOWNLOADS = 14  # image candidates tried per club
+MAX_DOWNLOADS = 14  # photo candidates tried per club
+MAX_LOGO_DOWNLOADS = 4  # logo candidates, on top (photos used to use up the budget before the logo was tried)
 MAX_PHOTOS = 5
 PHOTO_WIDTH, LOGO_WIDTH = 1000, 400
 PHOTO_MIN_W, PHOTO_MIN_H = 400, 250
 PHOTO_ASPECT = (0.5, 2.5)
 PHOTO_MIN_COLORS = 900  # distinct colours in a 64x64 sample: photos have many, flat graphics and logos few
+LOGO_MAX_COLORS = 450  # real logos measured 2-280; above this a "logo" was a banner or group photo
+LOGO_MAX_COLORS_NAMED = 650  # when the image's name/alt names the club (e.g. a Linktree avatar on a gradient)
 LOGO_MIN_SIDE = 100
 IMAGE_TYPES = {"image/jpeg", "image/png", "image/webp", "image/gif"}  # never SVG: it can carry script
 Image.MAX_IMAGE_PIXELS = 40_000_000  # Pillow refuses images over twice this (decompression bombs)
@@ -384,8 +387,16 @@ def _near(a: int, b: int) -> bool:
     return bin(a ^ b).count("1") <= 6
 
 
+def _backdrop(im: Image.Image) -> tuple[int, int, int]:
+    """White, unless the visible pixels are mostly light (a white logo on transparency would vanish): then dark."""
+    small = im.resize((64, 64))
+    lum = [0.299 * r + 0.587 * g + 0.114 * b for r, g, b, a in small.getdata() if a >= 128]
+    clear = sum(1 for *_, a in small.getdata() if a < 16) / 4096
+    return (34, 34, 34) if clear > 0.05 and lum and sum(lum) / len(lum) > 200 else (255, 255, 255)
+
+
 def to_jpeg(im: Image.Image, width: int) -> bytes:
-    flat = Image.new("RGB", im.size, (255, 255, 255))
+    flat = Image.new("RGB", im.size, _backdrop(im))
     flat.paste(im, mask=im.getchannel("A"))
     if flat.width > width:
         flat = flat.resize((width, round(flat.height * width / flat.width)), Image.LANCZOS)
@@ -431,13 +442,12 @@ def collect(card: dict, taken: set[str]) -> tuple[list[dict], dict]:
                   + sorted((c for c in ordered if c.kind == "icon" and (c.size >= LOGO_MIN_SIDE or not c.size)),
                            key=lambda c: -c.size))
 
-    photos, logo, og_logo, tries = [], {}, None, 0
+    photos, logo, og_logo, tries = [], {}, None, {"photo": 0, "logo": 0}
 
-    def get(c: Cand) -> Pic | None:
-        nonlocal tries
-        if tries >= MAX_DOWNLOADS or left() <= 0.5:
+    def get(c: Cand, kind: str = "photo") -> Pic | None:
+        if tries[kind] >= (MAX_DOWNLOADS if kind == "photo" else MAX_LOGO_DOWNLOADS) or left() <= 0.5:
             return None
-        tries += 1
+        tries[kind] += 1
         try:
             data, itype, _ = fetch(sized(c.url), IMAGE_CAP, "image/jpeg,image/png,image/webp,image/gif", left())
             return decode(data) if itype in IMAGE_TYPES else None
@@ -455,13 +465,14 @@ def collect(card: dict, taken: set[str]) -> tuple[list[dict], dict]:
             score = min(w * h, 1_000_000) / 1_000_000 + (0.6 if GOOD_HINT.search(c.hint) else 0) \
                 + (0.2 if c.kind == "og" else 0)
             photos.append({"pic": p, "page": c.page, "src": c.url, "score": score})
-        elif c.kind in ("og", "twitter") and og_logo is None and is_logo(p):
+        elif c.kind in ("og", "twitter") and og_logo is None and is_logo(p) and p.colors < LOGO_MAX_COLORS:
             og_logo = {"pic": p, "page": c.page, "src": c.url}  # a logo-like og:image: a fallback logo
     for c in logo_cands:
         if logo:
             break
-        p = get(c)
-        if p and is_logo(p):
+        p = get(c, "logo")
+        named = any(t in re.sub(r"[^a-z0-9]", "", c.hint.lower()) for t in tokens)
+        if p and is_logo(p) and (c.kind == "icon" or p.colors < (LOGO_MAX_COLORS_NAMED if named else LOGO_MAX_COLORS)):
             logo = {"pic": p, "page": c.page, "src": c.url}
     if not logo and og_logo:
         logo = og_logo
